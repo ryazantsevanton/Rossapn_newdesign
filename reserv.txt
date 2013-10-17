@@ -1,0 +1,31 @@
+                        var grid = new GridControl();
+                        var gridView = new GridView();
+//                        gridView.OptionsView.ShowColumnHeaders = false;
+  //                      gridView.OptionsView.ShowGroupedColumns = false;
+    //                    gridView.OptionsView.ShowGroupPanel = false;
+                        grid.Dock = DockStyle.Fill;
+
+                        grid.MainView = gridView;
+                        grid.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+                            gridView});
+                        gridView.GridControl = grid;
+
+                        GridColumn unbColumn = gridView.Columns.AddField("Total");
+                        unbColumn.VisibleIndex = gridView.Columns.Count;
+                        unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+                        // Disable editing.
+                        unbColumn.OptionsColumn.AllowEdit = false;
+                        // Specify format settings.
+                        unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
+
+                        unbColumn = gridView.Columns.AddField("Total1");
+                        unbColumn.VisibleIndex = gridView.Columns.Count;
+                        unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+                        // Disable editing.
+                        unbColumn.OptionsColumn.AllowEdit = false;
+                        // Specify format settings.
+                        unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
+
+                        grid.DataSource = list;
+
+                        gridView.CustomUnboundColumnData += gridView1_CustomUnboundColumnData;
