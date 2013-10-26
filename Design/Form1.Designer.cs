@@ -52,9 +52,12 @@
             this.calcButton = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonGroup1 = new DevExpress.XtraBars.BarButtonGroup();
             this.clearButton = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonGroup2 = new DevExpress.XtraBars.BarButtonGroup();
+            this.barButtonGroup3 = new DevExpress.XtraBars.BarButtonGroup();
             this.ribbonImageCollectionLarge = new DevExpress.Utils.ImageCollection(this.components);
             this.homeRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.fileRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.ribbonPageGroup3 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.formatRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.exitRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
@@ -67,9 +70,6 @@
             this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.topPanel = new System.Windows.Forms.Panel();
-            this.barButtonGroup2 = new DevExpress.XtraBars.BarButtonGroup();
-            this.barButtonGroup3 = new DevExpress.XtraBars.BarButtonGroup();
-            this.ribbonPageGroup3 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.appMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonImageCollection)).BeginInit();
@@ -80,11 +80,7 @@
             // 
             this.ribbonControl.ApplicationButtonDropDownControl = this.appMenu;
             this.ribbonControl.ApplicationButtonText = null;
-            // 
-            // 
-            // 
             this.ribbonControl.ExpandCollapseItem.Id = 0;
-            this.ribbonControl.ExpandCollapseItem.Name = "";
             this.ribbonControl.Images = this.ribbonImageCollection;
             this.ribbonControl.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.ribbonControl.ExpandCollapseItem,
@@ -111,6 +107,7 @@
             this.barButtonGroup3});
             this.ribbonControl.LargeImages = this.ribbonImageCollectionLarge;
             this.ribbonControl.Location = new System.Drawing.Point(0, 0);
+            this.ribbonControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ribbonControl.MaxItemId = 74;
             this.ribbonControl.Name = "ribbonControl";
             this.ribbonControl.PageHeaderItemLinks.Add(this.iAbout);
@@ -120,7 +117,7 @@
             this.ribbonPage2,
             this.helpRibbonPage});
             this.ribbonControl.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office2010;
-            this.ribbonControl.Size = new System.Drawing.Size(950, 144);
+            this.ribbonControl.Size = new System.Drawing.Size(1108, 155);
             this.ribbonControl.StatusBar = this.ribbonStatusBar;
             this.ribbonControl.Toolbar.ItemLinks.Add(this.iHelp);
             // 
@@ -253,6 +250,7 @@
             this.editData.Caption = "Данные";
             this.editData.Id = 62;
             this.editData.ImageIndex = 7;
+            this.editData.LargeImageIndex = 7;
             this.editData.Name = "editData";
             this.editData.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
             | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
@@ -297,6 +295,18 @@
             this.clearButton.Id = 68;
             this.clearButton.Name = "clearButton";
             // 
+            // barButtonGroup2
+            // 
+            this.barButtonGroup2.Caption = "barButtonGroup2";
+            this.barButtonGroup2.Id = 69;
+            this.barButtonGroup2.Name = "barButtonGroup2";
+            // 
+            // barButtonGroup3
+            // 
+            this.barButtonGroup3.Caption = "barButtonGroup3";
+            this.barButtonGroup3.Id = 73;
+            this.barButtonGroup3.Name = "barButtonGroup3";
+            // 
             // ribbonImageCollectionLarge
             // 
             this.ribbonImageCollectionLarge.ImageSize = new System.Drawing.Size(32, 32);
@@ -327,6 +337,15 @@
             this.fileRibbonPageGroup.ItemLinks.Add(this.clearButton);
             this.fileRibbonPageGroup.Name = "fileRibbonPageGroup";
             this.fileRibbonPageGroup.Text = "Данные";
+            // 
+            // ribbonPageGroup3
+            // 
+            this.ribbonPageGroup3.ItemLinks.Add(this.editData);
+            this.ribbonPageGroup3.ItemLinks.Add(this.objectButton);
+            this.ribbonPageGroup3.ItemLinks.Add(this.paramButton);
+            this.ribbonPageGroup3.ItemLinks.Add(this.calcButton);
+            this.ribbonPageGroup3.Name = "ribbonPageGroup3";
+            this.ribbonPageGroup3.Text = "Редактор";
             // 
             // formatRibbonPageGroup
             // 
@@ -375,10 +394,11 @@
             // 
             this.ribbonStatusBar.ItemLinks.Add(this.siStatus);
             this.ribbonStatusBar.ItemLinks.Add(this.siInfo);
-            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 664);
+            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 824);
+            this.ribbonStatusBar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbonControl;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(950, 31);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(1108, 31);
             // 
             // barButtonItem1
             // 
@@ -411,40 +431,21 @@
             // 
             this.topPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.topPanel.Location = new System.Drawing.Point(0, 144);
+            this.topPanel.Location = new System.Drawing.Point(0, 155);
+            this.topPanel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.topPanel.Name = "topPanel";
-            this.topPanel.Size = new System.Drawing.Size(950, 520);
+            this.topPanel.Size = new System.Drawing.Size(1108, 669);
             this.topPanel.TabIndex = 2;
-            // 
-            // barButtonGroup2
-            // 
-            this.barButtonGroup2.Caption = "barButtonGroup2";
-            this.barButtonGroup2.Id = 69;
-            this.barButtonGroup2.Name = "barButtonGroup2";
-            // 
-            // barButtonGroup3
-            // 
-            this.barButtonGroup3.Caption = "barButtonGroup3";
-            this.barButtonGroup3.Id = 73;
-            this.barButtonGroup3.Name = "barButtonGroup3";
-            // 
-            // ribbonPageGroup3
-            // 
-            this.ribbonPageGroup3.ItemLinks.Add(this.editData);
-            this.ribbonPageGroup3.ItemLinks.Add(this.objectButton);
-            this.ribbonPageGroup3.ItemLinks.Add(this.paramButton);
-            this.ribbonPageGroup3.ItemLinks.Add(this.calcButton);
-            this.ribbonPageGroup3.Name = "ribbonPageGroup3";
-            this.ribbonPageGroup3.Text = "Редактор";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(950, 695);
+            this.ClientSize = new System.Drawing.Size(1108, 855);
             this.Controls.Add(this.topPanel);
             this.Controls.Add(this.ribbonControl);
             this.Controls.Add(this.ribbonStatusBar);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form1";

@@ -55,7 +55,7 @@ namespace Design
             }
         }
 
-        internal static int GetObject( string value, SqlConnection con)
+        internal static int GetObject(string value, SqlConnection con)
         {
             using (SqlCommand command = con.CreateCommand())
             {
@@ -191,7 +191,7 @@ namespace Design
                     {
                         if (t.MetrixDate == null) 
                         {
-                            command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue) values (" 
+                            command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue) values ("
                              + t.EntityId + "," + t.PredicateId + "," + t.MetrixObject + ", " + t.MetrixValue.ToString() + ")";
                         }
                         else { //yyyy-mm-dd hh:mi:ss
@@ -228,6 +228,76 @@ namespace Design
                 }
             }
             return data.ToArray();
+        }
+        
+        internal static object[][] GetObjects()
+        {
+            List<object[]> data = new List<object[]>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = "select entityid, entityvalue FROM Entities";
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                            {
+                                data.Add(new object[] { reader.GetInt32(0), reader.GetString(1), false });
+                            }
+                        }
+                    }
+                }
+            }
+            return data.ToArray();
+        }
+
+        internal static object[][] GetParameters()
+        {
+            List<object[]> data = new List<object[]>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = "select predicateid, predicatevalue FROM Predicates";
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                            {
+                                data.Add(new object[] { reader.GetInt32(0), reader.GetString(1), false });
+                            }
+                        }
+                    }
+                }
+            }
+            return data.ToArray();
+        }
+
+        internal static SortedDictionary<String, object[]> GetMetrix(int entity, int predicate)
+        {
+            SortedDictionary<String, object[]> data = new SortedDictionary<String, object[]>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("select metrixid, metrixObject, metrixValue FROM metrix WHERE entityid={0} AND predicateid={1}", entity, predicate);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                            {
+                                String metrixObject = reader.GetString(1);
+                                data.Add(metrixObject, new object[] { reader.GetInt32(0), metrixObject, reader.GetDecimal(2), EditAction.None });
+                            }
+                        }
+                    }
+                }
+            }
+            return data;
         }
 
         internal static object[][] GetParamStatistic()

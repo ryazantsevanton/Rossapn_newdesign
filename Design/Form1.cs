@@ -25,6 +25,23 @@ namespace Design
             clearButton.ItemClick += OnClearButtonClick;
             paramButton.ItemClick += OnEditParamButtonClick;
             objectButton.ItemClick += OnEditObjectButtonClick;
+            editData.ItemClick += OnEditDataButtonClick;
+        }
+
+        private void OnEditDataButtonClick(object sender, ItemClickEventArgs e)
+        {
+            if (topPanel.Controls.ContainsKey("DataControl"))
+            {
+                return;
+            }
+            else
+            {
+                topPanel.Controls.Clear();
+            }
+            var form = new DataControl();
+            topPanel.Controls.Add(form);
+            form.Dock = DockStyle.Fill;
+
         }
 
         private void OnEditParamButtonClick(object sender, ItemClickEventArgs e)
@@ -32,6 +49,10 @@ namespace Design
             if (topPanel.Controls.ContainsKey("EditParamObjectControl"))
             {
                 return;
+            }
+            else
+            {
+                topPanel.Controls.Clear();
             }
             var form = new EditParamObjectControl(true);
             topPanel.Controls.Add(form);            
@@ -43,6 +64,10 @@ namespace Design
             if (topPanel.Controls.ContainsKey("EditParamObjectControl"))
             {
                 return;
+            }
+            else
+            {
+                topPanel.Controls.Clear();
             }
             var form = new EditParamObjectControl(false);
             topPanel.Controls.Add(form);            
