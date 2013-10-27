@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             DevExpress.XtraGrid.Columns.GridColumn cTime;
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView1 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
             this.opdPanel = new System.Windows.Forms.SplitContainer();
             this.opPanel = new System.Windows.Forms.SplitContainer();
             this.objectsList = new DevExpress.XtraGrid.GridControl();
@@ -37,6 +36,8 @@
             this.cId = new DevExpress.XtraGrid.Columns.GridColumn();
             this.cObject = new DevExpress.XtraGrid.Columns.GridColumn();
             this.cChecked = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn4 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.parametersList = new DevExpress.XtraGrid.GridControl();
             this.parametersView = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -49,7 +50,6 @@
             this.dataTable = new DevExpress.XtraGrid.GridControl();
             this.dataView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.chartControl1 = new DevExpress.XtraCharts.ChartControl();
             cTime = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.opdPanel)).BeginInit();
             this.opdPanel.Panel1.SuspendLayout();
@@ -67,9 +67,6 @@
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).BeginInit();
             this.SuspendLayout();
             // 
             // cTime
@@ -142,14 +139,20 @@
             this.objectsView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.cId,
             this.cObject,
-            this.cChecked});
+            this.cChecked,
+            this.gridColumn4,
+            this.gridColumn5});
             this.objectsView.GridControl = this.objectsList;
+            this.objectsView.GroupCount = 2;
             this.objectsView.Name = "objectsView";
             this.objectsView.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
             this.objectsView.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
             this.objectsView.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
             this.objectsView.OptionsView.ShowGroupPanel = false;
             this.objectsView.OptionsView.ShowIndicator = false;
+            this.objectsView.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
+            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn4, DevExpress.Data.ColumnSortOrder.Ascending),
+            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn5, DevExpress.Data.ColumnSortOrder.Ascending)});
             // 
             // cId
             // 
@@ -159,8 +162,8 @@
             this.cId.OptionsColumn.AllowEdit = false;
             this.cId.UnboundType = DevExpress.Data.UnboundColumnType.Integer;
             this.cId.Visible = true;
-            this.cId.VisibleIndex = 1;
-            this.cId.Width = 45;
+            this.cId.VisibleIndex = 0;
+            this.cId.Width = 62;
             // 
             // cObject
             // 
@@ -180,8 +183,26 @@
             this.cChecked.Name = "cChecked";
             this.cChecked.UnboundType = DevExpress.Data.UnboundColumnType.Boolean;
             this.cChecked.Visible = true;
-            this.cChecked.VisibleIndex = 0;
+            this.cChecked.VisibleIndex = 1;
             this.cChecked.Width = 50;
+            // 
+            // gridColumn4
+            // 
+            this.gridColumn4.Caption = "Месторождение";
+            this.gridColumn4.FieldName = "Месторождение";
+            this.gridColumn4.Name = "gridColumn4";
+            this.gridColumn4.UnboundType = DevExpress.Data.UnboundColumnType.String;
+            this.gridColumn4.Visible = true;
+            this.gridColumn4.VisibleIndex = 3;
+            // 
+            // gridColumn5
+            // 
+            this.gridColumn5.Caption = "Куст";
+            this.gridColumn5.FieldName = "Куст";
+            this.gridColumn5.Name = "gridColumn5";
+            this.gridColumn5.UnboundType = DevExpress.Data.UnboundColumnType.String;
+            this.gridColumn5.Visible = true;
+            this.gridColumn5.VisibleIndex = 3;
             // 
             // label1
             // 
@@ -312,25 +333,12 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.chartControl1);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Size = new System.Drawing.Size(706, 606);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "График";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // chartControl1
-            // 
-            this.chartControl1.AppearanceNameSerializable = "Chameleon";
-            this.chartControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chartControl1.Location = new System.Drawing.Point(0, 0);
-            this.chartControl1.Name = "chartControl1";
-            this.chartControl1.PaletteName = "Apex";
-            this.chartControl1.SeriesSerializable = new DevExpress.XtraCharts.Series[0];
-            this.chartControl1.SeriesTemplate.View = swiftPlotSeriesView1;
-            this.chartControl1.Size = new System.Drawing.Size(706, 606);
-            this.chartControl1.TabIndex = 0;
             // 
             // DataControl
             // 
@@ -358,9 +366,6 @@
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -386,7 +391,8 @@
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private DevExpress.XtraCharts.ChartControl chartControl1;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn4;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumn5;
 
     }
 }

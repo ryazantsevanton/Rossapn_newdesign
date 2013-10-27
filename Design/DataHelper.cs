@@ -146,9 +146,9 @@ namespace Design
             using (SqlCommand command = connection.CreateCommand())
             {
                 command.CommandText = "select COUNT(*) from [sys].all_objects where type_desc='USER_TABLE'" +
-                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix')";
+                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix', 'EntityGroups')";
                 var id = command.ExecuteScalar();
-                if (!(id is DBNull) && ((int)id) == 4)
+                if (!(id is DBNull) && ((int)id) == 5)
                 {
                     return connection;
                 }
@@ -158,10 +158,12 @@ namespace Design
                                       "drop TABLE Predicates",
                                       "drop TABLE metrix",
                                       "drop Table aproximatemetrix",
+                                      "IF OBJECT_ID('EntityGroups', 'U') IS NOT NULL drop Table EntityGroups",
                                       "CREATE TABLE Entities (entityid INT NOT NULL, entityvalue NVARCHAR(200) NOT NULL, PRIMARY KEY(entityid));",
                                       "CREATE TABLE Predicates (predicateid INT NOT NULL, predicatevalue NVARCHAR(200) NOT NULL, PRIMARY KEY(predicateid));",
                                       "CREATE TABLE metrix (metrixid int IDENTITY(1,1) NOT NULL, predicateid INT NOT NULL, entityid INT NOT NULL, metrixData datetime, metrixValue decimal(18,4) NULL, metrixObject nvarchar(200) null);",
                                       "CREATE TABLE aproximatemetrix (aproximatemetrixid int IDENTITY(1,1) NOT NULL, predicateid INT NOT NULL, entityid INT NOT NULL, metrixData datetime, zetValue NVARCHAR(200) NULL, lRegressionValue NVARCHAR(200) NULL);",
+                                      "CREATE TABLE EntityGroups (entityid int FOREIGN KEY REFERENCES Entities(entityid), groupName NVARCHAR(200), subgroupName NVARCHAR(200));",
                                   };
                 foreach (var text in comText)
                 {
@@ -170,7 +172,10 @@ namespace Design
                         command.CommandText = text;
                         command.ExecuteNonQuery();
                     }
-                    catch { }
+                    catch(Exception e) 
+                    {
+                        string s = e.Message;
+                    }
                 }
             }
             return connection;
@@ -245,6 +250,31 @@ namespace Design
                             while (reader.Read())
                             {
                                 data.Add(new object[] { reader.GetInt32(0), reader.GetString(1), false });
+                            }
+                        }
+                    }
+                }
+            }
+            return data.ToArray();
+        }
+
+        internal static object[][] GetObjectsWithGroups()
+        {
+            List<object[]> data = new List<object[]>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = "select Entities.entityid, Entities.entityvalue, EntityGroups.groupName, EntityGroups.subgroupName FROM Entities LEFT JOIN EntityGroups ON EntityGroups.entityId = Entities.entityId";
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                            {
+                                string group = reader.IsDBNull(2) ? "Месторождение не задано" : reader.GetString(2);
+                                string subgroup = reader.IsDBNull(3) ? "Куст не задан" : reader.GetString(3);
+                                data.Add(new object[] { reader.GetInt32(0), reader.GetString(1), false, group, subgroup });
                             }
                         }
                     }

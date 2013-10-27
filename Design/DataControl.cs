@@ -35,7 +35,7 @@ namespace Design
             parametersView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, parameters));
             parametersView.CellValueChanging += OnParameterSelected;
 
-            displayObjects = new DisplayObjects(dataTable, dataView, chartControl1);
+            displayObjects = new DisplayObjects(dataTable, dataView, null);
            
             dataTable.DataSource = displayObjects.times;
 
@@ -66,7 +66,7 @@ namespace Design
             parameters[view.FocusedRowHandle][2] = (bool)e.Value;
 
             if ((bool)e.Value == true)
-                displayObjects.addParameter((int)parameters[view.FocusedRowHandle][0], (string)parameters[view.FocusedRowHandle][1]);
+                displayObjects.addParameter(new ParameterId((int)parameters[view.FocusedRowHandle][0], (string)parameters[view.FocusedRowHandle][1]));
             else
                 displayObjects.removeParameter((int)parameters[view.FocusedRowHandle][0]);
         }
@@ -75,14 +75,14 @@ namespace Design
         {
             public SortedSet<String> times = new SortedSet<String>();
             private List<DisplayObject> objects = new List<DisplayObject>();
-            private List<int> paramIndexes = new List<int>();
-            private Dictionary<string, DevExpress.XtraCharts.Series> series = new Dictionary<string, DevExpress.XtraCharts.Series>();
+            private List<ParameterId> paramIds = new List<ParameterId>();
+            //private Dictionary<string, DevExpress.XtraCharts.Series> series = new Dictionary<string, DevExpress.XtraCharts.Series>();
 
             private DevExpress.XtraGrid.GridControl dataTable;
             private DevExpress.XtraGrid.Views.Grid.GridView dataView;
-            private DevExpress.XtraCharts.ChartControl chartControl;
+            private object chartControl;
 
-            public DisplayObjects(DevExpress.XtraGrid.GridControl dataTable, DevExpress.XtraGrid.Views.Grid.GridView dataView, DevExpress.XtraCharts.ChartControl chartControl1)
+            public DisplayObjects(DevExpress.XtraGrid.GridControl dataTable, DevExpress.XtraGrid.Views.Grid.GridView dataView, object chartControl1)
             {
                 this.dataTable = dataTable;
                 this.dataView = dataView;
@@ -95,7 +95,7 @@ namespace Design
                     e.Value = times.ElementAt(e.ListSourceRowIndex);
                 else
                 {
-                    int paramCount = paramIndexes.Count;
+                    int paramCount = paramIds.Count;
 
                     if (paramCount == 0) return;
 
@@ -119,10 +119,10 @@ namespace Design
 
                 DisplayObject obj = new DisplayObject(objectId, name);
 
-                foreach (int pId in paramIndexes)
+                foreach (ParameterId pId in paramIds)
                 {
-                    obj.addParameter(pId, pId + "");
-                    insertColumn(pId, pId + "", dataView.Columns.Count, obj);
+                    joinTimes(obj.addParameter(pId));
+                    insertColumn(pId, dataView.Columns.Count, obj);
                 }
 
                 objects.Add(obj);
@@ -135,9 +135,9 @@ namespace Design
             {
                 DisplayObject target = objects.Find((o) => o.id == objectId);
 
-                foreach (int pId in paramIndexes)
+                foreach (ParameterId pId in paramIds)
                 {
-                    removeColumn(pId, target);
+                    removeColumn(pId.id, target);
                 }
 
                 objects.Remove(target);
@@ -145,59 +145,59 @@ namespace Design
                 refreshTable();
             }
 
-            internal void addParameter(int parameterId, string name)
+            internal void addParameter(ParameterId parameterId)
             {
 
-                if (paramIndexes.Contains(parameterId))
+                if (paramIds.Find(id => id.id == parameterId.id) != null)
                     return;
                 else
-                    paramIndexes.Add(parameterId);
+                    paramIds.Add(parameterId);
 
                 for (int i = 0; i < objects.Count; i++)
                 {
 
                     DisplayObject obj = objects[i];
-                    joinTimes(obj.addParameter(parameterId, name));
+                    joinTimes(obj.addParameter(parameterId));
                 }
 
                 for (int i = 0; i < objects.Count; i++)
                 {
                     DisplayObject obj = objects[i];
 
-                    insertColumn(parameterId, name, i * obj.parameters.Count + obj.parameters.Count, obj);
+                    insertColumn(parameterId, i * obj.parameters.Count + obj.parameters.Count, obj);
                 }
 
                 refreshTable();
             }
 
-            private void insertColumn(int parameterId, string name, int vi, DisplayObject obj)
+            private void insertColumn(ParameterId parameterId, int vi, DisplayObject obj)
             {
-                GridColumn unbColumn = dataView.Columns.AddField(obj.id + "_" + parameterId);
+                GridColumn unbColumn = dataView.Columns.AddField(obj.id + "_" + parameterId.id);
                 unbColumn.VisibleIndex = vi;
-                unbColumn.Caption = obj.name + ":" + name;
+                unbColumn.Caption = obj.name + ":" + parameterId.name;
                 unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
                 unbColumn.OptionsColumn.AllowEdit = true;
                 unbColumn.AppearanceCell.BackColor = Color.FromArgb(0xFF, 0xFF, 0xFA - obj.id * 16, 0xCD - obj.id * 16);
 
-                var s = new DevExpress.XtraCharts.Series();
+                /*var s = new DevExpress.XtraCharts.Series();
                 s.Name = unbColumn.Caption;
                 s.ChangeView(DevExpress.XtraCharts.ViewType.SwiftPlot);
                 (s.View as DevExpress.XtraCharts.SwiftPlotSeriesView).LineStyle.Thickness = 2;
-                SortedDictionary<string, object[]> data = obj.getParameterById(parameterId).columnData;
+                SortedDictionary<string, object[]> data = obj.getParameterById(parameterId.id).columnData;
 
                 foreach (string time in data.Keys) 
                     s.Points.Add(new DevExpress.XtraCharts.SeriesPoint(time, data[time][2]));
 
                 chartControl.Series.Add(s);
 
-                series.Add(obj.id + "_" + parameterId, s);
+                series.Add(obj.id + "_" + parameterId.id, s);*/
 
             }
 
             internal void removeParameter(int parameterId)
             {
 
-                paramIndexes.Remove(parameterId);
+                paramIds.RemoveAll(id => id.id == parameterId);
 
                 for (int i = objects.Count - 1; i >= 0; i--)
                 {
@@ -208,7 +208,7 @@ namespace Design
                 for (int i = objects.Count - 1; i >= 0; i--)
                 {
                     DisplayObject obj = objects[i];
-                    obj.parameters.RemoveAll((parameter) => parameter.id == parameterId);
+                    obj.parameters.RemoveAll((parameter) => parameter.id.id == parameterId);
                 }
 
                 refreshTable();
@@ -220,8 +220,8 @@ namespace Design
                 dataView.Columns.Remove(column);
 
 
-                chartControl.Series.Remove(series[obj.id + "_" + parameterId]);
-                series.Remove(obj.id + "_" + parameterId);
+                //chartControl.Series.Remove(series[obj.id + "_" + parameterId]);
+                //series.Remove(obj.id + "_" + parameterId);
 
             }
 
@@ -256,7 +256,7 @@ namespace Design
                 return parameters[parameterIndex].val(time);
             }
 
-            public DisplayParameter addParameter(int parameterId, string name)
+            public DisplayParameter addParameter(ParameterId parameterId)
             {
                 DisplayParameter result;
                 parameters.Add(result = new DisplayParameter(parameterId, this.id).load());
@@ -265,7 +265,7 @@ namespace Design
 
             public DisplayParameter getParameterById(int parameterId)
             {
-                return parameters.Find(p => p.id == parameterId);
+                return parameters.Find(p => p.id.id == parameterId);
             }
 
         }
@@ -273,11 +273,11 @@ namespace Design
         class DisplayParameter
         {
             internal int objectId;
-            internal int id;
+            internal ParameterId id;
 
             public SortedDictionary<string, object[]> columnData = new SortedDictionary<string, object[]>();
 
-            public DisplayParameter(int parameterId, int objectId)
+            public DisplayParameter(ParameterId parameterId, int objectId)
             {
                 this.id = parameterId;
                 this.objectId = objectId;
@@ -286,12 +286,12 @@ namespace Design
             internal DisplayParameter load()
             {
 
-                columnData = DataHelper.GetMetrix(objectId, id);
+                columnData = DataHelper.GetMetrix(objectId, id.id);
 
                 return this;
             }
 
-            internal object val(String time)
+            internal object val(string time)
             {
                 if (columnData.ContainsKey(time))
                     return (decimal)columnData[time][2];
@@ -300,7 +300,16 @@ namespace Design
             }
         }
 
-
+        class ParameterId
+        {
+            internal int id;
+            internal string name;
+            internal ParameterId(int id, string name)
+            {
+                this.id = id;
+                this.name = name;
+            }
+        }
 
     }
 
