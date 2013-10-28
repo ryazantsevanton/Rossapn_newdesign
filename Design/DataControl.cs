@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Design
 {
@@ -23,7 +24,7 @@ namespace Design
         {
             InitializeComponent();
 
-            objects = DataHelper.GetObjects();
+            objects = DataHelper.GetObjectsWithGroups();
             parameters = DataHelper.GetParameters();
 
             objectsList.DataSource = objects;
@@ -35,7 +36,7 @@ namespace Design
             parametersView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, parameters));
             parametersView.CellValueChanging += OnParameterSelected;
 
-            displayObjects = new DisplayObjects(dataTable, dataView, null);
+            displayObjects = new DisplayObjects(dataTable, dataView, chartControl);
            
             dataTable.DataSource = displayObjects.times;
 
@@ -76,17 +77,17 @@ namespace Design
             public SortedSet<String> times = new SortedSet<String>();
             private List<DisplayObject> objects = new List<DisplayObject>();
             private List<ParameterId> paramIds = new List<ParameterId>();
-            //private Dictionary<string, DevExpress.XtraCharts.Series> series = new Dictionary<string, DevExpress.XtraCharts.Series>();
+            private Dictionary<string, Series> series = new Dictionary<string, Series>();
 
             private DevExpress.XtraGrid.GridControl dataTable;
             private DevExpress.XtraGrid.Views.Grid.GridView dataView;
-            private object chartControl;
+            private Chart chartControl;
 
-            public DisplayObjects(DevExpress.XtraGrid.GridControl dataTable, DevExpress.XtraGrid.Views.Grid.GridView dataView, object chartControl1)
+            public DisplayObjects(DevExpress.XtraGrid.GridControl dataTable, DevExpress.XtraGrid.Views.Grid.GridView dataView, Chart chartControl)
             {
                 this.dataTable = dataTable;
                 this.dataView = dataView;
-                this.chartControl = chartControl1;
+                this.chartControl = chartControl;
             }
 
             internal void getUnboundColumnData(object sender, CustomColumnDataEventArgs e)
@@ -179,18 +180,19 @@ namespace Design
                 unbColumn.OptionsColumn.AllowEdit = true;
                 unbColumn.AppearanceCell.BackColor = Color.FromArgb(0xFF, 0xFF, 0xFA - obj.id * 16, 0xCD - obj.id * 16);
 
-                /*var s = new DevExpress.XtraCharts.Series();
+                var s = new Series();
                 s.Name = unbColumn.Caption;
-                s.ChangeView(DevExpress.XtraCharts.ViewType.SwiftPlot);
-                (s.View as DevExpress.XtraCharts.SwiftPlotSeriesView).LineStyle.Thickness = 2;
+                s.ChartType = SeriesChartType.FastLine;
+                //s.ChangeView(DevExpress.XtraCharts.ViewType.SwiftPlot);
+                //(s.View as DevExpress.XtraCharts.SwiftPlotSeriesView).LineStyle.Thickness = 2;
                 SortedDictionary<string, object[]> data = obj.getParameterById(parameterId.id).columnData;
 
                 foreach (string time in data.Keys) 
-                    s.Points.Add(new DevExpress.XtraCharts.SeriesPoint(time, data[time][2]));
+                    s.Points.AddXY(time, data[time][2]);
 
                 chartControl.Series.Add(s);
 
-                series.Add(obj.id + "_" + parameterId.id, s);*/
+                series.Add(obj.id + "_" + parameterId.id, s);
 
             }
 
@@ -220,8 +222,8 @@ namespace Design
                 dataView.Columns.Remove(column);
 
 
-                //chartControl.Series.Remove(series[obj.id + "_" + parameterId]);
-                //series.Remove(obj.id + "_" + parameterId);
+                chartControl.Series.Remove(series[obj.id + "_" + parameterId]);
+                series.Remove(obj.id + "_" + parameterId);
 
             }
 

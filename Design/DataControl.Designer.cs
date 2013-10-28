@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             DevExpress.XtraGrid.Columns.GridColumn cTime;
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.opdPanel = new System.Windows.Forms.SplitContainer();
             this.opPanel = new System.Windows.Forms.SplitContainer();
             this.objectsList = new DevExpress.XtraGrid.GridControl();
@@ -50,6 +52,7 @@
             this.dataTable = new DevExpress.XtraGrid.GridControl();
             this.dataView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.chartControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
             cTime = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.opdPanel)).BeginInit();
             this.opdPanel.Panel1.SuspendLayout();
@@ -67,6 +70,8 @@
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
             this.SuspendLayout();
             // 
             // cTime
@@ -333,12 +338,25 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.chartControl);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Size = new System.Drawing.Size(706, 606);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "График";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // chartControl
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chartControl.ChartAreas.Add(chartArea1);
+            this.chartControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            legend1.Name = "Legend1";
+            this.chartControl.Legends.Add(legend1);
+            this.chartControl.Location = new System.Drawing.Point(0, 0);
+            this.chartControl.Name = "chartControl";
+            this.chartControl.Size = new System.Drawing.Size(706, 606);
+            this.chartControl.TabIndex = 0;
             // 
             // DataControl
             // 
@@ -366,6 +384,8 @@
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).EndInit();
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -393,6 +413,7 @@
         private System.Windows.Forms.TabPage tabPage2;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn4;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn5;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartControl;
 
     }
 }
