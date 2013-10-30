@@ -26,11 +26,29 @@ namespace Design
             paramButton.ItemClick += OnEditParamButtonClick;
             objectButton.ItemClick += OnEditObjectButtonClick;
             editData.ItemClick += OnEditDataButtonClick;
+            bbiReport.ItemClick += OnBbiReportClick;
         }
+
+        private void OnBbiReportClick(object sender, ItemClickEventArgs e)
+        {
+            if (topPanel.Controls.ContainsKey("SwitchReportForm"))
+                  {
+                      return;
+                  }
+                  else
+                  {
+                      topPanel.Controls.Clear();
+                  }
+                  var form = new SwitchReportForm();
+                  topPanel.Controls.Add(form);
+                  form.Dock = DockStyle.Fill;
+                  
+        }
+
 
         private void OnEditDataButtonClick(object sender, ItemClickEventArgs e)
         {
-            if (topPanel.Controls.ContainsKey("DataControl"))
+      /*      if (topPanel.Controls.ContainsKey("DataControl"))
             {
                 return;
             }
@@ -41,7 +59,7 @@ namespace Design
             var form = new DataControl();
             topPanel.Controls.Add(form);
             form.Dock = DockStyle.Fill;
-
+            */
         }
 
         private void OnEditParamButtonClick(object sender, ItemClickEventArgs e)
