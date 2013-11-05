@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             DevExpress.XtraGrid.Columns.GridColumn cTime;
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.opdPanel = new System.Windows.Forms.SplitContainer();
             this.opPanel = new System.Windows.Forms.SplitContainer();
             this.objectsList = new DevExpress.XtraGrid.GridControl();
@@ -53,6 +53,8 @@
             this.dataView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.chartControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.buttonPanel = new System.Windows.Forms.Panel();
+            this.saveButton = new System.Windows.Forms.Button();
             cTime = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.opdPanel)).BeginInit();
             this.opdPanel.Panel1.SuspendLayout();
@@ -72,6 +74,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
+            this.buttonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // cTime
@@ -301,6 +304,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.buttonPanel);
             this.tabPage1.Controls.Add(this.dataTable);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
@@ -312,14 +316,16 @@
             // 
             // dataTable
             // 
-            this.dataTable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataTable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataTable.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
             this.dataTable.Location = new System.Drawing.Point(3, 3);
             this.dataTable.MainView = this.dataView;
             this.dataTable.Margin = new System.Windows.Forms.Padding(4);
             this.dataTable.Name = "dataTable";
             this.dataTable.Padding = new System.Windows.Forms.Padding(4);
-            this.dataTable.Size = new System.Drawing.Size(700, 600);
+            this.dataTable.Size = new System.Drawing.Size(700, 551);
             this.dataTable.TabIndex = 5;
             this.dataTable.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.dataView});
@@ -333,6 +339,11 @@
             this.dataView.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
             this.dataView.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
             this.dataView.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
+            this.dataView.OptionsCustomization.AllowColumnMoving = false;
+            this.dataView.OptionsCustomization.AllowFilter = false;
+            this.dataView.OptionsCustomization.AllowGroup = false;
+            this.dataView.OptionsCustomization.AllowQuickHideColumns = false;
+            this.dataView.OptionsCustomization.AllowSort = false;
             this.dataView.OptionsView.ShowGroupPanel = false;
             this.dataView.OptionsView.ShowIndicator = false;
             // 
@@ -348,15 +359,38 @@
             // 
             // chartControl
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chartControl.ChartAreas.Add(chartArea1);
+            chartArea5.Name = "ChartArea1";
+            this.chartControl.ChartAreas.Add(chartArea5);
             this.chartControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Name = "Legend1";
-            this.chartControl.Legends.Add(legend1);
+            legend5.Name = "Legend1";
+            this.chartControl.Legends.Add(legend5);
             this.chartControl.Location = new System.Drawing.Point(0, 0);
             this.chartControl.Name = "chartControl";
             this.chartControl.Size = new System.Drawing.Size(706, 606);
             this.chartControl.TabIndex = 0;
+            // 
+            // buttonPanel
+            // 
+            this.buttonPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.buttonPanel.Controls.Add(this.saveButton);
+            this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.buttonPanel.Location = new System.Drawing.Point(3, 561);
+            this.buttonPanel.Name = "buttonPanel";
+            this.buttonPanel.Size = new System.Drawing.Size(700, 42);
+            this.buttonPanel.TabIndex = 6;
+            // 
+            // saveButton
+            // 
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveButton.Enabled = false;
+            this.saveButton.Location = new System.Drawing.Point(568, 4);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(128, 34);
+            this.saveButton.TabIndex = 0;
+            this.saveButton.Text = "Сохранить";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.OnSaveButtonClick);
             // 
             // DataControl
             // 
@@ -386,6 +420,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).EndInit();
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
+            this.buttonPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -414,6 +449,8 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn4;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn5;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartControl;
+        private System.Windows.Forms.Panel buttonPanel;
+        private System.Windows.Forms.Button saveButton;
 
     }
 }

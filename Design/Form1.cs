@@ -48,7 +48,7 @@ namespace Design
 
         private void OnEditDataButtonClick(object sender, ItemClickEventArgs e)
         {
-      /*      if (topPanel.Controls.ContainsKey("DataControl"))
+            if (topPanel.Controls.ContainsKey("DataControl"))
             {
                 return;
             }
@@ -59,7 +59,7 @@ namespace Design
             var form = new DataControl();
             topPanel.Controls.Add(form);
             form.Dock = DockStyle.Fill;
-            */
+            
         }
 
         private void OnEditParamButtonClick(object sender, ItemClickEventArgs e)

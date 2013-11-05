@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using System.Windows.Forms.DataVisualization.Charting;
+using Design.Infrastructure;
 
 namespace Design
 {
@@ -30,18 +31,25 @@ namespace Design
             objectsList.DataSource = objects;
             parametersList.DataSource = parameters;
 
-            objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));        
+            objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));
             objectsView.CellValueChanging += OnObjectSelected;
 
             parametersView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, parameters));
             parametersView.CellValueChanging += OnParameterSelected;
 
             displayObjects = new DisplayObjects(dataTable, dataView, chartControl);
-           
+            displayObjects.DataChanged += EnableButton;
+
             dataTable.DataSource = displayObjects.times;
 
             dataView.CustomUnboundColumnData += displayObjects.getUnboundColumnData;
+            dataView.CellValueChanged += displayObjects.OnCellValueChanged;
+            dataView.RowCellStyle += displayObjects.OnRowCellStyle;
+        }
 
+        void EnableButton()
+        {
+            saveButton.Enabled = true;
         }
 
         private void UnboundColumnData(object sender, CustomColumnDataEventArgs e, object[][] data)
@@ -72,16 +80,34 @@ namespace Design
                 displayObjects.removeParameter((int)parameters[view.FocusedRowHandle][0]);
         }
 
+        private void OnSaveButtonClick(object sender, EventArgs e)
+        {
+
+            DataHelper.SaveMetrixBundle(displayObjects.getSaveBundle(true));
+
+            displayObjects.refreshTable();
+            saveButton.Enabled = false;
+        }
+        
         class DisplayObjects
         {
             public SortedSet<String> times = new SortedSet<String>();
             private List<DisplayObject> objects = new List<DisplayObject>();
-            private List<ParameterId> paramIds = new List<ParameterId>();
+            public List<ParameterId> paramIds = new List<ParameterId>();
             private Dictionary<string, Series> series = new Dictionary<string, Series>();
 
             private DevExpress.XtraGrid.GridControl dataTable;
             private DevExpress.XtraGrid.Views.Grid.GridView dataView;
             private Chart chartControl;
+
+            public delegate void DataChangedEvent();
+
+            public event DataChangedEvent DataChanged;
+            internal void onDataChanged()
+            {
+                if (DataChanged != null)
+                    DataChanged();
+            }
 
             public DisplayObjects(DevExpress.XtraGrid.GridControl dataTable, DevExpress.XtraGrid.Views.Grid.GridView dataView, Chart chartControl)
             {
@@ -110,6 +136,77 @@ namespace Design
                     e.Value = objects[objectIndex].paramValByIndex(time, paramIndex);
 
                 }
+            }
+
+            internal void OnCellValueChanged(object sender, CellValueChangedEventArgs e)
+            {
+                if (e.Column.AbsoluteIndex == 0)
+                    return;
+                else
+                {
+                    int paramCount = paramIds.Count;
+
+                    if (paramCount == 0) return;
+
+                    int objectIndex = (e.Column.VisibleIndex - 1) / paramCount;
+                    int paramIndex = (e.Column.VisibleIndex - 1) % paramCount;
+
+                    var time = times.ElementAt(e.RowHandle);
+
+                    if (objectIndex >= objects.Count) return;
+
+                    string valStr = ((ColumnView)sender).EditingValue.ToString();
+                    if (String.IsNullOrEmpty(valStr))
+                    {
+                        objects[objectIndex].delete(time, paramIndex);
+                        this.onDataChanged();
+                    }
+                    else
+                        try
+                        {
+                            decimal val = Decimal.Parse(valStr);
+                            if (val == (decimal)e.Value) return;
+                            objects[objectIndex].update(time, paramIndex, val);
+                            this.onDataChanged();
+                        }
+                        catch (Exception ex) { }
+                    
+                }
+            }
+
+            internal void OnRowCellStyle(object sender, DevExpress.XtraGrid.Views.Grid.RowCellStyleEventArgs e)
+            {
+
+                e.Appearance.BackColor = Color.LemonChiffon;
+                if (e.Column.VisibleIndex == 0) return;
+
+                int paramCount = paramIds.Count;
+
+                if (paramCount == 0) return;
+
+                int objectIndex = (e.Column.VisibleIndex - 1) / paramCount;
+                int paramIndex = (e.Column.VisibleIndex - 1) % paramCount;
+
+                var time = times.ElementAt(e.RowHandle);
+
+                object[] mtx;
+                if (!objects[objectIndex].parameters[paramIndex].columnData.TryGetValue(time, out mtx))
+                {
+                    e.Appearance.BackColor = Color.FromArgb(224, 224, 224);
+                    return;
+                }
+
+                if ((EditAction)mtx[3] == EditAction.Modified)
+                {
+                    e.Appearance.BackColor = Color.FromArgb(255, 224, 192);
+                    return;
+                }
+                if ((EditAction)mtx[3] == EditAction.Delete)
+                {
+                    e.Appearance.BackColor = Color.FromArgb(224, 224, 224);
+                    return;
+                }
+               
             }
 
             internal void addObject(int objectId, string name)
@@ -183,8 +280,6 @@ namespace Design
                 var s = new Series();
                 s.Name = unbColumn.Caption;
                 s.ChartType = SeriesChartType.FastLine;
-                //s.ChangeView(DevExpress.XtraCharts.ViewType.SwiftPlot);
-                //(s.View as DevExpress.XtraCharts.SwiftPlotSeriesView).LineStyle.Thickness = 2;
                 SortedDictionary<string, object[]> data = obj.getParameterById(parameterId.id).columnData;
 
                 foreach (string time in data.Keys) 
@@ -227,7 +322,7 @@ namespace Design
 
             }
 
-            private void refreshTable()
+            internal void refreshTable()
             {
                 dataTable.DataSource = null;
                 dataTable.DataSource = times;
@@ -239,6 +334,15 @@ namespace Design
                 return parameter;
             }
 
+
+            internal List<object[]> getSaveBundle(bool apply)
+            {
+                List<object[]> metrix = new List<object[]>();
+
+                objects.ForEach(obj => metrix.AddRange(obj.changesBundle(apply)));
+
+                return metrix;
+            }
         }
 
         class DisplayObject
@@ -270,6 +374,25 @@ namespace Design
                 return parameters.Find(p => p.id.id == parameterId);
             }
 
+
+            internal void update(string time, int paramIndex, decimal value)
+            {
+                parameters[paramIndex].update(time, value);
+            }
+
+            internal void delete(string time, int paramIndex)
+            {
+                parameters[paramIndex].delete(time);
+            }
+
+            internal List<object[]> changesBundle(bool apply)
+            {
+                List<object[]> metrix = new List<object[]>();
+
+                parameters.ForEach(param => metrix.AddRange(param.changesBundle(apply)));
+
+                return metrix;
+            }
         }
 
         class DisplayParameter
@@ -299,6 +422,43 @@ namespace Design
                     return (decimal)columnData[time][2];
                 else
                     return null;
+            }
+
+            internal void update(string time, decimal value)
+            {
+                columnData[time][2] = value;
+                columnData[time][3] = EditAction.Modified;
+            }
+
+            internal void delete(string time)
+            {
+                columnData[time][3] = EditAction.Delete;
+            }
+
+
+            internal List<object[]> changesBundle(bool apply)
+            {
+                List<object[]> metrix = new List<object[]>();
+                List<string> toRemove = new List<string>();
+
+                foreach (object[] mtx in columnData.Values)
+                    switch ((EditAction)mtx[3])
+                    {
+                        case EditAction.Modified:
+                            metrix.Add(new object[]{mtx[0], mtx[1], mtx[2], mtx[3]});
+                            mtx[3] = EditAction.None;
+                            break;
+                        case EditAction.Delete:
+                            metrix.Add(new object[]{mtx[0], mtx[1], mtx[2], mtx[3]});
+                            //columnData.Remove(mtx[1].ToString());
+                            toRemove.Add(mtx[1].ToString());
+                            break;
+                    }
+
+                foreach (string key in toRemove)
+                    columnData.Remove(key);
+
+                return metrix;
             }
         }
 

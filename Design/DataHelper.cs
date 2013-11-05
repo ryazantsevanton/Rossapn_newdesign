@@ -353,6 +353,27 @@ namespace Design
             }
             return data.ToArray();
         }
+
+        internal static void SaveMetrixBundle(List<object[]> metrix)
+        {
+            String sql = "";
+
+            foreach (object[] mtx in metrix) {
+                if ((EditAction)mtx[3] == EditAction.Modified)
+                    sql += String.Format("UPDATE metrix SET metrixValue = {0} WHERE metrixid = {1};", mtx[2].ToString().Replace(',','.'), mtx[0]) + System.Environment.NewLine;
+                if ((EditAction)mtx[3] == EditAction.Delete)
+                    sql += String.Format("DELETE metrix WHERE metrixid = {0};", mtx[0]) + System.Environment.NewLine;
+            }
+
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = sql;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
 
     public class Triplet
