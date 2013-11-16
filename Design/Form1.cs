@@ -31,55 +31,49 @@ namespace Design
 
         private void OnBbiReportClick(object sender, ItemClickEventArgs e)
         {
-            if (topPanel.Controls.ContainsKey("SwitchReportForm"))
-                  {
-                      return;
-                  }
-                  else
-                  {
-                      topPanel.Controls.Clear();
-                  }
-                  var form = new SwitchReportForm();
-                  topPanel.Controls.Add(form);
-                  form.Dock = DockStyle.Fill;
-                  
+            showControl("SwitchReportForm", new SwitchReportForm());                  
         }
-
 
         private void OnEditDataButtonClick(object sender, ItemClickEventArgs e)
         {
-            if (topPanel.Controls.ContainsKey("DataControl"))
-            {
-                return;
-            }
-            else
-            {
-                topPanel.Controls.Clear();
-            }
-            var form = new DataControl();
-            topPanel.Controls.Add(form);
-            form.Dock = DockStyle.Fill;
-            
+            showControl("DataControl", new DataControl());
         }
 
         private void OnEditParamButtonClick(object sender, ItemClickEventArgs e)
         {
-            if (topPanel.Controls.ContainsKey("EditParamObjectControl"))
-            {
-                return;
-            }
-            else
-            {
-                topPanel.Controls.Clear();
-            }
-            var form = new EditParamObjectControl(true);
-            topPanel.Controls.Add(form);            
-
+            showControl("EditParamControl",new EditParamObjectControl(true));
         }
 
         private void OnEditObjectButtonClick(object sender, ItemClickEventArgs e)
         {
-            if (topPanel.Controls.ContainsKey("EditParamObjectControl"))
+            showControl("EditObjectControl", new EditParamObjectControl(false));
+        }
+
+        private void OnLoadClick(object sender, EventArgs e)
+        {
+            if (!Account.Current.hasPermission(Account.Actions.LoadMetrix))
+            {
+                MessageBox.Show("Недостаточно прав для этой операции");
+                return;
+            }
+
+            showControl("LoadXlsForm", new LoadXlsForm());
+        }
+
+        private void adminButtonClick(object sender, ItemClickEventArgs e)
+        {
+            if (!Account.Current.hasPermission(Account.Actions.LoadMetrix))
+            {
+                MessageBox.Show("Недостаточно прав для этой операции");
+                return;
+            }
+
+            showControl("AdminControl", new AdminControl());
+        }
+
+        private void showControl(string key, Control form)
+        {
+            if (topPanel.Controls.ContainsKey(key))
             {
                 return;
             }
@@ -87,13 +81,19 @@ namespace Design
             {
                 topPanel.Controls.Clear();
             }
-            var form = new EditParamObjectControl(false);
-            topPanel.Controls.Add(form);            
-
+            form.Name = key;
+            topPanel.Controls.Add(form);
+            form.Dock = DockStyle.Fill;
         }
 
         private void OnClearButtonClick(object sender, ItemClickEventArgs e)
         {
+            if (!Account.Current.hasPermission(Account.Actions.Wipe))
+            {
+                MessageBox.Show("Недостаточно прав для этой операции");
+                return;
+            }
+
             if (DialogResult.Yes == MessageBox.Show("Вы действительно хотите удалить все данные?", "Предупреждение",
                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
@@ -101,18 +101,39 @@ namespace Design
             }
         }
 
-        private void OnLoadClick(object sender, EventArgs e)
-        {
-            if (topPanel.Controls.ContainsKey("LoadXlsForm")) {
-                return; 
-            }
-            var form = new LoadXlsForm();            
-            topPanel.Controls.Add(form);            
-        }
-
         private void OnExitClick(object sender, ItemClickEventArgs e)
         {
             Close();
         }
+
+        private void OnFormLoad(object sender, EventArgs e)
+        {
+            var lf = new LoginForm();
+            lf.OnLogin += lf_OnLogin;
+            lf.OnCancel += lf_OnCancel;
+
+            lf.ShowDialog();
+        }
+
+        void lf_OnCancel(LoginForm sender)
+        {
+            Close();
+        }
+
+        void lf_OnLogin(LoginForm sender, string login, string password, out bool success)
+        {
+            try
+            {
+                Account.tryLogin(login, password);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+
+            success = (Account.Current != null);
+
+        }
+
     }
 }

@@ -83,7 +83,9 @@ namespace Design
         private void OnSaveButtonClick(object sender, EventArgs e)
         {
 
-            DataHelper.SaveMetrixBundle(displayObjects.getSaveBundle(true));
+            int changes = DataHelper.SaveMetrixBundle(displayObjects.getSaveBundle(true));
+
+            DataHelper.logAction(Account.Actions.EditMetrix, "Изменений: " + changes);
 
             displayObjects.refreshTable();
             saveButton.Enabled = false;
@@ -274,8 +276,9 @@ namespace Design
                 unbColumn.VisibleIndex = vi;
                 unbColumn.Caption = obj.name + ":" + parameterId.name;
                 unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
-                unbColumn.OptionsColumn.AllowEdit = true;
-                unbColumn.AppearanceCell.BackColor = Color.FromArgb(0xFF, 0xFF, 0xFA - obj.id * 16, 0xCD - obj.id * 16);
+                //Allow edit to admin & superuser
+                unbColumn.OptionsColumn.AllowEdit = Account.Current.hasPermission(Account.Actions.EditMetrix);
+                //unbColumn.AppearanceCell.BackColor = Color.White;
 
                 var s = new Series();
                 s.Name = unbColumn.Caption;

@@ -52,6 +52,9 @@
             this.clearButton = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonGroup2 = new DevExpress.XtraBars.BarButtonGroup();
             this.barButtonGroup3 = new DevExpress.XtraBars.BarButtonGroup();
+            this.bbiReport = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonImageCollectionLarge = new DevExpress.Utils.ImageCollection(this.components);
             this.homeRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.fileRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -61,6 +64,7 @@
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPage2 = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.ribbonPageGroup4 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.helpRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.helpRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
@@ -68,8 +72,8 @@
             this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.topPanel = new System.Windows.Forms.Panel();
-            this.ribbonPageGroup4 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-            this.bbiReport = new DevExpress.XtraBars.BarButtonItem();
+            this.adminPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.adminButton = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.appMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonImageCollection)).BeginInit();
@@ -80,11 +84,7 @@
             // 
             this.ribbonControl.ApplicationButtonDropDownControl = this.appMenu;
             this.ribbonControl.ApplicationButtonText = null;
-            // 
-            // 
-            // 
             this.ribbonControl.ExpandCollapseItem.Id = 0;
-            this.ribbonControl.ExpandCollapseItem.Name = "";
             this.ribbonControl.Images = this.ribbonImageCollection;
             this.ribbonControl.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.ribbonControl.ExpandCollapseItem,
@@ -107,10 +107,14 @@
             this.clearButton,
             this.barButtonGroup2,
             this.barButtonGroup3,
-            this.bbiReport});
+            this.bbiReport,
+            this.barButtonItem4,
+            this.barButtonItem5,
+            this.adminButton});
             this.ribbonControl.LargeImages = this.ribbonImageCollectionLarge;
             this.ribbonControl.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl.MaxItemId = 75;
+            this.ribbonControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ribbonControl.MaxItemId = 78;
             this.ribbonControl.Name = "ribbonControl";
             this.ribbonControl.PageHeaderItemLinks.Add(this.iAbout);
             this.ribbonControl.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
@@ -119,7 +123,7 @@
             this.ribbonPage2,
             this.helpRibbonPage});
             this.ribbonControl.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office2010;
-            this.ribbonControl.Size = new System.Drawing.Size(950, 144);
+            this.ribbonControl.Size = new System.Drawing.Size(1108, 155);
             this.ribbonControl.StatusBar = this.ribbonStatusBar;
             this.ribbonControl.Toolbar.ItemLinks.Add(this.iHelp);
             // 
@@ -295,6 +299,24 @@
             this.barButtonGroup3.Id = 73;
             this.barButtonGroup3.Name = "barButtonGroup3";
             // 
+            // bbiReport
+            // 
+            this.bbiReport.Caption = "Отчет";
+            this.bbiReport.Id = 74;
+            this.bbiReport.Name = "bbiReport";
+            // 
+            // barButtonItem4
+            // 
+            this.barButtonItem4.Caption = "Пользователи";
+            this.barButtonItem4.Id = 75;
+            this.barButtonItem4.Name = "barButtonItem4";
+            // 
+            // barButtonItem5
+            // 
+            this.barButtonItem5.Caption = "barButtonItem5";
+            this.barButtonItem5.Id = 76;
+            this.barButtonItem5.Name = "barButtonItem5";
+            // 
             // ribbonImageCollectionLarge
             // 
             this.ribbonImageCollectionLarge.ImageSize = new System.Drawing.Size(32, 32);
@@ -315,6 +337,7 @@
             this.fileRibbonPageGroup,
             this.ribbonPageGroup3,
             this.formatRibbonPageGroup,
+            this.adminPageGroup,
             this.exitRibbonPageGroup});
             this.homeRibbonPage.Name = "homeRibbonPage";
             this.homeRibbonPage.Text = "Главная";
@@ -366,6 +389,12 @@
             this.ribbonPage2.Name = "ribbonPage2";
             this.ribbonPage2.Text = "Отчеты";
             // 
+            // ribbonPageGroup4
+            // 
+            this.ribbonPageGroup4.ItemLinks.Add(this.bbiReport);
+            this.ribbonPageGroup4.Name = "ribbonPageGroup4";
+            this.ribbonPageGroup4.Text = "Переключения";
+            // 
             // helpRibbonPage
             // 
             this.helpRibbonPage.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
@@ -382,10 +411,11 @@
             // 
             // ribbonStatusBar
             // 
-            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 664);
+            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 824);
+            this.ribbonStatusBar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbonControl;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(950, 31);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(1108, 31);
             // 
             // barButtonItem1
             // 
@@ -418,37 +448,41 @@
             // 
             this.topPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.topPanel.Location = new System.Drawing.Point(0, 144);
+            this.topPanel.Location = new System.Drawing.Point(0, 155);
+            this.topPanel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.topPanel.Name = "topPanel";
-            this.topPanel.Size = new System.Drawing.Size(950, 520);
+            this.topPanel.Size = new System.Drawing.Size(1108, 669);
             this.topPanel.TabIndex = 2;
             // 
-            // ribbonPageGroup4
+            // adminPageGroup
             // 
-            this.ribbonPageGroup4.ItemLinks.Add(this.bbiReport);
-            this.ribbonPageGroup4.Name = "ribbonPageGroup4";
-            this.ribbonPageGroup4.Text = "Переключения";
+            this.adminPageGroup.ItemLinks.Add(this.adminButton);
+            this.adminPageGroup.Name = "adminPageGroup";
+            this.adminPageGroup.Text = "Администрирование";
             // 
-            // bbiReport
+            // adminButton
             // 
-            this.bbiReport.Caption = "Отчет";
-            this.bbiReport.Id = 74;
-            this.bbiReport.Name = "bbiReport";
+            this.adminButton.Caption = "Пользователи";
+            this.adminButton.Id = 77;
+            this.adminButton.Name = "adminButton";
+            this.adminButton.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.adminButtonClick);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(950, 695);
+            this.ClientSize = new System.Drawing.Size(1108, 855);
             this.Controls.Add(this.topPanel);
             this.Controls.Add(this.ribbonControl);
             this.Controls.Add(this.ribbonStatusBar);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form1";
             this.Ribbon = this.ribbonControl;
             this.StatusBar = this.ribbonStatusBar;
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.OnFormLoad);
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.appMenu)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonImageCollection)).EndInit();
@@ -499,6 +533,10 @@
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup3;
         private DevExpress.XtraBars.BarButtonItem bbiReport;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup4;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem4;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem5;
+        private DevExpress.XtraBars.BarButtonItem adminButton;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup adminPageGroup;
 
     }
 }

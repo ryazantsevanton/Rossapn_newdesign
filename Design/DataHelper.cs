@@ -146,24 +146,29 @@ namespace Design
             using (SqlCommand command = connection.CreateCommand())
             {
                 command.CommandText = "select COUNT(*) from [sys].all_objects where type_desc='USER_TABLE'" +
-                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix', 'EntityGroups')";
+                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix', 'EntityGroups', 'Accounts', 'ActionLog')";
                 var id = command.ExecuteScalar();
-                if (!(id is DBNull) && ((int)id) == 5)
+                if (!(id is DBNull) && ((int)id) == 7)
                 {
                     return connection;
                 }
                 var comText = new List<string>()
                                   {
+                                      "IF OBJECT_ID('EntityGroups', 'U') IS NOT NULL drop Table EntityGroups",
                                       "drop TABLE Entities",
                                       "drop TABLE Predicates",
                                       "drop TABLE metrix",
                                       "drop Table aproximatemetrix",
-                                      "IF OBJECT_ID('EntityGroups', 'U') IS NOT NULL drop Table EntityGroups",
+                                      "IF OBJECT_ID('ActionLog', 'U') IS NOT NULL drop Table ActionLog",
+                                      "IF OBJECT_ID('Accounts', 'U') IS NOT NULL drop Table Accounts",
                                       "CREATE TABLE Entities (entityid INT NOT NULL, entityvalue NVARCHAR(200) NOT NULL, PRIMARY KEY(entityid));",
                                       "CREATE TABLE Predicates (predicateid INT NOT NULL, predicatevalue NVARCHAR(200) NOT NULL, PRIMARY KEY(predicateid));",
                                       "CREATE TABLE metrix (metrixid int IDENTITY(1,1) NOT NULL, predicateid INT NOT NULL, entityid INT NOT NULL, metrixData datetime, metrixValue decimal(18,4) NULL, metrixObject nvarchar(200) null);",
                                       "CREATE TABLE aproximatemetrix (aproximatemetrixid int IDENTITY(1,1) NOT NULL, predicateid INT NOT NULL, entityid INT NOT NULL, metrixData datetime, zetValue NVARCHAR(200) NULL, lRegressionValue NVARCHAR(200) NULL);",
                                       "CREATE TABLE EntityGroups (entityid int FOREIGN KEY REFERENCES Entities(entityid), groupName NVARCHAR(200), subgroupName NVARCHAR(200));",
+                                      "CREATE TABLE Accounts (login NVARCHAR(200) not null unique, role INT NOT NULL, passhash NVARCHAR(200) not null, name NVARCHAR(200), data NVARCHAR(200), deleted BIT default 0);",
+                                      "INSERT INTO Accounts(login, role, passhash) VALUES ('admin',2,'6216f8a75fd5bb3d5f22b6f9958cdede3fc086c2');",
+                                      "CREATE TABLE ActionLog (login NVARCHAR(200) FOREIGN KEY REFERENCES Accounts(login), action INT NOT NULL, arguments NVARCHAR(200), logDateTime datetime);",
                                   };
                 foreach (var text in comText)
                 {
@@ -200,14 +205,15 @@ namespace Design
                              + t.EntityId + "," + t.PredicateId + "," + t.MetrixObject + ", " + t.MetrixValue.ToString() + ")";
                         }
                         else { //yyyy-mm-dd hh:mi:ss
-                            command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue, metrixDate) values (" 
-                             + t.EntityId + "," + t.PredicateId + "," + t.MetrixObject + ", " + t.MetrixValue.ToString() + 
-                             string.Format(", convert(datetime, {0}-{1}-{2} {3}:{4}:{5}, 120))", t.MetrixDate.Value.Year, t.MetrixDate.Value.Month,
+                            command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue, metrixData) values (" 
+                             + t.EntityId + "," + t.PredicateId + ",'" + t.MetrixObject + "', " + t.MetrixValue.ToString() + 
+                             string.Format(", convert(datetime, '{0}-{1}-{2} {3}:{4}:{5}', 120))", t.MetrixDate.Value.Year, t.MetrixDate.Value.Month,
                              t.MetrixDate.Value.Day, t.MetrixDate.Value.Hour, t.MetrixDate.Value.Minute, t.MetrixDate.Value.Second);
                         }
                         command.ExecuteNonQuery();
                     }
                 }
+
             }
         }
 
@@ -354,15 +360,22 @@ namespace Design
             return data.ToArray();
         }
 
-        internal static void SaveMetrixBundle(List<object[]> metrix)
+        internal static int SaveMetrixBundle(List<object[]> metrix)
         {
             String sql = "";
+            int changes = 0;
 
             foreach (object[] mtx in metrix) {
                 if ((EditAction)mtx[3] == EditAction.Modified)
-                    sql += String.Format("UPDATE metrix SET metrixValue = {0} WHERE metrixid = {1};", mtx[2].ToString().Replace(',','.'), mtx[0]) + System.Environment.NewLine;
+                {
+                    changes++;
+                    sql += String.Format("UPDATE metrix SET metrixValue = {0} WHERE metrixid = {1};", mtx[2].ToString().Replace(',', '.'), mtx[0]) + System.Environment.NewLine;
+                }
                 if ((EditAction)mtx[3] == EditAction.Delete)
+                {
+                    changes++;
                     sql += String.Format("DELETE metrix WHERE metrixid = {0};", mtx[0]) + System.Environment.NewLine;
+                }
             }
 
             using (var con = OpenOrCreateDb())
@@ -370,6 +383,157 @@ namespace Design
                 using (var command = con.CreateCommand())
                 {
                     command.CommandText = sql;
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            return changes;
+        }
+
+        internal static Account findAccount(string login)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("SELECT login, role, passhash, name, data FROM Accounts WHERE login = '{0}'", login);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null && reader.Read())
+                        {
+                            return readAccount(reader);
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+
+        internal static Account findAccount(string login, bool deleted)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("SELECT login, role, passhash, name, data FROM Accounts WHERE login = '{0}' AND deleted = {1}", login, deleted ? 1 : 0);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null && reader.Read())
+                        {
+                            return readAccount(reader);
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
+
+        internal static List<Account> getAccounts()
+        {
+            List<Account> accounts = new List<Account>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("SELECT login, role, passhash, name, data FROM Accounts WHERE deleted = 0");
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                                accounts.Add(readAccount(reader));
+                        }
+                    }
+                }
+            }
+            return accounts;
+        }
+
+        internal static List<object[]> getAccountActions(string login)
+        {
+            List<object[]> log = new List<object[]>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("SELECT logDateTime, action, arguments FROM ActionLog WHERE login = '{0}' ORDER BY logDateTime DESC", login);
+                    using (SqlDataReader reader = command.ExecuteReader()) 
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                                log.Add(new object[] { reader.GetDateTime(0), (Account.Actions)reader.GetInt32(1), reader.IsDBNull(2) ? null : reader.GetString(2) });
+                                
+                        }
+                    }
+                }
+            }
+            return log;
+        }
+
+        internal static void logAction(Account.Actions action, string arguments)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                logAction(con, action, arguments);
+            }
+        }
+
+        internal static void logAction(SqlConnection con, Account.Actions action, string arguments)
+        {
+            using (var command = con.CreateCommand())
+            {
+                command.CommandText = String.Format("INSERT INTO ActionLog (login, action, arguments, logDateTime) VALUES ('{0}','{1}','{2}', GETDATE())", Account.Current.Login, (int)action, arguments);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private static Account readAccount(SqlDataReader reader)
+        {
+            return new Account()
+            {
+                Login = reader.GetString(0),
+                Role = (Account.Roles)reader.GetInt32(1),
+                PassHash = reader.GetString(2),
+                Name = reader.IsDBNull(3) ? null : reader.GetString(3),
+                Data = reader.IsDBNull(4) ? null : reader.GetString(4)
+            };
+        }
+
+
+        internal static Account AddAccount(string login, string p, Account.Roles role)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("INSERT INTO Accounts(login, role, passhash) VALUES ('{0}',{1},'{2}');", login, (int)role, p);
+                    command.ExecuteNonQuery();
+                    return new Account()
+                    {
+                        Login = login,
+                        Role = role,
+                        PassHash = p,
+                        Name = null,
+                        Data = null
+                    };
+                }
+            }
+        }
+
+        internal static void UpdateAccount(Account account)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("UPDATE Accounts set role = {1}, passhash = '{2}', deleted = {3} WHERE login = '{0}';", account.Login, (int)account.Role, account.PassHash, account.Deleted ? 1 : 0);
                     command.ExecuteNonQuery();
                 }
             }

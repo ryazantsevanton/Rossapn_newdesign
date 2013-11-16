@@ -42,7 +42,7 @@
             // 
             this.lTitle.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lTitle.Location = new System.Drawing.Point(52, 31);
-            this.lTitle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lTitle.Margin = new System.Windows.Forms.Padding(4);
             this.lTitle.Name = "lTitle";
             this.lTitle.Size = new System.Drawing.Size(135, 24);
             this.lTitle.TabIndex = 0;
@@ -50,10 +50,10 @@
             // 
             // grid
             // 
-            this.grid.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grid.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
             this.grid.Location = new System.Drawing.Point(52, 73);
             this.grid.MainView = this.mainView;
-            this.grid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grid.Margin = new System.Windows.Forms.Padding(4);
             this.grid.Name = "grid";
             this.grid.Size = new System.Drawing.Size(711, 395);
             this.grid.TabIndex = 1;
@@ -73,7 +73,7 @@
             // saveButton
             // 
             this.saveButton.Location = new System.Drawing.Point(104, 551);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(4);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(100, 28);
             this.saveButton.TabIndex = 2;
@@ -82,7 +82,7 @@
             // deleteButton
             // 
             this.deleteButton.Location = new System.Drawing.Point(244, 551);
-            this.deleteButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deleteButton.Margin = new System.Windows.Forms.Padding(4);
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.Size = new System.Drawing.Size(100, 28);
             this.deleteButton.TabIndex = 3;
@@ -91,7 +91,7 @@
             // cancelButton
             // 
             this.cancelButton.Location = new System.Drawing.Point(380, 551);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(4);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(100, 28);
             this.cancelButton.TabIndex = 4;
@@ -107,7 +107,7 @@
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.grid);
             this.Controls.Add(this.lTitle);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "EditParamObjectControl";
             this.Size = new System.Drawing.Size(1267, 640);
             ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();

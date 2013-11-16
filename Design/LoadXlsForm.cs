@@ -111,6 +111,7 @@ namespace Design
             using( var con = DataHelper.OpenOrCreateDb()) {
                triplets = PrepareTriplets(con);
                DataHelper.LoadTriplets(triplets, con);
+               DataHelper.logAction(con, Account.Actions.LoadMetrix, "Загружено: "+triplets.Count());
             }
             MessageBox.Show(string.Format("Загружено {0} измерений.", triplets.Count), "Загрузка звершена.", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Dispose();

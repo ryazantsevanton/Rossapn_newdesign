@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             DevExpress.XtraGrid.Columns.GridColumn cTime;
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.opdPanel = new System.Windows.Forms.SplitContainer();
             this.opPanel = new System.Windows.Forms.SplitContainer();
             this.objectsList = new DevExpress.XtraGrid.GridControl();
@@ -49,12 +49,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.buttonPanel = new System.Windows.Forms.Panel();
+            this.saveButton = new System.Windows.Forms.Button();
             this.dataTable = new DevExpress.XtraGrid.GridControl();
             this.dataView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.chartControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.buttonPanel = new System.Windows.Forms.Panel();
-            this.saveButton = new System.Windows.Forms.Button();
             cTime = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.opdPanel)).BeginInit();
             this.opdPanel.Panel1.SuspendLayout();
@@ -70,11 +70,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.parametersView)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.buttonPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
-            this.buttonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // cTime
@@ -82,7 +82,8 @@
             cTime.Caption = "Время";
             cTime.FieldName = "cTime";
             cTime.Name = "cTime";
-            cTime.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+            cTime.OptionsColumn.AllowEdit = false;
+            cTime.UnboundType = DevExpress.Data.UnboundColumnType.DateTime;
             cTime.Visible = true;
             cTime.VisibleIndex = 0;
             // 
@@ -314,6 +315,29 @@
             this.tabPage1.Text = "Таблица";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // buttonPanel
+            // 
+            this.buttonPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.buttonPanel.Controls.Add(this.saveButton);
+            this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.buttonPanel.Location = new System.Drawing.Point(3, 561);
+            this.buttonPanel.Name = "buttonPanel";
+            this.buttonPanel.Size = new System.Drawing.Size(700, 42);
+            this.buttonPanel.TabIndex = 6;
+            // 
+            // saveButton
+            // 
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveButton.Enabled = false;
+            this.saveButton.Location = new System.Drawing.Point(568, 4);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(128, 34);
+            this.saveButton.TabIndex = 0;
+            this.saveButton.Text = "Сохранить";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.OnSaveButtonClick);
+            // 
             // dataTable
             // 
             this.dataTable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -359,38 +383,15 @@
             // 
             // chartControl
             // 
-            chartArea5.Name = "ChartArea1";
-            this.chartControl.ChartAreas.Add(chartArea5);
+            chartArea3.Name = "ChartArea1";
+            this.chartControl.ChartAreas.Add(chartArea3);
             this.chartControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend5.Name = "Legend1";
-            this.chartControl.Legends.Add(legend5);
+            legend3.Name = "Legend1";
+            this.chartControl.Legends.Add(legend3);
             this.chartControl.Location = new System.Drawing.Point(0, 0);
             this.chartControl.Name = "chartControl";
             this.chartControl.Size = new System.Drawing.Size(706, 606);
             this.chartControl.TabIndex = 0;
-            // 
-            // buttonPanel
-            // 
-            this.buttonPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.buttonPanel.Controls.Add(this.saveButton);
-            this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonPanel.Location = new System.Drawing.Point(3, 561);
-            this.buttonPanel.Name = "buttonPanel";
-            this.buttonPanel.Size = new System.Drawing.Size(700, 42);
-            this.buttonPanel.TabIndex = 6;
-            // 
-            // saveButton
-            // 
-            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveButton.Enabled = false;
-            this.saveButton.Location = new System.Drawing.Point(568, 4);
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(128, 34);
-            this.saveButton.TabIndex = 0;
-            this.saveButton.Text = "Сохранить";
-            this.saveButton.UseVisualStyleBackColor = true;
-            this.saveButton.Click += new System.EventHandler(this.OnSaveButtonClick);
             // 
             // DataControl
             // 
@@ -416,11 +417,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.parametersView)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.buttonPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).EndInit();
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
-            this.buttonPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
