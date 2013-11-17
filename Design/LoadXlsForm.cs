@@ -238,7 +238,7 @@ namespace Design
             {
                 return param[key];
             }
-            return DataHelper.GetParameter(key, con);
+            return DataHelper.GetParameter(key, con, false);
         }
 
         private int GetObject(string key, SqlConnection con)

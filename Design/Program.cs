@@ -35,8 +35,8 @@ namespace Design
             using (var con = DataHelper.OpenOrCreateDb()) {
                 foreach (var d in DataHelper.CustomFormulas)
                 {
-                    foreach(var p in  d.InitPredicates())  DataHelper.GetParameter(p, con);
-                    DataHelper.GetParameter(d.Name, con);
+                    foreach(var p in  d.InitPredicates())  DataHelper.GetParameter(p, con, true);
+                    DataHelper.GetParameter(d.Name, con, true);
                 }
             }
 

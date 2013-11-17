@@ -46,15 +46,22 @@ namespace Design
             unbColumn.OptionsColumn.AllowEdit = true;
             unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
 
+            unbColumn = mainView.Columns.AddField("Рассчетные");
+            unbColumn.VisibleIndex = type ? 2 : -1;
+            unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+            unbColumn.OptionsColumn.AllowEdit = false;
+            unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
+
             grid.DataSource = data;
 
             mainView.CustomUnboundColumnData += CustomUnboundColumnData;
             mainView.RowCellStyle += OnRowStyle;
             mainView.CellValueChanged += OnValueChanged;
-            mainView.ValidatingEditor += OnValidatingEditor; 
+            mainView.ValidatingEditor += OnValidatingEditor;
             cancelButton.Click += OnCancelButtonClick;
             deleteButton.Click += OnDeleteButtonClick;
             saveButton.Click += OnSaveButtonClick;
+            beAddEntity.ButtonClick += OnAddEntityButtonClick;
 
             //Allow edit only to admin
             cancelButton.Enabled = Account.Current.hasPermission(Account.Actions.EditSystemEntities);
@@ -63,7 +70,6 @@ namespace Design
 
             modified = false;
         }
-
 
         private void OnRowStyle(object sender, DevExpress.XtraGrid.Views.Grid.RowCellStyleEventArgs e)
         {
@@ -94,13 +100,15 @@ namespace Design
         {
             for(int i =0; i< data.Length; i++)
             {
-                if (i == mainView.FocusedRowHandle)
-                {
-                    continue;
-                }
-                if (data[i][0].ToString().ToLower() == e.Value.ToString().ToLower())
+                if (data[i][0].ToString().ToLower() == e.Value.ToString().ToLower() && i != mainView.FocusedRowHandle)
                 {
                     e.ErrorText = "Такой " + (type ? "параметр" : "object") + " уже существует.";
+                    e.Valid = false;
+                    return;
+                }
+                if ((int)data[i][3] == 1)
+                {
+                    e.ErrorText = "Расчетные параметры изменять нельзя";
                     e.Valid = false;
                     return;
                 }
@@ -134,19 +142,45 @@ namespace Design
                 foreach (var d in data.Where(d1 => ((EditAction)d1[2]) != EditAction.None)) 
                 {
                     if (((EditAction)d[2]) == EditAction.Delete) {
-                        DataHelper.DeleteObject(d[3].ToString(), con, type);
+                        DataHelper.DeleteObject(d[4].ToString(), con, type);
                     }
                     else {
-                        DataHelper.UpdateObject(d[0].ToString(), d[3].ToString(), con, type);
+                        DataHelper.UpdateObject(d[0].ToString(), d[4].ToString(), con, type);
                     }
                 }
             }
             Dispose();
         }
 
+        private void OnAddEntityButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
+        {
+            if (String.IsNullOrEmpty(beAddEntity.Text)) { return; }
+            if (data.Any(d => (string)d[0] == beAddEntity.Text))
+            {
+                MessageBox.Show("Такой " + (type ? "параметр" : "object") + " уже существует.", "Проверка",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+             using(var con = DataHelper.OpenOrCreateDb()) {
+                 DataHelper.AddObject(beAddEntity.Text, con, type, 0);
+             }
+             data = type ? DataHelper.GetParamStatistic() : DataHelper.GetObjectStatistic();
+             grid.DataSource = data;
+             grid.Refresh();
+             beAddEntity.Text = string.Empty;
+        }
+
         private void CustomUnboundColumnData(object sender, CustomColumnDataEventArgs e)
         {
-            e.Value = data[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
+            if (e.Column.AbsoluteIndex == 3)
+            {
+                e.Value = (int)data[e.ListSourceRowIndex][e.Column.AbsoluteIndex] == 1 ? "Настройки" : "Доступны";
+            }
+            else
+            {
+                e.Value = data[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
+            }
+        
         }
 
     }

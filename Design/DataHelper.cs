@@ -115,7 +115,7 @@ namespace Design
             return result.ToArray();
         }
 
-        internal static int GetParameter(string value, SqlConnection con)
+        internal static int GetParameter(string value, SqlConnection con, bool inited)
         {
             using (SqlCommand command = con.CreateCommand())
             {
@@ -131,7 +131,7 @@ namespace Design
                 if (o == null || o is DBNull)
                 {
                     maxNumber++;
-                    command.CommandText = String.Format("insert into Predicates(predicateid, predicatevalue) values ({0}, '{1}')", maxNumber, value);
+                    command.CommandText = String.Format("insert into Predicates(predicateid, predicatevalue) values ({0}, '{1}', {2})", maxNumber, value, inited);
                     command.ExecuteNonQuery();
                     return maxNumber;
                 }
@@ -205,6 +205,23 @@ namespace Design
             }        
         }
 
+        public static void AddObject(string newkey, SqlConnection con, bool type, int inited)
+        {
+            using (var command = con.CreateCommand())
+            {
+                command.CommandText = type
+                    ? "select max(predicateid) from Predicates"
+                    : "select max(entityid) from Entities";
+                var o = (int)command.ExecuteScalar() +1;
+
+
+                command.CommandText = type
+                    ? "insert into Predicates (predicateid, predicatevalue, inited) values (" + o + ",'" + newkey + "', " + inited + ")"
+                    : "insert into Entities (entityid, entityvalue) values (" + o + ",'" + newkey + "')";
+                command.ExecuteNonQuery();
+            }
+        }
+
         public static void DeleteObject(string key, SqlConnection con, bool type) {
             using (var command = con.CreateCommand())
             {
@@ -252,7 +269,7 @@ namespace Design
                                       "drop Table calcFormulaParams",
                                       "IF OBJECT_ID('Settings', 'U') IS NOT NULL drop Table Settings",
                                       "CREATE TABLE Entities (entityid INT NOT NULL, entityvalue NVARCHAR(200) NOT NULL, PRIMARY KEY(entityid));",
-                                      "CREATE TABLE Predicates (predicateid INT NOT NULL, predicatevalue NVARCHAR(200) NOT NULL, PRIMARY KEY(predicateid));",
+                                      "CREATE TABLE Predicates (predicateid INT NOT NULL, predicatevalue NVARCHAR(200) NOT NULL, PRIMARY KEY(predicateid), inited int);",
                                       "CREATE TABLE metrix (metrixid int IDENTITY(1,1) NOT NULL, predicateid INT NOT NULL, entityid INT NOT NULL, metrixData datetime, metrixValue decimal(18,4) NULL, metrixObject nvarchar(200) null);",
                                       "CREATE TABLE aproximatemetrix (aproximatemetrixid int IDENTITY(1,1) NOT NULL, predicateid INT NOT NULL, entityid INT NOT NULL, metrixData datetime, zetValue NVARCHAR(200) NULL, lRegressionValue NVARCHAR(200) NULL);",
                                       "CREATE TABLE EntityGroups (entityid int FOREIGN KEY REFERENCES Entities(entityid), groupName NVARCHAR(200), subgroupName NVARCHAR(200));",
@@ -317,15 +334,15 @@ namespace Design
             {
                 using (var command = con.CreateCommand())
                 {
-                    command.CommandText = "select e.entityvalue, COUNT(*) counter from metrix m inner join " +
-                                          " Entities e on e.entityid = m.entityid group by e.entityvalue";
+                    command.CommandText = "select e.entityvalue, COUNT(*) - 1, 0 counter from Entities e left join " +
+                                          " metrix m on e.entityid = m.entityid group by e.entityvalue";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader != null)
                         {
                             while (reader.Read())
                             {
-                                data.Add(new object[] { reader.GetString(0), reader.GetInt32(1), EditAction.None, reader.GetString(0) });
+                                data.Add(new object[] { reader.GetString(0), reader.GetInt32(1), EditAction.None, reader.GetInt32(2), reader.GetString(0) });
                             }
                         }
                     }
@@ -484,15 +501,15 @@ namespace Design
             {
                 using (var command = con.CreateCommand())
                 {
-                    command.CommandText = "select e.predicatevalue, COUNT(*) counter from metrix m inner join " +
-                                          " Predicates e on e.predicateid = m.predicateid group by e.predicatevalue";
+                    command.CommandText = "select e.predicatevalue, COUNT(*) - 1, e.inited counter from Predicates e left join " +
+                                          "  metrix m on e.predicateid = m.predicateid group by e.predicatevalue, e.inited";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader != null)
                         {
                             while (reader.Read())
                             {
-                                data.Add(new object[] { reader.GetString(0), reader.GetInt32(1), EditAction.None, reader.GetString(0) });
+                                data.Add(new object[] { reader.GetString(0), reader.GetInt32(1), EditAction.None, reader.GetInt32(2), reader.GetString(0) });
                             }
                         }
                     }
