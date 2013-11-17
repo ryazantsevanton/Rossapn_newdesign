@@ -276,7 +276,7 @@
             this.parametersList.Location = new System.Drawing.Point(3, 17);
             this.parametersList.MainView = this.parametersView;
             this.parametersList.Name = "parametersList";
-            this.parametersList.Size = new System.Drawing.Size(265, 159);
+            this.parametersList.Size = new System.Drawing.Size(265, 160);
             this.parametersList.TabIndex = 4;
             this.parametersList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.parametersView});
@@ -459,7 +459,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.BackColor = System.Drawing.Color.LightBlue;
             this.Controls.Add(this.opdPanel);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "DataControl";

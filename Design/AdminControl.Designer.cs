@@ -137,6 +137,7 @@
             // 
             // splitContainer.Panel2
             // 
+            this.splitContainer.Panel2.BackColor = System.Drawing.Color.LightBlue;
             this.splitContainer.Panel2.Controls.Add(this.closeButton);
             this.splitContainer.Panel2.Controls.Add(this.journalTable);
             this.splitContainer.Panel2.Controls.Add(this.label2);
@@ -159,7 +160,7 @@
             // 
             this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.closeButton.Location = new System.Drawing.Point(410, 486);
+            this.closeButton.Location = new System.Drawing.Point(411, 486);
             this.closeButton.Margin = new System.Windows.Forms.Padding(2);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(96, 30);
@@ -178,7 +179,7 @@
             this.journalTable.Padding = new System.Windows.Forms.Padding(3);
             this.journalTable.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox2});
-            this.journalTable.Size = new System.Drawing.Size(539, 458);
+            this.journalTable.Size = new System.Drawing.Size(540, 458);
             this.journalTable.TabIndex = 9;
             this.journalTable.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.journalView});
@@ -282,7 +283,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.BackColor = System.Drawing.Color.LightBlue;
             this.Controls.Add(this.splitContainer);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "AdminControl";

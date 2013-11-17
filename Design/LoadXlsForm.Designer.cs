@@ -122,7 +122,7 @@
             // 
             this.timeShName.AutoSize = true;
             this.timeShName.Enabled = false;
-            this.timeShName.Location = new System.Drawing.Point(7, 66);
+            this.timeShName.Location = new System.Drawing.Point(8, 21);
             this.timeShName.Name = "timeShName";
             this.timeShName.Size = new System.Drawing.Size(95, 17);
             this.timeShName.TabIndex = 4;
@@ -133,12 +133,12 @@
             // timeManual
             // 
             this.timeManual.AutoSize = true;
-            this.timeManual.Location = new System.Drawing.Point(7, 20);
+            this.timeManual.Location = new System.Drawing.Point(8, 66);
             this.timeManual.Name = "timeManual";
-            this.timeManual.Size = new System.Drawing.Size(73, 17);
+            this.timeManual.Size = new System.Drawing.Size(70, 17);
             this.timeManual.TabIndex = 1;
             this.timeManual.TabStop = true;
-            this.timeManual.Text = "В ручную";
+            this.timeManual.Text = "Вручную";
             this.timeManual.UseVisualStyleBackColor = true;
             // 
             // timeColon
@@ -199,7 +199,7 @@
             // 
             this.paramShName.AutoSize = true;
             this.paramShName.Enabled = false;
-            this.paramShName.Location = new System.Drawing.Point(9, 66);
+            this.paramShName.Location = new System.Drawing.Point(9, 17);
             this.paramShName.Name = "paramShName";
             this.paramShName.Size = new System.Drawing.Size(95, 17);
             this.paramShName.TabIndex = 16;
@@ -210,12 +210,12 @@
             // paramManual
             // 
             this.paramManual.AutoSize = true;
-            this.paramManual.Location = new System.Drawing.Point(9, 17);
+            this.paramManual.Location = new System.Drawing.Point(9, 63);
             this.paramManual.Name = "paramManual";
-            this.paramManual.Size = new System.Drawing.Size(73, 17);
+            this.paramManual.Size = new System.Drawing.Size(70, 17);
             this.paramManual.TabIndex = 13;
             this.paramManual.TabStop = true;
-            this.paramManual.Text = "В ручную";
+            this.paramManual.Text = "Вручную";
             this.paramManual.UseVisualStyleBackColor = true;
             // 
             // paramColon
@@ -248,7 +248,7 @@
             // 
             // LoadXlsForm
             // 
-            this.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.Appearance.BackColor = System.Drawing.Color.LightBlue;
             this.Appearance.Options.UseBackColor = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

@@ -71,10 +71,10 @@
             this.viewSchedule = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.chartSchedule = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.case1Page = new System.Windows.Forms.TabPage();
-            this.case2Page = new System.Windows.Forms.TabPage();
             this.chartCase1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.gridCase1 = new DevExpress.XtraGrid.GridControl();
             this.viewCase1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.case2Page = new System.Windows.Forms.TabPage();
             this.chartCase2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.gridCase2 = new DevExpress.XtraGrid.GridControl();
             this.viewCase2 = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -98,10 +98,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.viewSchedule)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartSchedule)).BeginInit();
             this.case1Page.SuspendLayout();
-            this.case2Page.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartCase1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridCase1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.viewCase1)).BeginInit();
+            this.case2Page.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartCase2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridCase2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.viewCase2)).BeginInit();
@@ -503,17 +503,6 @@
             this.case1Page.Text = "Событие 1";
             this.case1Page.UseVisualStyleBackColor = true;
             // 
-            // case2Page
-            // 
-            this.case2Page.Controls.Add(this.chartCase2);
-            this.case2Page.Controls.Add(this.gridCase2);
-            this.case2Page.Location = new System.Drawing.Point(4, 22);
-            this.case2Page.Name = "case2Page";
-            this.case2Page.Size = new System.Drawing.Size(667, 489);
-            this.case2Page.TabIndex = 3;
-            this.case2Page.Text = "Событие 2";
-            this.case2Page.UseVisualStyleBackColor = true;
-            // 
             // chartCase1
             // 
             this.chartCase1.BorderlineColor = System.Drawing.Color.Gray;
@@ -548,6 +537,17 @@
             this.viewCase1.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
             this.viewCase1.OptionsView.ShowGroupPanel = false;
             this.viewCase1.OptionsView.ShowIndicator = false;
+            // 
+            // case2Page
+            // 
+            this.case2Page.Controls.Add(this.chartCase2);
+            this.case2Page.Controls.Add(this.gridCase2);
+            this.case2Page.Location = new System.Drawing.Point(4, 22);
+            this.case2Page.Name = "case2Page";
+            this.case2Page.Size = new System.Drawing.Size(667, 489);
+            this.case2Page.TabIndex = 3;
+            this.case2Page.Text = "Событие 2";
+            this.case2Page.UseVisualStyleBackColor = true;
             // 
             // chartCase2
             // 
@@ -588,7 +588,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.BackColor = System.Drawing.Color.LightBlue;
             this.Controls.Add(this.splitContainer1);
             this.Name = "SwitchReportForm";
             this.Size = new System.Drawing.Size(940, 515);
@@ -615,10 +615,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.viewSchedule)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartSchedule)).EndInit();
             this.case1Page.ResumeLayout(false);
-            this.case2Page.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartCase1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridCase1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.viewCase1)).EndInit();
+            this.case2Page.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartCase2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridCase2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.viewCase2)).EndInit();
