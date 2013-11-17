@@ -26,29 +26,20 @@ namespace Design
             paramButton.ItemClick += OnEditParamButtonClick;
             objectButton.ItemClick += OnEditObjectButtonClick;
             editData.ItemClick += OnEditDataButtonClick;
-            bbiReport.ItemClick += OnBbiReportClick;
+          //  bbiReport.ItemClick += OnBbiReportClick;
+            bbiCalc.ItemClick += OnBbiCalcClick;
+            bbiSettings.ItemClick += OnSettingsClick;
+            calcButton.ItemClick += OnCalcButtonItemClick;
         }
 
-        private void OnBbiReportClick(object sender, ItemClickEventArgs e)
+        private void OnCalcButtonItemClick(object sender, ItemClickEventArgs e)
         {
-            if (topPanel.Controls.ContainsKey("SwitchReportForm"))
-                  {
-                      return;
-                  }
-                  else
-                  {
-                      topPanel.Controls.Clear();
-                  }
-                  var form = new SwitchReportForm();
-                  topPanel.Controls.Add(form);
-                  form.Dock = DockStyle.Fill;
-                  
+            OpenForm<RateCalculatorForm>();
         }
 
-
-        private void OnEditDataButtonClick(object sender, ItemClickEventArgs e)
+        private void OpenForm<T>() where T : Control, new()
         {
-      /*      if (topPanel.Controls.ContainsKey("DataControl"))
+            if (topPanel.Controls.ContainsKey(typeof(T).Name))
             {
                 return;
             }
@@ -56,10 +47,29 @@ namespace Design
             {
                 topPanel.Controls.Clear();
             }
-            var form = new DataControl();
+            var form = new T();
             topPanel.Controls.Add(form);
             form.Dock = DockStyle.Fill;
-            */
+        }
+        private void OnSettingsClick(object sender, ItemClickEventArgs e)
+        {
+            OpenForm<SettingsForm>();
+        }
+
+        private void OnBbiReportClick(object sender, ItemClickEventArgs e)
+        {
+            OpenForm<SwitchReportForm>();
+        }
+
+        private void OnBbiCalcClick(object sender, ItemClickEventArgs e)
+        {
+            OpenForm<CalcForm>();
+        }
+
+
+        private void OnEditDataButtonClick(object sender, ItemClickEventArgs e)
+        {
+            OpenForm<DataControl>();
         }
 
         private void OnEditParamButtonClick(object sender, ItemClickEventArgs e)

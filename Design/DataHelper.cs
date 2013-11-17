@@ -28,6 +28,93 @@ namespace Design
             return string.Format(strConnectionString, pFilePath);
         }
 
+        internal static object[][] GetMetrixByAllConditions(string paramName, int[] selectedObjs, bool isDateType, object start, object end)
+        {
+            List<object[]> result = new List<object[]>();
+
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    if (isDateType)
+                    {
+                        command.CommandText = "select distinct metrixObject";
+                        foreach (var i in selectedObjs)
+                        {
+                            command.CommandText +=
+                            ", (select metrixValue from metrix where metrixObject = m.metrixObject and entityid = " +
+                            i + " and predicateid = m.predicateid)";
+                        }
+                        var first = true;
+                        command.CommandText += " FROM metrix m inner join Predicates p on p.predicateid = m.predicateid " +
+                                              "where entityid in (";
+                        foreach (var i in selectedObjs)
+                        {
+                            if (!first) { command.CommandText += ","; } else { first = !first; }
+                            command.CommandText += i;
+                        }
+                        var startDate = (DateTime)start;
+                        var endDate = (DateTime)end;
+                        command.CommandText += String.Format(") and p.predicatevalue='{0}' and  metrixData between convert(datetime, '{1}.{2}.{3}', 104) and convert(datetime, '{4}.{5}.{6}', 104)", 
+                            paramName, startDate.Day, startDate.Month, startDate.Year, endDate.Day, endDate.Month, endDate.Year);
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader != null)
+                            {
+                                var row = new List<object>();
+                                while (reader.Read())
+                                {
+                                    row.Clear();
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        row.Add(i == 0 ? (object)reader.GetString(0) : (object)reader.GetDecimal(i));
+                                    }
+                                    result.Add(row.ToArray());
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        command.CommandText = "select distinct metrixObject";
+                        foreach (var i in selectedObjs)
+                        {
+                                command.CommandText +=
+                                ", (select metrixValue from metrix where metrixObject = m.metrixObject and entityid = " +
+                                i + " and predicateid = m.predicateid)";
+                        }
+                        var first = true;
+                        command.CommandText += " FROM metrix m inner join Predicates p on p.predicateid = m.predicateid " +
+                                              "where entityid in (";
+                        foreach (var i in selectedObjs)
+                        {
+                            if (!first) { command.CommandText += ","; } else { first = !first; }
+                            command.CommandText += i;
+                        }
+                        command.CommandText += ") and p.predicatevalue='" + paramName + "' and  metrixObject >='" + 
+                            start + "' and metrixObject <= '" + end + "'";
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader != null)
+                            {
+                                var row = new List<object>();
+                                while (reader.Read())
+                                {
+                                    row.Clear();
+                                    for (int i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        row.Add(i == 0 ? (object)reader.GetString(0) : (object)reader.GetDecimal(i));
+                                    }
+                                    result.Add(row.ToArray());
+                                }
+                            }
+                        }
+                    } 
+                }
+            }
+            return result.ToArray();
+        }
+
         internal static int GetParameter(string value, SqlConnection con)
         {
             using (SqlCommand command = con.CreateCommand())
@@ -146,9 +233,9 @@ namespace Design
             using (SqlCommand command = connection.CreateCommand())
             {
                 command.CommandText = "select COUNT(*) from [sys].all_objects where type_desc='USER_TABLE'" +
-                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix', 'EntityGroups')";
+                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix', 'EntityGroups', 'Settings', 'CalcFormula', 'CalcFormulaParams')";
                 var id = command.ExecuteScalar();
-                if (!(id is DBNull) && ((int)id) == 5)
+                if (!(id is DBNull) && ((int)id) == 8)
                 {
                     return connection;
                 }
@@ -158,12 +245,18 @@ namespace Design
                                       "drop TABLE Predicates",
                                       "drop TABLE metrix",
                                       "drop Table aproximatemetrix",
+                                      "drop Table calcFormula",
+                                      "drop Table calcFormulaParams",
                                       "IF OBJECT_ID('EntityGroups', 'U') IS NOT NULL drop Table EntityGroups",
+                                      "IF OBJECT_ID('Settings', 'U') IS NOT NULL drop Table Settings",
                                       "CREATE TABLE Entities (entityid INT NOT NULL, entityvalue NVARCHAR(200) NOT NULL, PRIMARY KEY(entityid));",
                                       "CREATE TABLE Predicates (predicateid INT NOT NULL, predicatevalue NVARCHAR(200) NOT NULL, PRIMARY KEY(predicateid));",
                                       "CREATE TABLE metrix (metrixid int IDENTITY(1,1) NOT NULL, predicateid INT NOT NULL, entityid INT NOT NULL, metrixData datetime, metrixValue decimal(18,4) NULL, metrixObject nvarchar(200) null);",
                                       "CREATE TABLE aproximatemetrix (aproximatemetrixid int IDENTITY(1,1) NOT NULL, predicateid INT NOT NULL, entityid INT NOT NULL, metrixData datetime, zetValue NVARCHAR(200) NULL, lRegressionValue NVARCHAR(200) NULL);",
                                       "CREATE TABLE EntityGroups (entityid int FOREIGN KEY REFERENCES Entities(entityid), groupName NVARCHAR(200), subgroupName NVARCHAR(200));",
+                                      "CREATE TABLE Settings (settingName NVARCHAR(200), settingStringValue NVARCHAR(200), settingNumValue numeric(20, 8));",
+                                      "CREATE TABLE CalcFormula (formulaId int IDENTITY(1,1) NOT NULL, formulaName NVARCHAR(200), formulaExpression nvarchar(3000));",
+                                      "CREATE TABLE calcFormulaParams (paramId int IDENTITY(1,1) NOT NULL, formulaId int not null, typeid int, paramValue numeric(20, 4), name nvarchar(100) not null, code nvarchar(10) not null);",
                                   };
                 foreach (var text in comText)
                 {
@@ -197,7 +290,7 @@ namespace Design
                         if (t.MetrixDate == null) 
                         {
                             command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue) values ("
-                             + t.EntityId + "," + t.PredicateId + "," + t.MetrixObject + ", " + t.MetrixValue.ToString() + ")";
+                             + t.EntityId + "," + t.PredicateId + ",'" + t.MetrixObject + "', " + t.MetrixValue.ToString() + ")";
                         }
                         else { //yyyy-mm-dd hh:mi:ss
                             command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue, metrixDate) values (" 
@@ -353,6 +446,330 @@ namespace Design
             }
             return data.ToArray();
         }
+
+        internal static object[] GetMetrixByTimeConditions(string paramName, int[] selectedObjs, bool isDateType)
+        {
+            List<object> result = new List<object>();
+
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    if (isDateType)
+                    {
+                        bool first = true;
+                        command.CommandText = "select metrixData from metrix m inner join " +
+                                              "Predicates p on p.predicateid = m.predicateid " +
+                                              "where entityid in (";
+                        foreach (var i in selectedObjs)
+                        {
+                            if (!first) { command.CommandText += ","; } else { first = !first; }
+                            command.CommandText += i;
+                        }
+                        command.CommandText += ") ";
+                        if (!String.IsNullOrEmpty(paramName))
+                        {
+                            command.CommandText += String.Format("{0} and p.predicatevalue='{1}'", command.CommandText, paramName);
+                        }
+                        command.CommandText += " and rtrim(ltrim(isnull(metrixObject,''))) <> '' group by metrixObject order by metrixObject";
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader != null)
+                            {
+                                while (reader.Read())
+                                {
+                                    result.Add(reader.GetDateTime(0));
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        bool first = true;
+                        command.CommandText = "select metrixObject from metrix m inner join " +
+                                              "Predicates p on p.predicateid = m.predicateid " +
+                                              "where entityid in (";
+                        foreach (var i in selectedObjs)
+                        {
+                            if (!first) { command.CommandText += ","; } else { first = !first; }
+                            command.CommandText += i;
+                        }
+                        command.CommandText += ") ";
+                        if (!String.IsNullOrEmpty(paramName))
+                        {
+                            command.CommandText += String.Format("{0} and p.predicatevalue='{1}'", command.CommandText, paramName);
+                        }
+                        command.CommandText += " and rtrim(ltrim(isnull(metrixObject,''))) <> '' group by metrixObject order by metrixObject";
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader != null)
+                            {
+                                while (reader.Read())
+                                {
+                                    result.Add(reader.GetString(0));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return result.ToArray();
+        }
+
+
+        internal static void SaveSettings(decimal scale, decimal dost, decimal critValue, decimal intSchedule)
+        {
+            using(var con = OpenOrCreateDb()) {
+                using(var command = con.CreateCommand()) {
+                    command.CommandText = "select count(*) from Settings where settingName = 'ScaleData'";
+                    var o = command.ExecuteScalar();
+                    if (o is DBNull || ((int)o) == 0)
+                    {
+                        command.CommandText = "insert into Settings(settingName, settingNumValue) values ('ScaleData', " + scale + ")";
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        command.CommandText = "update Settings set settingNumValue = " + scale 
+                                               + " where settingName = 'ScaleData'";
+                        command.ExecuteNonQuery();
+                    }
+
+                    command.CommandText = "select count(*) from Settings where settingName = 'RowDost'";
+                    o = command.ExecuteScalar();
+                    if (o is DBNull || ((int)o) == 0)
+                    {
+                        command.CommandText = "insert into Settings(settingName, settingNumValue) values ('RowDost', " + dost + ")";
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        command.CommandText = "update Settings set settingNumValue = " + dost
+                                               + " where settingName = 'RowDost'";
+                        command.ExecuteNonQuery();
+                    }
+
+
+                    command.CommandText = "select count(*) from Settings where settingName = 'CriticalValue'";
+                    o = command.ExecuteScalar();
+                    if (o is DBNull || ((int)o) == 0)
+                    {
+                        command.CommandText = "insert into Settings(settingName, settingNumValue) values ('CriticalValue', " + critValue + ")";
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        command.CommandText = "update Settings set settingNumValue = " + critValue
+                                               + " where settingName = 'CriticalValue'";
+                        command.ExecuteNonQuery();
+                    }
+
+                    command.CommandText = "select count(*) from Settings where settingName = 'RangeSchedule'";
+                    o = command.ExecuteScalar();
+                    if (o is DBNull || ((int)o) == 0)
+                    {
+                        command.CommandText = "insert into Settings(settingName, settingNumValue) values ('RangeSchedule', " + intSchedule + ")";
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        command.CommandText = "update Settings set settingNumValue = " + intSchedule
+                                               + " where settingName = 'RangeSchedule'";
+                        command.ExecuteNonQuery();
+                    }
+
+                }
+            }
+        }
+
+        internal static decimal GetSettingValue(string p)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = "select settingNumValue from Settings where settingName = '" + p + "'";
+                    using (var reader = command.ExecuteReader())
+                    try {
+                        reader.Read();
+                        return reader.GetDecimal(0);
+                    }
+                    catch {
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        internal static List<Formula> GetFormulas()
+        {
+            List<Formula> f = new List<Formula>();
+            using (var con = OpenOrCreateDb())
+            {
+                try {
+                    using (var command = con.CreateCommand())
+                    {
+                        command.CommandText = "select formulaId, formulaName, formulaExpression from CalcFormula";
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if(reader == null) {
+                                return f;
+                            }
+                            while (reader.Read())
+                            {
+                                f.Add(new Formula() { Id = reader.IsDBNull(0) ? 0 : reader.GetSqlInt32(0).Value,
+                                                      Name = reader.IsDBNull(1) ? "Unknown" : reader.GetSqlString(1).Value,
+                                                      Expression = reader.IsDBNull(2) ? string.Empty : reader.GetSqlString(2).Value,
+                                });
+                            }
+                        }
+                    }
+
+                    foreach (Formula g in f)
+                    {
+                        g.Parameters.AddRange(GetFormulaParameters(g.Id, con));
+                    }
+
+                }
+                catch {
+                }
+                finally {
+                    con.Close();
+                }
+
+                return f;
+            }
+        }
+
+        internal static void RemoveFormula(Formula formula)
+        {
+            if (formula == null) { return; }
+            using (var con = OpenOrCreateDb()) {
+                try
+                {
+                    using (var command = con.CreateCommand())
+                    {
+                        command.CommandText = "delete calcFormulaParams where formulaId = " + formula.Id;
+                        command.ExecuteNonQuery();
+                        command.CommandText = "delete CalcFormula where formulaId = " + formula.Id;
+                        command.ExecuteNonQuery();
+                    }
+                }
+                catch { }
+                finally { con.Close(); }
+            }
+        }
+
+        internal static int SaveFormula(Formula formula)
+        {
+            int result = 0;
+            if (formula == null) { return result; }
+            using (var con = OpenOrCreateDb())
+            {
+                try
+                {
+                    using (var command = con.CreateCommand())
+                    {
+                        command.CommandText = formula.Id == 0
+                            ? string.Format("insert into calcFormula (formulaName, formulaExpression) values('{0}', '{1}')",
+                                            formula.Name, formula.Expression)
+                            : string.Format("update calcFormula set formulaName='{0}', formulaExpression='{1}' where formulaid={2}",
+                                            formula.Name, formula.Expression, formula.Id);
+                        command.ExecuteNonQuery();
+                        if  (formula.Id == 0) {
+                            command.CommandText = "select max(formulaid) from calcFormula";
+                            result = (int)command.ExecuteScalar();
+                        }
+                        else {
+                            result = formula.Id;
+                        }
+                    }
+                }
+                catch { }
+                finally { con.Close(); }
+            }
+            return result;
+        }
+
+        internal static void RemoveFormulaParameter(int paramId)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                try
+                {
+                    using(var command = con.CreateCommand()) {
+                        command.CommandText = "delete calcFormulaParams where paramId = " + paramId;
+                        command.ExecuteNonQuery();
+                    }                        
+                }
+                catch { }
+                finally { con.Close(); }
+            }
+        }
+
+        internal static void SaveFormulaParameter(FormulaParameter p, int fid)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                try
+                {
+                    //"CREATE TABLE calcFormulaParams (paramId int IDENTITY(1,1) NOT NULL, formulaId int not null, 
+                    //typeid int, paramValue numeric(20, 4), name nvarchar(100) not null, code nvarchar(10) not null);",
+                    using (var command = con.CreateCommand())
+                    {
+                        int t = 0;
+                        if (!String.IsNullOrEmpty(p.TypeName)) {
+                            command.CommandText = "select min(predicateid) FROM Predicates where  predicatevalue = '" + 
+                                                    p.TypeName + "'";
+                            var i = command.ExecuteScalar();
+                            t = i == null || i is DBNull ? 0 : (int)i;
+                        }
+                        command.CommandText = p.Id == 0
+                            ? string.Format("insert into calcFormulaParams(formulaId, typeid, paramValue, name, code) " +
+                            " values ({0},{1},{2}, '{3}', '{4}')", fid, t, p.Value, p.Name, p.Code)
+                            : string.Format("update calcFormulaParams set typeid={0}, paramValue={1}, name='{2}', code='{3}' " 
+                            + " where  paramId={4} and formulaId={5}", t, p.Value, p.Name, p.Code, p.Id, fid);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                catch { }
+                finally { con.Close(); }                
+            }            
+        }
+
+        internal static IList<FormulaParameter> GetFormulaParameters(int p, SqlConnection con)
+        {
+            List<FormulaParameter> g = new List<FormulaParameter>();
+            using (var command = con.CreateCommand())
+            {
+                command.CommandText = "SELECT paramId, typeid, Name, p.predicatevalue, code, paramValue " +
+                " FROM calcFormulaParams fp left join Predicates p on p.predicateid = fp.typeid " +
+                " where formulaid=" + p;
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader == null)
+                    {
+                        return g;
+                    }
+                    while (reader.Read())
+                    {
+                        g.Add(new FormulaParameter()
+                        {
+                            Id = reader.IsDBNull(0) ? 0 : reader.GetSqlInt32(0).Value,
+                            TypeId = reader.IsDBNull(1) ? 0 : reader.GetSqlInt32(1).Value,
+                            TypeName = reader.IsDBNull(3) ? string.Empty : reader.GetSqlString(3).Value,
+                            Name = reader.IsDBNull(2) ? string.Empty : reader.GetSqlString(2).Value,
+                            Code = reader.IsDBNull(4) ? string.Empty : reader.GetSqlString(4).Value,
+                            Value = reader.IsDBNull(5) ? 0 : reader.GetSqlDecimal(5).Value,
+                        });
+                    }
+                }
+            }
+            return g;
+        }
+
+        public static List<CalcFormula> CustomFormulas { get; set; }
     }
 
     public class Triplet
