@@ -48,6 +48,19 @@ namespace Design
             dataView.RowCellStyle += displayObjects.OnRowCellStyle;
 
             initTimeIntervals();
+
+            closeButton.Click += OnCloseButtonClick;
+        }
+
+        private void OnCloseButtonClick(object sender, EventArgs e)
+        {
+            if (displayObjects.getSaveBundle(true).Count > 0 &&
+                DialogResult.Yes != MessageBox.Show("Есть несохраненные данныею Продолжить закрытие формы?", 
+                                                    "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                return;
+            }
+            Dispose();
         }
 
         private void initTimeIntervals()

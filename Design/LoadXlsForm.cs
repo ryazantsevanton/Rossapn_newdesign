@@ -24,7 +24,7 @@ namespace Design
         List<object[][]> list;
         ContextMenu menu;
         int timeColumn;
-        List<int> objectColumns;
+        Dictionary<int, string> objectColumns;
         List<int> paramColumns;
         Dictionary<string, int> param;
         Dictionary<string, int> objects;
@@ -47,23 +47,34 @@ namespace Design
             menu = new ContextMenu();
             menu.MenuItems.Add(0, new MenuItem("Учитывать параметром", AddColumnParameter));
             menu.MenuItems.Add(1, new MenuItem("Учитывать как время", AddColumnTime));
-            menu.MenuItems.Add(2, new MenuItem("Учитывать как объект", AddColumnObject));
+
+            List<MenuItem> menuItems = new List<MenuItem>();
+            foreach(var m in DataHelper.GetObjectsWithGroups().GroupBy(g => g[3])) {
+                menuItems.Add(new MenuItem((string)m.Key,
+                   m.GroupBy(d => d[4]).Select(m2 => new MenuItem((string)m2.Key,
+                        m2.Select(m3 => new MenuItem((string)m3[1], (_, __) => AddColumnObject((string)m3[1]))).ToArray()
+                        )).ToArray()));
+
+            }
+
+            menu.MenuItems.Add(2, new MenuItem("Учитывать как объект", menuItems.ToArray()));
+
             menu.MenuItems.Add(3, new MenuItem("Сбросить объекты", ClearColumnObject));
             menu.MenuItems.Add(4, new MenuItem("Сбросить параметры", ClearColumnParameter));
             menu.MenuItems.Add(5, new MenuItem("Сбросить время", ClearColumnTime));
 
             paramShName.Click += OnParamShNameClick;
-            objectShName.Click += OnObjectShNameClick;
             timeShName.Click += OnTimeShNameClick;
             paramManual.Click += ParamManualClick;
-            objectManual.Click += ObjectManualClick;
             timeManual.Click += TimeManualClick;
 
             loadButton.Click += OnLoadButtonClick;
 
             timeColumn = -1;
-            objectColumns = new List<int>();
+            objectColumns = new Dictionary<int, string>();
             paramColumns = new List<int>();
+
+            tbParamEnter.Properties.Items.AddRange(DataHelper.GetParameters().Select(p => p[1]).ToArray());
         }
 
         private void ParamManualClick(object sender, EventArgs e)
@@ -71,15 +82,10 @@ namespace Design
             tbParamEnter.Text = string.Empty; 
             tbParamEnter.Enabled = true;
             paramColumns.Clear();
-            GetActiveView().RefreshData();
-        }
+            var view = GetActiveView();
+            if (view == null) { return; }
 
-        private void ObjectManualClick(object sender, EventArgs e)
-        {
-            tbObjectEnter.Text = string.Empty; 
-            tbObjectEnter.Enabled = true;
-            objectColumns.Clear();
-            GetActiveView().RefreshData();
+            view.RefreshData();
         }
 
         private void TimeManualClick(object sender, EventArgs e)
@@ -87,7 +93,10 @@ namespace Design
             tbTimeEnter.Text = string.Empty; 
             tbTimeEnter.Enabled = true; 
             timeColumn = -1;
-            GetActiveView().RefreshData();
+            var view = GetActiveView();
+            if (view == null) { return; }
+
+            view.RefreshData();
         }
 
         private void OnLoadButtonClick(object sender, EventArgs e)
@@ -102,7 +111,7 @@ namespace Design
                 MessageBox.Show("Не определен источник данных 'О типах замеров'", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (objectColon.Checked == false && objectManual.Checked == false && objectShName.Checked == false)
+            if (objectColumns.Count == 0)
             {
                 MessageBox.Show("Не определен источник данных 'Об объектах замеров'", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -123,24 +132,21 @@ namespace Design
             int gridId = tabBar.SelectedTabPageIndex;
             
             string timeObject = string.Empty;
-            string parameter = string.Empty;
-            string entity = string.Empty;
 
             decimal value = 0;
             bool fixTime = timeManual.Checked || timeShName.Checked;
             bool fixParam = paramManual.Checked || paramShName.Checked;
-            bool fixObject = objectManual.Checked || objectShName.Checked;
+            
 
-
-            if (!fixTime || !fixParam || !fixObject)
+            if (!fixTime || !fixParam)
             {
                 if (list[gridId].Length > 1)
                 {
                     for (var i = 1; i < list[gridId].Length; i++)
                     {
-                        timeObject = fixTime ? tbTimeEnter.Text : (string)list[gridId][i][timeColumn - 1];
+                        timeObject = fixTime ? tbTimeEnter.Text : ((string)list[gridId][i][timeColumn - 1]).PadLeft(8, '0');
 
-                        object[] t = GetDatas((string[])list[gridId][i], fixObject, fixParam, (string[])list[gridId][0]);
+                        object[] t = GetDatas((string[])list[gridId][i], fixParam, (string[])list[gridId][0]);
                         foreach (object[] o in t)
                         {
                             result.Add(new Triplet(GetObject((string)o[0], con),
@@ -161,16 +167,15 @@ namespace Design
             return result;
         }
 
-        private object[] GetDatas(string[] data, bool fixObject, bool fixParam, string[] titles)
+        private object[] GetDatas(string[] data,  bool fixParam, string[] titles)
         {
             List<object[]> result = new List<object[]>();
             int count;
             decimal value = 0;
-            if (fixObject || objectColumns.Count == 1)
+            if (objectColumns.Count == 1)
             {
                 if (paramColumns.Count > 0)
                 {
-                    var stringObject = !fixObject ? data[objectColumns[0] - 1] : tbObjectEnter.Text;
                     for (int i = 0; i < paramColumns.Count; i++)
                     {
                         count = paramColumns[i] - 1;
@@ -178,20 +183,19 @@ namespace Design
                         {
                             value = 0;
                         }
-                        result.Add(new object[] { stringObject, titles[count], value });
+                        result.Add(new object[] { objectColumns.First().Value, titles[count], value });
                     }
                     return result.ToArray();
                 }
                 else
                 {
-                    for (var i = 0; i < objectColumns.Count; i++)
+                    foreach (var i in objectColumns.Keys)
                     {
-                        count = objectColumns[i] - 1;
-                        if (!Decimal.TryParse(data[count], out value))
+                        if (!Decimal.TryParse(data[i - 1], out value))
                         {
                             value = 0;
                         }
-                        result.Add(new object[] { titles[count], tbParamEnter.Text, value });
+                        result.Add(new object[] { objectColumns[i], tbParamEnter.Text, value });
                     }
                     return result.ToArray();
                 }
@@ -201,14 +205,13 @@ namespace Design
                 if (objectColumns.Count > 0)
                 {
                     var stringParam = !fixParam ? data[paramColumns[0] - 1] : tbParamEnter.Text;
-                    for (int i = 0; i < objectColumns.Count; i++)
+                    foreach (int key in objectColumns.Keys)
                     {
-                        count = objectColumns[i] - 1;
-                        if (!Decimal.TryParse(data[count], out value))
+                        if (!Decimal.TryParse(data[key - 1], out value))
                         {
                             value = 0;
                         }
-                        result.Add(new object[] { titles[count], stringParam, value });
+                        result.Add(new object[] { objectColumns[key], stringParam, value });
                     }
                     return result.ToArray();
                 }
@@ -259,37 +262,12 @@ namespace Design
                 tbParamEnter.Enabled = false;
                 paramShName.Checked = false;
             }
-            if (objectShName.Checked)
-            {
-                tbObjectEnter.Text = string.Empty;
-                tbObjectEnter.Enabled = false;
-                objectShName.Checked = false;
-            }
             timeColumn = -1;
-            GetActiveView().RefreshData();
+            var view = GetActiveView();
+            if (view == null) { return; }
+
+            view.RefreshData();
          
-        }
-
-        private void OnObjectShNameClick(object sender, EventArgs e)
-        {
-            if (tabBar.TabPages.Count == 0) { return; }
-
-            tbObjectEnter.Text = tabBar.SelectedTabPage.Text;
-            tbObjectEnter.Enabled = false;
-            if (paramShName.Checked)
-            {
-                tbParamEnter.Text = string.Empty;
-                tbParamEnter.Enabled = false;
-                paramShName.Checked = false;
-            }
-            if (timeShName.Checked)
-            {
-                tbTimeEnter.Text = string.Empty;
-                tbTimeEnter.Enabled = false;
-                timeShName.Checked = false;
-            }
-            objectColumns.Clear();
-            GetActiveView().RefreshData();
         }
 
         private void OnParamShNameClick(object sender, EventArgs e)
@@ -298,20 +276,11 @@ namespace Design
 
             tbParamEnter.Text = tabBar.SelectedTabPage.Text;
             tbParamEnter.Enabled = false;
-            if (objectShName.Checked)
-            {
-                tbObjectEnter.Text = string.Empty;
-                tbObjectEnter.Enabled = false;
-                objectShName.Checked = false;
-            }
-            if (timeShName.Checked)
-            {
-                tbTimeEnter.Text = string.Empty;
-                tbTimeEnter.Enabled = false;
-                timeShName.Checked = false;
-            }
             paramColumns.Clear();
-            GetActiveView().RefreshData();
+            var view = GetActiveView();
+            if (view == null) { return; }
+
+            view.RefreshData();
         }
 
         private void ClearColumnTime(object sender, EventArgs e)
@@ -320,7 +289,10 @@ namespace Design
             tbTimeEnter.Text = string.Empty;
             timeColon.Checked = false;
             timeColumn = -1;
-            GetActiveView().RefreshData();
+            var view = GetActiveView();
+            if (view == null) { return; }
+
+            view.RefreshData();
         }
 
         private void ClearColumnParameter(object sender, EventArgs e)
@@ -329,19 +301,21 @@ namespace Design
             tbParamEnter.Text = string.Empty;
             paramColon.Checked = false;
             paramColumns.Clear();
-            GetActiveView().RefreshData();
+            var view = GetActiveView();
+            if (view == null) { return; }
+
+            view.RefreshData();
         }
 
         private void ClearColumnObject(object sender, EventArgs e)
         {
             tbObjectEnter.Enabled = false;
             tbObjectEnter.Text = string.Empty;
-            objectColon.Checked = false;
             objectColumns.Clear();
             GetActiveView().RefreshData();
         }
 
-        private void AddColumnObject(object sender, EventArgs e)
+        private void AddColumnObject(string objectName)
         {
             var view = GetActiveView();
             if (view == null) { return; }
@@ -365,26 +339,29 @@ namespace Design
             }
 
             tbObjectEnter.Enabled = false;
-            objectColon.Checked = true;
             if (string.IsNullOrEmpty(tbObjectEnter.Text) || paramColumns.Count > 1) {
-                tbObjectEnter.Text = index;
+                tbObjectEnter.Text = objectName;
                 objectColumns.Clear();
-                objectColumns.Add(cells.AbsoluteIndex + 1);
+                objectColumns.Add(cells.AbsoluteIndex + 1, objectName);
                 view.RefreshData();
                 return;
             }
-            if (tbObjectEnter.Text.IndexOf(index) > -1)
+            if (objectColumns.ContainsKey(cells.AbsoluteIndex + 1))
             {
                 return;
             }
-            tbObjectEnter.Text += index;
-            objectColumns.Add(cells.AbsoluteIndex + 1);
+            tbObjectEnter.Text += " " + objectName;
+            objectColumns.Add(cells.AbsoluteIndex + 1, objectName);
             view.RefreshData();
         }
 
         private GridView GetActiveView()
         {
-            return ((GridControl)(tabBar.SelectedTabPage.Controls[0])).MainView as GridView;
+            try
+            {
+                return ((GridControl)(tabBar.SelectedTabPage.Controls[0])).MainView as GridView;
+            }
+            catch { return null; }
         }
 
         private void AddColumnTime(object sender, EventArgs e)
@@ -403,11 +380,10 @@ namespace Design
                 paramColon.Checked = false;
             }
 
-            if (objectColon.Checked && tbObjectEnter.Text.IndexOf(index) > -1)
+            if (tbObjectEnter.Text.IndexOf(index) > -1)
             {
                 tbObjectEnter.Text = string.Empty;
                 tbObjectEnter.Enabled = false;
-                objectColon.Checked = false;
             }
 
             tbTimeEnter.Enabled = false;
@@ -433,11 +409,10 @@ namespace Design
                 timeColon.Checked = false;
             }
 
-            if (objectColon.Checked && tbObjectEnter.Text.IndexOf(index) > -1)
+            if (tbObjectEnter.Text.IndexOf(index) > -1)
             {
                 tbObjectEnter.Text = string.Empty;
                 tbObjectEnter.Enabled = false;
-                objectColon.Checked = false;
             }
 
             tbParamEnter.Enabled = false;
@@ -479,13 +454,15 @@ namespace Design
 
             paramShName.Enabled = false;
             timeShName.Enabled = false;
-            objectShName.Enabled = false;
             tbObjectEnter.Text = string.Empty;
             tbParamEnter.Text = string.Empty;
             tbTimeEnter.Text = string.Empty;
             tbObjectEnter.Enabled = false;
             tbParamEnter.Enabled = false;
             tbTimeEnter.Enabled = false;
+            paramColon.Checked = false;
+            paramManual.Checked = false;
+            paramShName.Checked = false;
 
             using (var odbcCon = new OleDbConnection(DataHelper.GetConnectionString(xlsFileDialog.FileName)))
             {
@@ -568,7 +545,6 @@ namespace Design
             {
                 paramShName.Enabled = true;
                 timeShName.Enabled = true;
-                objectShName.Enabled = true;
             }
         }
 
@@ -580,7 +556,7 @@ namespace Design
                 e.Column.AppearanceCell.BackColor = Color.FromArgb(214, 251, 254);
                 return;
             }
-            if (objectColumns.Contains(e.Column.AbsoluteIndex + 1))
+            if (objectColumns.ContainsKey(e.Column.AbsoluteIndex + 1))
             {
                 e.Column.AppearanceCell.BackColor = Color.FromArgb(253, 223, 239);
                 return;

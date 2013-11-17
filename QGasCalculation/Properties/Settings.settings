@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="QGasCalculation.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SettingName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Дебет газа</Value>
+    </Setting>
+    <Setting Name="pk" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">P шлейфа</Value>
+    </Setting>
+    <Setting Name="pn" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">P буферное</Value>
+    </Setting>
+    <Setting Name="T" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">T буферное</Value>
+    </Setting>
+    <Setting Name="D" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D штуцера</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

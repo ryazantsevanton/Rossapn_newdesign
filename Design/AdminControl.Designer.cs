@@ -36,6 +36,7 @@
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.label1 = new System.Windows.Forms.Label();
+            this.closeButton = new System.Windows.Forms.Button();
             this.journalTable = new DevExpress.XtraGrid.GridControl();
             this.journalView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.datetime = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -65,15 +66,13 @@
             this.userList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.userList.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
-            this.userList.Location = new System.Drawing.Point(10, 28);
+            this.userList.Location = new System.Drawing.Point(8, 23);
             this.userList.MainView = this.accountsView;
-            this.userList.Margin = new System.Windows.Forms.Padding(4);
             this.userList.Name = "userList";
-            this.userList.Padding = new System.Windows.Forms.Padding(4);
+            this.userList.Padding = new System.Windows.Forms.Padding(3);
             this.userList.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox1});
-            this.userList.Size = new System.Drawing.Size(285, 571);
+            this.userList.Size = new System.Drawing.Size(258, 494);
             this.userList.TabIndex = 6;
             this.userList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.accountsView});
@@ -127,45 +126,59 @@
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer.Margin = new System.Windows.Forms.Padding(2);
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add(this.label1);
             this.splitContainer.Panel1.Controls.Add(this.userList);
-            this.splitContainer.Panel1.Padding = new System.Windows.Forms.Padding(3);
+            this.splitContainer.Panel1.Padding = new System.Windows.Forms.Padding(2);
             // 
             // splitContainer.Panel2
             // 
+            this.splitContainer.Panel2.Controls.Add(this.closeButton);
             this.splitContainer.Panel2.Controls.Add(this.journalTable);
             this.splitContainer.Panel2.Controls.Add(this.label2);
-            this.splitContainer.Size = new System.Drawing.Size(907, 606);
-            this.splitContainer.SplitterDistance = 302;
+            this.splitContainer.Size = new System.Drawing.Size(816, 522);
+            this.splitContainer.SplitterDistance = 270;
+            this.splitContainer.SplitterWidth = 3;
             this.splitContainer.TabIndex = 7;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 7);
+            this.label1.Location = new System.Drawing.Point(5, 6);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(102, 17);
+            this.label1.Size = new System.Drawing.Size(80, 13);
             this.label1.TabIndex = 8;
             this.label1.Text = "Пользователи";
+            // 
+            // closeButton
+            // 
+            this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.closeButton.Location = new System.Drawing.Point(410, 486);
+            this.closeButton.Margin = new System.Windows.Forms.Padding(2);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(96, 30);
+            this.closeButton.TabIndex = 10;
+            this.closeButton.Text = "Закрыть";
+            this.closeButton.UseVisualStyleBackColor = true;
             // 
             // journalTable
             // 
             this.journalTable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.journalTable.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
-            this.journalTable.Location = new System.Drawing.Point(6, 28);
+            this.journalTable.Location = new System.Drawing.Point(4, 23);
             this.journalTable.MainView = this.journalView;
-            this.journalTable.Margin = new System.Windows.Forms.Padding(4);
             this.journalTable.Name = "journalTable";
-            this.journalTable.Padding = new System.Windows.Forms.Padding(4);
+            this.journalTable.Padding = new System.Windows.Forms.Padding(3);
             this.journalTable.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemComboBox2});
-            this.journalTable.Size = new System.Drawing.Size(591, 571);
+            this.journalTable.Size = new System.Drawing.Size(539, 458);
             this.journalTable.TabIndex = 9;
             this.journalTable.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.journalView});
@@ -228,9 +241,10 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 7);
+            this.label2.Location = new System.Drawing.Point(2, 6);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(194, 17);
+            this.label2.Size = new System.Drawing.Size(152, 13);
             this.label2.TabIndex = 9;
             this.label2.Text = "Журнал действий в системе";
             // 
@@ -241,37 +255,38 @@
             this.ChangeToolStripMenuItem,
             this.RemoveToolStripMenuItem});
             this.accountContextMenu.Name = "accountContextMenu";
-            this.accountContextMenu.Size = new System.Drawing.Size(194, 98);
+            this.accountContextMenu.Size = new System.Drawing.Size(166, 70);
             // 
             // AddToolStripMenuItem
             // 
             this.AddToolStripMenuItem.Name = "AddToolStripMenuItem";
-            this.AddToolStripMenuItem.Size = new System.Drawing.Size(193, 24);
+            this.AddToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.AddToolStripMenuItem.Text = "Добавить";
             this.AddToolStripMenuItem.Click += new System.EventHandler(this.addAccountMenuClick);
             // 
             // ChangeToolStripMenuItem
             // 
             this.ChangeToolStripMenuItem.Name = "ChangeToolStripMenuItem";
-            this.ChangeToolStripMenuItem.Size = new System.Drawing.Size(193, 24);
+            this.ChangeToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.ChangeToolStripMenuItem.Text = "Сменить пароль";
             this.ChangeToolStripMenuItem.Click += new System.EventHandler(this.changePasswordMenuClick);
             // 
             // RemoveToolStripMenuItem
             // 
             this.RemoveToolStripMenuItem.Name = "RemoveToolStripMenuItem";
-            this.RemoveToolStripMenuItem.Size = new System.Drawing.Size(193, 24);
+            this.RemoveToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.RemoveToolStripMenuItem.Text = "Удалить";
             this.RemoveToolStripMenuItem.Click += new System.EventHandler(this.removeAccountMenuClick);
             // 
             // AdminControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.Controls.Add(this.splitContainer);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "AdminControl";
-            this.Size = new System.Drawing.Size(907, 606);
+            this.Size = new System.Drawing.Size(816, 522);
             ((System.ComponentModel.ISupportInitialize)(this.userList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.accountsView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
@@ -309,5 +324,6 @@
         private System.Windows.Forms.ToolStripMenuItem AddToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ChangeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RemoveToolStripMenuItem;
+        private System.Windows.Forms.Button closeButton;
     }
 }

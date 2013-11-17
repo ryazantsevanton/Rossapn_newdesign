@@ -28,6 +28,13 @@ namespace Design
             refreshUserList();
 
             accountsView.PopupMenuShowing += AccountsPopupMenuShowing;
+
+            closeButton.Click += OnCloseButtonClick;   
+        }
+
+        private void OnCloseButtonClick(object sender, EventArgs e)
+        {
+            Dispose();
         }
 
         void accountsCellValueChanged(object sender, DevExpress.XtraGrid.Views.Base.CellValueChangedEventArgs e)

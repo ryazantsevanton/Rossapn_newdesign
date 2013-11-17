@@ -125,7 +125,7 @@ namespace Design
             }
             dataMetrixs = DataHelper.GetMetrixByAllConditions(cbParameters.Text, selectedObj, rbTime.Checked, metrixs[trackStart.Value], metrixs[trackEnd.Value]);
 
-            decimal numberCount = DataHelper.GetSettingValue("ScaleData");
+ /*           decimal numberCount = DataHelper.GetSettingValue("ScaleData");
             if (numberCount == null || numberCount == 0)
             {
                 numberCount = 10;
@@ -205,7 +205,7 @@ namespace Design
             mainView.CustomUnboundColumnData += CustomUnboundColumnData;
 
             grid.DataSource = dataMetrixs;
-
+            */
         }
 
         private void CustomUnboundColumnData(object sender, CustomColumnDataEventArgs e)

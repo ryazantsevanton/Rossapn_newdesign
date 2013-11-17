@@ -27,6 +27,30 @@ namespace Design
             objectButton.ItemClick += OnEditObjectButtonClick;
             editData.ItemClick += OnEditDataButtonClick;
             bbiReport.ItemClick += OnBbiReportClick;
+            bbiCalc.ItemClick += OnbbiCalItemCLick;
+            bbiSettings.ItemClick += OnbbiSettingItemClick;
+        }
+
+        private void OnbbiSettingItemClick(object sender, ItemClickEventArgs e)
+        {
+            if (!Account.Current.hasPermission(Account.Actions.ChangeSettings))
+            {
+                MessageBox.Show("Недостаточно прав для этой операции");
+                return;
+            }
+
+            showControl("SettingsForm", new SettingsForm());
+        }
+
+        private void OnbbiCalItemCLick(object sender, ItemClickEventArgs e)
+        {
+            if (!Account.Current.hasPermission(Account.Actions.LoadMetrix))
+            {
+                MessageBox.Show("Недостаточно прав для этой операции");
+                return;
+            }
+
+            showControl("CalcForm", new CalcForm());
         }
 
         private void OnBbiReportClick(object sender, ItemClickEventArgs e)

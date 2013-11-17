@@ -22,7 +22,8 @@ namespace Design
             EditMetrix,
             EditSystemEntities,
             Wipe,
-            EditUser
+            EditUser,
+            ChangeSettings
         };
 
         public static Account Current { get; private set; }
@@ -98,6 +99,7 @@ namespace Design
                 case Actions.EditMetrix: return (Role == Roles.Admin || Role == Roles.SuperUser);
                 case Actions.EditSystemEntities:
                 case Actions.Wipe:
+                case Actions.ChangeSettings: 
                 case Actions.EditUser: return Role == Roles.Admin;
                 default: throw new Exception("Unhandled action");
             }
