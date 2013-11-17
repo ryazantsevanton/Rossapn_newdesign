@@ -118,6 +118,12 @@
     <Compile Include="AdminControl.Designer.cs">
       <DependentUpon>AdminControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="BitrackBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BitrackBar.Designer.cs">
+      <DependentUpon>BitrackBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -161,6 +167,9 @@
     <Compile Include="Account.cs" />
     <EmbeddedResource Include="AdminControl.resx">
       <DependentUpon>AdminControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BitrackBar.resx">
+      <DependentUpon>BitrackBar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataControl.resx">
       <DependentUpon>DataControl.cs</DependentUpon>

@@ -336,6 +336,54 @@ namespace Design
             return data;
         }
 
+        internal static SortedDictionary<String, object[]> GetMetrix(int entity, int predicate, string from, string to)
+        {
+            SortedDictionary<String, object[]> data = new SortedDictionary<String, object[]>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("select metrixid, metrixObject, metrixValue FROM metrix WHERE entityid={0} AND predicateid={1} AND metrixObject BETWEEN '{2}' AND '{3}'", entity, predicate, from, to);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                            {
+                                String metrixObject = reader.GetString(1);
+                                data.Add(metrixObject, new object[] { reader.GetInt32(0), metrixObject, reader.GetDecimal(2), EditAction.None });
+                            }
+                        }
+                    }
+                }
+            }
+            return data;
+        }
+
+        internal static List<String> GetAllDistinctMetrixObjects()
+        {
+            List<String> data = new List<String>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("SELECT DISTINCT metrixObject FROM metrix ORDER BY metrixObject");
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                        {
+                            while (reader.Read())
+                            {
+                                //String metrixObject = reader.GetString(0);
+                                data.Add(reader.GetString(0));
+                            }
+                        }
+                    }
+                }
+            }
+            return data;
+        }
+
         internal static object[][] GetParamStatistic()
         {
             List<object[]> data = new List<object[]>();
@@ -477,7 +525,7 @@ namespace Design
             return log;
         }
 
-        internal static void logAction(Account.Actions action, string arguments)
+        internal static void logAction(Account.Actions action, string arguments = null)
         {
             using (var con = OpenOrCreateDb())
             {
@@ -485,7 +533,7 @@ namespace Design
             }
         }
 
-        internal static void logAction(SqlConnection con, Account.Actions action, string arguments)
+        internal static void logAction(SqlConnection con, Account.Actions action, string arguments = null)
         {
             using (var command = con.CreateCommand())
             {

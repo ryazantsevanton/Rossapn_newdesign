@@ -29,10 +29,13 @@
         private void InitializeComponent()
         {
             DevExpress.XtraGrid.Columns.GridColumn cTime;
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.opdPanel = new System.Windows.Forms.SplitContainer();
             this.opPanel = new System.Windows.Forms.SplitContainer();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.intervalLabel = new System.Windows.Forms.Label();
+            this.timeInterval = new Design.BitrackBar();
             this.objectsList = new DevExpress.XtraGrid.GridControl();
             this.objectsView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.cId = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -64,6 +67,7 @@
             this.opPanel.Panel1.SuspendLayout();
             this.opPanel.Panel2.SuspendLayout();
             this.opPanel.SuspendLayout();
+            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectsList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.objectsView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.parametersList)).BeginInit();
@@ -114,6 +118,7 @@
             // 
             // opPanel.Panel1
             // 
+            this.opPanel.Panel1.Controls.Add(this.panel1);
             this.opPanel.Panel1.Controls.Add(this.objectsList);
             this.opPanel.Panel1.Controls.Add(this.label1);
             this.opPanel.Panel1.Padding = new System.Windows.Forms.Padding(4);
@@ -124,8 +129,42 @@
             this.opPanel.Panel2.Controls.Add(this.label2);
             this.opPanel.Panel2.Padding = new System.Windows.Forms.Padding(4);
             this.opPanel.Size = new System.Drawing.Size(362, 643);
-            this.opPanel.SplitterDistance = 321;
+            this.opPanel.SplitterDistance = 421;
             this.opPanel.TabIndex = 4;
+            // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.intervalLabel);
+            this.panel1.Controls.Add(this.timeInterval);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(4, 332);
+            this.panel1.Name = "panel1";
+            this.panel1.Padding = new System.Windows.Forms.Padding(3);
+            this.panel1.Size = new System.Drawing.Size(354, 85);
+            this.panel1.TabIndex = 6;
+            // 
+            // intervalLabel
+            // 
+            this.intervalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.intervalLabel.AutoSize = true;
+            this.intervalLabel.Location = new System.Drawing.Point(6, 1);
+            this.intervalLabel.Name = "intervalLabel";
+            this.intervalLabel.Size = new System.Drawing.Size(132, 17);
+            this.intervalLabel.TabIndex = 4;
+            this.intervalLabel.Text = "Интервал времени";
+            // 
+            // timeInterval
+            // 
+            this.timeInterval.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.timeInterval.Down = 9;
+            this.timeInterval.Location = new System.Drawing.Point(3, 21);
+            this.timeInterval.Name = "timeInterval";
+            this.timeInterval.Size = new System.Drawing.Size(346, 59);
+            this.timeInterval.TabIndex = 5;
+            this.timeInterval.TickCount = 10;
+            this.timeInterval.Up = 0;
             // 
             // objectsList
             // 
@@ -138,7 +177,7 @@
             this.objectsList.Margin = new System.Windows.Forms.Padding(4);
             this.objectsList.Name = "objectsList";
             this.objectsList.Padding = new System.Windows.Forms.Padding(4);
-            this.objectsList.Size = new System.Drawing.Size(354, 293);
+            this.objectsList.Size = new System.Drawing.Size(354, 301);
             this.objectsList.TabIndex = 3;
             this.objectsList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.objectsView});
@@ -232,7 +271,7 @@
             this.parametersList.MainView = this.parametersView;
             this.parametersList.Margin = new System.Windows.Forms.Padding(4);
             this.parametersList.Name = "parametersList";
-            this.parametersList.Size = new System.Drawing.Size(354, 293);
+            this.parametersList.Size = new System.Drawing.Size(354, 193);
             this.parametersList.TabIndex = 4;
             this.parametersList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.parametersView});
@@ -383,11 +422,11 @@
             // 
             // chartControl
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chartControl.ChartAreas.Add(chartArea3);
+            chartArea1.Name = "ChartArea1";
+            this.chartControl.ChartAreas.Add(chartArea1);
             this.chartControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend3.Name = "Legend1";
-            this.chartControl.Legends.Add(legend3);
+            legend1.Name = "Legend1";
+            this.chartControl.Legends.Add(legend1);
             this.chartControl.Location = new System.Drawing.Point(0, 0);
             this.chartControl.Name = "chartControl";
             this.chartControl.Size = new System.Drawing.Size(706, 606);
@@ -411,6 +450,8 @@
             this.opPanel.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.opPanel)).EndInit();
             this.opPanel.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectsList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.objectsView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.parametersList)).EndInit();
@@ -452,6 +493,9 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chartControl;
         private System.Windows.Forms.Panel buttonPanel;
         private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.Label intervalLabel;
+        private BitrackBar timeInterval;
+        private System.Windows.Forms.Panel panel1;
 
     }
 }

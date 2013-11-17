@@ -62,7 +62,7 @@ namespace Design
 
         private void adminButtonClick(object sender, ItemClickEventArgs e)
         {
-            if (!Account.Current.hasPermission(Account.Actions.LoadMetrix))
+            if (Account.Current.Role != Account.Roles.Admin)
             {
                 MessageBox.Show("Недостаточно прав для этой операции");
                 return;
@@ -98,6 +98,7 @@ namespace Design
                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
                 DataHelper.ClearData();
+                DataHelper.logAction(Account.Actions.Wipe);
             }
         }
 

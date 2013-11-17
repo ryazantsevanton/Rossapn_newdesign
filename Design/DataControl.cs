@@ -20,6 +20,7 @@ namespace Design
         object[][] objects;
         object[][] parameters;
         DisplayObjects displayObjects;
+        List<string> supportTimes;
 
         public DataControl()
         {
@@ -45,6 +46,30 @@ namespace Design
             dataView.CustomUnboundColumnData += displayObjects.getUnboundColumnData;
             dataView.CellValueChanged += displayObjects.OnCellValueChanged;
             dataView.RowCellStyle += displayObjects.OnRowCellStyle;
+
+            initTimeIntervals();
+        }
+
+        private void initTimeIntervals()
+        {
+            timeInterval.OnIntervalChanged += OnTimeIntervalChanged;
+
+            List<string> allTimes = DataHelper.GetAllDistinctMetrixObjects();
+            supportTimes = allTimes.Where((s, i) => i % 30 == 0 || i == allTimes.Count - 1).ToList();
+
+            timeInterval.TickCount = supportTimes.Count();
+            if (timeInterval.TickCount >= 2)
+            {
+                timeInterval.Up = timeInterval.TickCount - 2;
+                timeInterval.Down = timeInterval.TickCount - 1;
+            }
+        }
+
+        void OnTimeIntervalChanged(object sender, int min, int max)
+        {
+            if (min == -1 || max == -1) return;
+            intervalLabel.Text = "Интервал времени: [" + supportTimes[min] + "; " + supportTimes[max] + "]";
+            displayObjects.UpdateInterval(supportTimes[min], supportTimes[max]);
         }
 
         void EnableButton()
@@ -63,7 +88,7 @@ namespace Design
             objects[view.FocusedRowHandle][2] = (bool)e.Value;
 
             if ((bool)e.Value == true)
-                displayObjects.addObject((int)objects[view.FocusedRowHandle][0], (string)objects[view.FocusedRowHandle][1]);
+                displayObjects.addObject((int)objects[view.FocusedRowHandle][0], (string)objects[view.FocusedRowHandle][1], supportTimes[timeInterval.Min], supportTimes[timeInterval.Max]);
             else
                 displayObjects.removeObject((int)objects[view.FocusedRowHandle][0]);
 
@@ -75,7 +100,7 @@ namespace Design
             parameters[view.FocusedRowHandle][2] = (bool)e.Value;
 
             if ((bool)e.Value == true)
-                displayObjects.addParameter(new ParameterId((int)parameters[view.FocusedRowHandle][0], (string)parameters[view.FocusedRowHandle][1]));
+                displayObjects.addParameter(new ParameterId((int)parameters[view.FocusedRowHandle][0], (string)parameters[view.FocusedRowHandle][1]), supportTimes[timeInterval.Min], supportTimes[timeInterval.Max]);
             else
                 displayObjects.removeParameter((int)parameters[view.FocusedRowHandle][0]);
         }
@@ -211,7 +236,7 @@ namespace Design
                
             }
 
-            internal void addObject(int objectId, string name)
+            internal void addObject(int objectId, string name, string from, string to)
             {
 
                 if (objects.Count((o) => o.id == objectId) > 0)
@@ -221,7 +246,7 @@ namespace Design
 
                 foreach (ParameterId pId in paramIds)
                 {
-                    joinTimes(obj.addParameter(pId));
+                    joinTimes(obj.addParameter(pId, from, to));
                     insertColumn(pId, dataView.Columns.Count, obj);
                 }
 
@@ -245,7 +270,7 @@ namespace Design
                 refreshTable();
             }
 
-            internal void addParameter(ParameterId parameterId)
+            internal void addParameter(ParameterId parameterId, string from, string to)
             {
 
                 if (paramIds.Find(id => id.id == parameterId.id) != null)
@@ -257,7 +282,7 @@ namespace Design
                 {
 
                     DisplayObject obj = objects[i];
-                    joinTimes(obj.addParameter(parameterId));
+                    joinTimes(obj.addParameter(parameterId, from, to));
                 }
 
                 for (int i = 0; i < objects.Count; i++)
@@ -337,6 +362,10 @@ namespace Design
                 return parameter;
             }
 
+            internal void joinTimes(IEnumerable<string> times)
+            {
+                this.times.UnionWith(times);
+            }
 
             internal List<object[]> getSaveBundle(bool apply)
             {
@@ -345,6 +374,43 @@ namespace Design
                 objects.ForEach(obj => metrix.AddRange(obj.changesBundle(apply)));
 
                 return metrix;
+            }
+
+            internal void UpdateInterval(string from, string to)
+            {
+
+                objects.ForEach(obj => joinTimes(obj.updateInterval(from, to)));
+
+                if (times.Count == 0) return;
+
+                if (from.CompareTo(times.ElementAt(0)) > 0)
+                    times.RemoveWhere(s => s.CompareTo(from) < 0);
+
+                if (times.Count == 0) return;
+
+                if (to.CompareTo(times.ElementAt(times.Count - 1)) < 0)
+                    times.RemoveWhere(s => s.CompareTo(to) > 0);
+
+                refreshTable();
+
+                //Update series
+                foreach(var o in objects)
+                    foreach (var p in o.parameters)
+                    {
+                        Series s;
+                        if (!series.TryGetValue(o.id + "_" + p.id.id, out s)) continue;
+                        s.Points.Clear();
+
+                        SortedDictionary<string, object[]> data = p.columnData;
+
+                        object[] y;
+                        foreach (string time in times)
+                             if (data.TryGetValue(time, out y))
+                                s.Points.AddXY(time, y[2]);
+
+                    }
+
+
             }
         }
 
@@ -365,10 +431,10 @@ namespace Design
                 return parameters[parameterIndex].val(time);
             }
 
-            public DisplayParameter addParameter(ParameterId parameterId)
+            public DisplayParameter addParameter(ParameterId parameterId, string from, string to)
             {
                 DisplayParameter result;
-                parameters.Add(result = new DisplayParameter(parameterId, this.id).load());
+                parameters.Add(result = new DisplayParameter(parameterId, this.id).load(from, to));
                 return result;
             }
 
@@ -376,7 +442,6 @@ namespace Design
             {
                 return parameters.Find(p => p.id.id == parameterId);
             }
-
 
             internal void update(string time, int paramIndex, decimal value)
             {
@@ -396,12 +461,23 @@ namespace Design
 
                 return metrix;
             }
+
+            internal IEnumerable<string> updateInterval(string from, string to)
+            {
+
+                SortedSet<string> newTimes = new SortedSet<string>();
+                parameters.ForEach(param => newTimes.UnionWith(param.updateInterval(from, to)));
+                return newTimes;
+            }
         }
 
         class DisplayParameter
         {
             internal int objectId;
             internal ParameterId id;
+
+            string timeMin;
+            string timeMax;
 
             public SortedDictionary<string, object[]> columnData = new SortedDictionary<string, object[]>();
 
@@ -411,10 +487,19 @@ namespace Design
                 this.objectId = objectId;
             }
 
-            internal DisplayParameter load()
+            internal DisplayParameter load(string from, string to, bool setMin = true, bool setMax = true, SortedSet<string> times = null)
             {
 
-                columnData = DataHelper.GetMetrix(objectId, id.id);
+                var fragment = DataHelper.GetMetrix(objectId, id.id, from, to);
+                foreach (var x in fragment.ToList())
+                    if (!columnData.ContainsKey(x.Key))
+                        columnData.Add(x.Key, x.Value);
+
+                if (times != null)
+                    times.UnionWith(fragment.Keys);
+
+                if (setMin) timeMin = from;
+                if (setMax) timeMax = to;
 
                 return this;
             }
@@ -462,6 +547,29 @@ namespace Design
                     columnData.Remove(key);
 
                 return metrix;
+            }
+
+            internal IEnumerable<string> updateInterval(string from, string to)
+            {
+
+                SortedSet<string> newTimes = new SortedSet<string>();
+
+                if (from.CompareTo(timeMin) < 0 && !columnData.ContainsKey(from))
+                    load(from, timeMin, true, false, newTimes);
+                else if (columnData.ContainsKey(from))
+                {
+                    newTimes.UnionWith(columnData.Keys); //second time no need to load data
+                }
+
+                if (to.CompareTo(timeMax) > 0 && !columnData.ContainsKey(to))
+                    load(timeMax, to, false, true, newTimes);
+                else if (columnData.ContainsKey(to))
+                {
+                    newTimes.UnionWith(columnData.Keys);
+                }
+
+                return newTimes;
+
             }
         }
 
