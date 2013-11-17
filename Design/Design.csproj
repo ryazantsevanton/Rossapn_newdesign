@@ -111,6 +111,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalcForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CalcForm.Designer.cs">
+      <DependentUpon>CalcForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -130,7 +136,10 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\CalcFormula.cs" />
     <Compile Include="Infrastructure\EditAction.cs" />
+    <Compile Include="Infrastructure\Formula.cs" />
+    <Compile Include="Infrastructure\RatesFormulaProcessor.cs" />
     <Compile Include="LoadXlsForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -139,12 +148,27 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RateCalculatorForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RateCalculatorForm.Designer.cs">
+      <DependentUpon>RateCalculatorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SwitchReportForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SwitchReportForm.Designer.cs">
       <DependentUpon>SwitchReportForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CalcForm.resx">
+      <DependentUpon>CalcForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataControl.resx">
       <DependentUpon>DataControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -169,10 +193,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="RateCalculatorForm.resx">
+      <DependentUpon>RateCalculatorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SwitchReportForm.resx">
       <DependentUpon>SwitchReportForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="Properties\DataSources\Design.Infrastructure.Formula.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
