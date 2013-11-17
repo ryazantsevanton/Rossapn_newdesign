@@ -13,16 +13,15 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Design
 {
-    public partial class SwitchReportForm : UserControl
+    public partial class CalcForm : UserControl
     {
         private object[][] objects;
         private object[][] parameters;
         private bool formed;
         private object[] metrixs;
         private object[][] dataMetrixs;
-        private object[][] scheduleMetrix;
 
-        public SwitchReportForm()
+        public CalcForm()
         {
             InitializeComponent();
 
@@ -34,7 +33,7 @@ namespace Design
             objectsView.CellValueChanging += OnObjectSelected;
 
             cbParameters.Items.Clear();
-            cbParameters.Items.AddRange(parameters.Select(p => ((object[])p)[1]).ToArray());
+            cbParameters.Items.AddRange(DataHelper.CustomFormulas.Select(p => p.Name).ToArray());
 
             runButton.Click += OnRunButtonClick;
             closeButton.Click += OnCloseButtonClick;
@@ -50,18 +49,14 @@ namespace Design
                 MessageBox.Show("Выберите тип диапазона времени.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (cbParameters.Text == string.Empty)
-            {
-                MessageBox.Show("Выберите параметр измерения.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+
             var selectedObj = objects.Where(o => (bool)((object[])o)[2]).Select(o => (int)((object[])o)[0]).ToArray();
-            if (selectedObj.Count() < 2)
+            if (selectedObj.Count() != 1)
             {
-                MessageBox.Show("Выберите Как минимум 2 объекта измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Выберите объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            metrixs = DataHelper.GetMetrixByTimeConditions(cbParameters.Text, selectedObj, rbTime.Checked);
+            metrixs = DataHelper.GetMetrixByTimeConditions(string.Empty, selectedObj, rbTime.Checked);
             if (metrixs.Length > 0)
             {
                 trackStart.Minimum = 0;
@@ -123,9 +118,9 @@ namespace Design
                 return;
             }
             var selectedObj = objects.Where(o => (bool)((object[])o)[2]).Select(o => (int)((object[])o)[0]).ToArray();
-            if (selectedObj.Count() < 2)
+            if (selectedObj.Count() != 1)
             {
-                MessageBox.Show("Выберите Как минимум 2 объекта измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Выберите объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             dataMetrixs = DataHelper.GetMetrixByAllConditions(cbParameters.Text, selectedObj, rbTime.Checked, metrixs[trackStart.Value], metrixs[trackEnd.Value]);
@@ -149,14 +144,13 @@ namespace Design
 
                 decimal minValue = dataMetrixs.Min(l => (decimal)l[k]);
                 decimal maxValue = dataMetrixs.Max(l => (decimal)l[k]);
-                kritValues.Add(new decimal[] {minValue, maxValue, (maxValue - minValue) / numberCount });
+                kritValues.Add(new decimal[] { minValue, maxValue, (maxValue - minValue) / numberCount });
             }
-            
+
 
 
 
             chartControl.Series.Clear();
-            chartSchedule.Series.Clear();
 
             Series s = null;
 
@@ -174,8 +168,8 @@ namespace Design
                 }
                 else
                 {
-                    var title = selectedObj[j-1].ToString();
-                    object[] t = objects.FirstOrDefault(o => (int)o[0] == selectedObj[j-1]);
+                    var title = selectedObj[j - 1].ToString();
+                    object[] t = objects.FirstOrDefault(o => (int)o[0] == selectedObj[j - 1]);
                     if (t != null)
                     {
                         title = t[1].ToString();
@@ -187,24 +181,10 @@ namespace Design
 
                     chartControl.Series.Add(s);
 
-                    s = new Series();
-                    s.Name = unbColumn.Caption;
-                    s.ChartType = SeriesChartType.FastLine;
-
-                    chartSchedule.Series.Add(s);
                 }
-
-                GridColumn schColumn = viewSchedule.Columns.AddField("col" + j);
-                schColumn.VisibleIndex = viewSchedule.Columns.Count;
-                schColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
-                schColumn.OptionsColumn.AllowEdit = false;
-                schColumn.AppearanceCell.BackColor = Color.LemonChiffon;
-                schColumn.Caption = unbColumn.Caption;
             }
 
-            List<object[]> scheduleMetrixList = new List<object[]>();
 
-            int currentSerie = 0;
             for (int i = 0; i < dataMetrixs.Length; i++)
             {
                 long value = 0;
@@ -220,60 +200,12 @@ namespace Design
                     ss.Points.AddXY(strValue, dataMetrixs[i][j]);
                     j++;
                 }
-
-                j = 1;
-                object[] values = new object[chartSchedule.Series.Count + 1];
-                values[0] = strValue;
-
-                foreach (var ss in chartSchedule.Series)
-                {
-                    if (i % scheduleRange == 0)
-                    {
-                        currentSerie = (i / scheduleRange) % chartSchedule.Series.Count;
-                    }
-                    if (currentSerie + 1 != j)
-                    {
-                        values[j] = dataMetrixs[i][j];
-                    }
-                    else {
-                        var o = kritValues.ElementAt(j - 1);
-                        var step = Convert.ToInt32((decimal)dataMetrixs[i][j] - o[0]) / Convert.ToInt32(o[2]);
-                        values[j] = Convert.ToDouble(
-                            ((decimal)dataMetrixs[i][j] - o[0] - step * Convert.ToInt32(o[2])) / Convert.ToInt32(o[2])) > 0.5 
-                                    ? o[2] * (step + 1) + o[0]
-                                    : o[2] * step + o[0];
-                    }
-
-                    ss.Points.AddXY(strValue, values[j]);
-                    j++;
-                }
-                scheduleMetrixList.Add(values);
             }
 
-            scheduleMetrix = scheduleMetrixList.ToArray();
             mainView.CustomUnboundColumnData += CustomUnboundColumnData;
-            viewSchedule.CustomUnboundColumnData += CustomUnboundColumnScheduleData;
 
-            grid.DataSource = dataMetrixs;            
-            gridSchedule.DataSource = scheduleMetrix;
+            grid.DataSource = dataMetrixs;
 
-        }
-
-        private void CustomUnboundColumnScheduleData(object sender, CustomColumnDataEventArgs e)
-        {
-            if (e.Column.AbsoluteIndex == 0)
-            {
-                long value = 0;
-                string v = scheduleMetrix[e.ListSourceRowIndex][e.Column.AbsoluteIndex].ToString();
-                if (!Int64.TryParse(v, out value))
-                {
-                    value = -1;
-                }
-                e.Value = value == -1 ? v : value.ToString();                
-                return;
-            }
-
-            e.Value = scheduleMetrix[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
         }
 
         private void CustomUnboundColumnData(object sender, CustomColumnDataEventArgs e)
@@ -286,7 +218,7 @@ namespace Design
                 {
                     value = -1;
                 }
-                e.Value = value == -1 ? v : value.ToString();                
+                e.Value = value == -1 ? v : value.ToString();
                 return;
             }
 
@@ -323,7 +255,8 @@ namespace Design
                 trackStart.Value = trackStart.Maximum;
                 tbStart.Text = metrixs[trackStart.Value].ToString();
             }
-            tbEnd.Text = metrixs[trackEnd.Value].ToString();
+            
+            tbEnd.Text = metrixs.Length <= trackEnd.Value ? "-" :   metrixs[trackEnd.Value].ToString();
         }
 
     }
