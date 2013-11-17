@@ -33,6 +33,9 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.opdPanel = new System.Windows.Forms.SplitContainer();
             this.opPanel = new System.Windows.Forms.SplitContainer();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.intervalLabel = new System.Windows.Forms.Label();
+            this.timeInterval = new Design.BitrackBar();
             this.objectsList = new DevExpress.XtraGrid.GridControl();
             this.objectsView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.cId = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -49,6 +52,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.buttonPanel = new System.Windows.Forms.Panel();
+            this.saveButton = new System.Windows.Forms.Button();
             this.dataTable = new DevExpress.XtraGrid.GridControl();
             this.dataView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -62,12 +67,14 @@
             this.opPanel.Panel1.SuspendLayout();
             this.opPanel.Panel2.SuspendLayout();
             this.opPanel.SuspendLayout();
+            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectsList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.objectsView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.parametersList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.parametersView)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.buttonPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).BeginInit();
             this.tabPage2.SuspendLayout();
@@ -79,7 +86,8 @@
             cTime.Caption = "Время";
             cTime.FieldName = "cTime";
             cTime.Name = "cTime";
-            cTime.UnboundType = DevExpress.Data.UnboundColumnType.Decimal;
+            cTime.OptionsColumn.AllowEdit = false;
+            cTime.UnboundType = DevExpress.Data.UnboundColumnType.DateTime;
             cTime.Visible = true;
             cTime.VisibleIndex = 0;
             // 
@@ -110,6 +118,7 @@
             // 
             // opPanel.Panel1
             // 
+            this.opPanel.Panel1.Controls.Add(this.panel1);
             this.opPanel.Panel1.Controls.Add(this.objectsList);
             this.opPanel.Panel1.Controls.Add(this.label1);
             this.opPanel.Panel1.Padding = new System.Windows.Forms.Padding(4);
@@ -120,8 +129,42 @@
             this.opPanel.Panel2.Controls.Add(this.label2);
             this.opPanel.Panel2.Padding = new System.Windows.Forms.Padding(4);
             this.opPanel.Size = new System.Drawing.Size(362, 643);
-            this.opPanel.SplitterDistance = 321;
+            this.opPanel.SplitterDistance = 421;
             this.opPanel.TabIndex = 4;
+            // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.intervalLabel);
+            this.panel1.Controls.Add(this.timeInterval);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(4, 332);
+            this.panel1.Name = "panel1";
+            this.panel1.Padding = new System.Windows.Forms.Padding(3);
+            this.panel1.Size = new System.Drawing.Size(354, 85);
+            this.panel1.TabIndex = 6;
+            // 
+            // intervalLabel
+            // 
+            this.intervalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.intervalLabel.AutoSize = true;
+            this.intervalLabel.Location = new System.Drawing.Point(6, 1);
+            this.intervalLabel.Name = "intervalLabel";
+            this.intervalLabel.Size = new System.Drawing.Size(132, 17);
+            this.intervalLabel.TabIndex = 4;
+            this.intervalLabel.Text = "Интервал времени";
+            // 
+            // timeInterval
+            // 
+            this.timeInterval.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.timeInterval.Down = 9;
+            this.timeInterval.Location = new System.Drawing.Point(3, 21);
+            this.timeInterval.Name = "timeInterval";
+            this.timeInterval.Size = new System.Drawing.Size(346, 59);
+            this.timeInterval.TabIndex = 5;
+            this.timeInterval.TickCount = 10;
+            this.timeInterval.Up = 0;
             // 
             // objectsList
             // 
@@ -134,7 +177,7 @@
             this.objectsList.Margin = new System.Windows.Forms.Padding(4);
             this.objectsList.Name = "objectsList";
             this.objectsList.Padding = new System.Windows.Forms.Padding(4);
-            this.objectsList.Size = new System.Drawing.Size(354, 293);
+            this.objectsList.Size = new System.Drawing.Size(354, 301);
             this.objectsList.TabIndex = 3;
             this.objectsList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.objectsView});
@@ -228,7 +271,7 @@
             this.parametersList.MainView = this.parametersView;
             this.parametersList.Margin = new System.Windows.Forms.Padding(4);
             this.parametersList.Name = "parametersList";
-            this.parametersList.Size = new System.Drawing.Size(354, 293);
+            this.parametersList.Size = new System.Drawing.Size(354, 193);
             this.parametersList.TabIndex = 4;
             this.parametersList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.parametersView});
@@ -301,6 +344,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.buttonPanel);
             this.tabPage1.Controls.Add(this.dataTable);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
@@ -310,16 +354,41 @@
             this.tabPage1.Text = "Таблица";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // buttonPanel
+            // 
+            this.buttonPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.buttonPanel.Controls.Add(this.saveButton);
+            this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.buttonPanel.Location = new System.Drawing.Point(3, 561);
+            this.buttonPanel.Name = "buttonPanel";
+            this.buttonPanel.Size = new System.Drawing.Size(700, 42);
+            this.buttonPanel.TabIndex = 6;
+            // 
+            // saveButton
+            // 
+            this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveButton.Enabled = false;
+            this.saveButton.Location = new System.Drawing.Point(568, 4);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(128, 34);
+            this.saveButton.TabIndex = 0;
+            this.saveButton.Text = "Сохранить";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.OnSaveButtonClick);
+            // 
             // dataTable
             // 
-            this.dataTable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataTable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataTable.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
             this.dataTable.Location = new System.Drawing.Point(3, 3);
             this.dataTable.MainView = this.dataView;
             this.dataTable.Margin = new System.Windows.Forms.Padding(4);
             this.dataTable.Name = "dataTable";
             this.dataTable.Padding = new System.Windows.Forms.Padding(4);
-            this.dataTable.Size = new System.Drawing.Size(700, 600);
+            this.dataTable.Size = new System.Drawing.Size(700, 551);
             this.dataTable.TabIndex = 5;
             this.dataTable.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.dataView});
@@ -333,6 +402,11 @@
             this.dataView.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
             this.dataView.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
             this.dataView.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
+            this.dataView.OptionsCustomization.AllowColumnMoving = false;
+            this.dataView.OptionsCustomization.AllowFilter = false;
+            this.dataView.OptionsCustomization.AllowGroup = false;
+            this.dataView.OptionsCustomization.AllowQuickHideColumns = false;
+            this.dataView.OptionsCustomization.AllowSort = false;
             this.dataView.OptionsView.ShowGroupPanel = false;
             this.dataView.OptionsView.ShowIndicator = false;
             // 
@@ -376,12 +450,15 @@
             this.opPanel.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.opPanel)).EndInit();
             this.opPanel.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectsList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.objectsView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.parametersList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.parametersView)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.buttonPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataView)).EndInit();
             this.tabPage2.ResumeLayout(false);
@@ -414,6 +491,11 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn4;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn5;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartControl;
+        private System.Windows.Forms.Panel buttonPanel;
+        private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.Label intervalLabel;
+        private BitrackBar timeInterval;
+        private System.Windows.Forms.Panel panel1;
 
     }
 }

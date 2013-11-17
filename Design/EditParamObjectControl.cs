@@ -29,7 +29,8 @@ namespace Design
             unbColumn.VisibleIndex = 0;
             unbColumn.Caption = type ? "Параметры" : "Объекты";
             unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
-            unbColumn.OptionsColumn.AllowEdit = true;
+            //Allow edit only to admin
+            unbColumn.OptionsColumn.AllowEdit = Account.Current.hasPermission(Account.Actions.EditSystemEntities);
             unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
 
             unbColumn = mainView.Columns.AddField("counts");
@@ -54,6 +55,11 @@ namespace Design
             cancelButton.Click += OnCancelButtonClick;
             deleteButton.Click += OnDeleteButtonClick;
             saveButton.Click += OnSaveButtonClick;
+
+            //Allow edit only to admin
+            cancelButton.Enabled = Account.Current.hasPermission(Account.Actions.EditSystemEntities);
+            deleteButton.Enabled = Account.Current.hasPermission(Account.Actions.EditSystemEntities);
+            saveButton.Enabled = Account.Current.hasPermission(Account.Actions.EditSystemEntities);
 
             modified = false;
         }
