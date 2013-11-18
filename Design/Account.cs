@@ -71,6 +71,9 @@ namespace Design
 
         internal static void removeOne(Account account)
         {
+
+            if (account.Login.Equals("admin")) throw new Exception("Невозможно удалить");
+
             account.Deleted = true;
             DataHelper.UpdateAccount(account);
             DataHelper.logAction(Actions.EditUser, "Удалён: " + account.Login); 
@@ -123,6 +126,9 @@ namespace Design
 
         internal static void changeRole(Account account, Roles role)
         {
+
+            if (account.Login.Equals("admin")) throw new Exception("Невозможно изменить группу");
+
             account.Role = role;
             DataHelper.UpdateAccount(account);
             DataHelper.logAction(Actions.EditUser, "Группа изменена: " + account.Login + " -> " + role.ToString());
