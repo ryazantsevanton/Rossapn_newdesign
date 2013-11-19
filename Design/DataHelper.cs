@@ -323,8 +323,8 @@ namespace Design
                              + t.EntityId + "," + t.PredicateId + ",'" + t.MetrixObject + "', " + t.MetrixValue.ToString() + ")";
                         }
                         else { //yyyy-mm-dd hh:mi:ss
-                            command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue, metrixData) values (" 
-                             + t.EntityId + "," + t.PredicateId + ",'" + t.MetrixObject + "', " + t.MetrixValue.ToString() + 
+                            command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue, metrixData) values ("
+                             + t.EntityId + "," + t.PredicateId + ",'" + String.Format("{0:yyyy/MM/dd H:mm:ss}", t.MetrixDate) + "', " + t.MetrixValue.ToString() + 
                              string.Format(", convert(datetime, '{0}-{1}-{2} {3}:{4}:{5}', 120))", t.MetrixDate.Value.Year, t.MetrixDate.Value.Month,
                              t.MetrixDate.Value.Day, t.MetrixDate.Value.Hour, t.MetrixDate.Value.Minute, t.MetrixDate.Value.Second);
                         }
@@ -1076,6 +1076,7 @@ namespace Design
             int day;
             int hours;
             int minutes;
+            int seconds;
 
             var delimeter = string.Empty;
             int pos = date.IndexOf("/");
@@ -1135,16 +1136,22 @@ namespace Design
 
             date = date.Substring(pos + 1);
 
-            if (!Int32.TryParse(date, out minutes))
-            {
-                return null;
-            }
+            if (Int32.TryParse(date, out minutes))
+                try
+                {
+                    return new DateTime(year, month, day, hours, minutes, 0);
+                }
+                catch { return null; }
 
             try
             {
-                return new DateTime(year, month, day, hours, minutes, 0);
-            }
+                if (date.IndexOf(":") != -1 && Int32.TryParse(date.Substring(0,2), out minutes) && Int32.TryParse(date.Substring(2,2), out seconds))
+                
+                        return new DateTime(year, month, day, hours, minutes, seconds);
+                    }
             catch { return null; }
+
+            return null;
         }
     }
 }
