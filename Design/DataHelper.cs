@@ -131,7 +131,7 @@ namespace Design
                 if (o == null || o is DBNull)
                 {
                     maxNumber++;
-                    command.CommandText = String.Format("insert into Predicates(predicateid, predicatevalue) values ({0}, '{1}', {2})", maxNumber, value, inited);
+                    command.CommandText = String.Format("insert into Predicates(predicateid, predicatevalue, inited) values ({0}, '{1}', {2})", maxNumber, value, inited ? 1 : 0);
                     command.ExecuteNonQuery();
                     return maxNumber;
                 }
@@ -212,7 +212,15 @@ namespace Design
                 command.CommandText = type
                     ? "select max(predicateid) from Predicates"
                     : "select max(entityid) from Entities";
-                var o = (int)command.ExecuteScalar() +1;
+                int o = 0;
+                try
+                {
+                    o = (int)command.ExecuteScalar() + 1;
+                }
+                catch (Exception e)
+                {
+                    o = 0;
+                }
 
 
                 command.CommandText = type
@@ -312,7 +320,7 @@ namespace Design
                         if (t.MetrixDate == null) 
                         {
                             command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue) values ("
-                             + t.EntityId + "," + t.PredicateId + "," + t.MetrixObject + ", " + t.MetrixValue.ToString() + ")";
+                             + t.EntityId + "," + t.PredicateId + ",'" + t.MetrixObject + "', " + t.MetrixValue.ToString() + ")";
                         }
                         else { //yyyy-mm-dd hh:mi:ss
                             command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue, metrixData) values (" 
@@ -1062,6 +1070,7 @@ namespace Design
             //           metrix.MetrixDate.Value.Year, metrix.MetrixDate.Value.Month,
             //         metrix.MetrixDate.Value.Day, metrix.MetrixDate.Value.Hour,
             //       metrix.MetrixDate.Value.Minute, metrix.MetrixDate.Value.Second);
+      
             int year = 0;
             int month;
             int day;
