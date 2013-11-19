@@ -70,7 +70,7 @@ namespace Design
 
         private void OnEditObjectButtonClick(object sender, ItemClickEventArgs e)
         {
-            showControl("EditObjectControl", new EditParamObjectControl(false));
+            showControl("EditObjectControl", new EditObjectControl());
         }
 
         private void OnLoadClick(object sender, EventArgs e)

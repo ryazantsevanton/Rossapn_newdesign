@@ -12,22 +12,22 @@ using Design.Infrastructure;
 
 namespace Design
 {
-    public partial class EditParamObjectControl : UserControl
+    public partial class EditObjectControl : UserControl
     {
-        private bool type;
+
         private object[][] data;
         private bool modified;
 
-        public EditParamObjectControl(bool type)
+        public EditObjectControl()
         {
             InitializeComponent();
-            this.type = type;
-            lTitle.Text = type ? "Редактор Параметров" : "Редактор Объектов";
-            data = type ? DataHelper.GetParamStatistic() : DataHelper.GetObjectStatistic();
+
+            lTitle.Text =  "Редактор Объектов";
+            data = DataHelper.GetObjectStatistic();
 
             GridColumn unbColumn = mainView.Columns.AddField("titles");
             unbColumn.VisibleIndex = 0;
-            unbColumn.Caption = type ? "Параметры" : "Объекты";
+            unbColumn.Caption = "Объекты";
             unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
             //Allow edit only to admin
             unbColumn.OptionsColumn.AllowEdit = Account.Current.hasPermission(Account.Actions.EditSystemEntities);
@@ -46,24 +46,17 @@ namespace Design
             unbColumn.OptionsColumn.AllowEdit = true;
             unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
 
-            unbColumn = mainView.Columns.AddField("Рассчетные");
-            unbColumn.VisibleIndex = type ? 2 : -1;
+            unbColumn = mainView.Columns.AddField("Месторождение");
+            unbColumn.VisibleIndex = 2;
             unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
-            unbColumn.OptionsColumn.AllowEdit = false;
+            unbColumn.OptionsColumn.AllowEdit = true;
             unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
 
             unbColumn = mainView.Columns.AddField("Куст");
-            unbColumn.VisibleIndex = type ? -1 : 3;
+            unbColumn.VisibleIndex = 3;
             unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
             unbColumn.OptionsColumn.AllowEdit = true;
             unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
-
-            unbColumn = mainView.Columns.AddField("Месторождение");
-            unbColumn.VisibleIndex = type ? -1 : 4;
-            unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
-            unbColumn.OptionsColumn.AllowEdit = true;
-            unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
-
 
             grid.DataSource = data;
 
@@ -111,17 +104,14 @@ namespace Design
 
         private void OnValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
         {
+
+            if (e.Value == null) return;
+
             for(int i =0; i< data.Length; i++)
             {
                 if (data[i][0].ToString().ToLower() == e.Value.ToString().ToLower() && i != mainView.FocusedRowHandle)
                 {
-                    e.ErrorText = "Такой " + (type ? "параметр" : "object") + " уже существует.";
-                    e.Valid = false;
-                    return;
-                }
-                if ((int)data[i][3] == 1)
-                {
-                    e.ErrorText = "Расчетные параметры изменять нельзя";
+                    e.ErrorText = "Такой object уже существует.";
                     e.Valid = false;
                     return;
                 }
@@ -136,7 +126,17 @@ namespace Design
             if (data[mainView.FocusedRowHandle][0].ToString().ToLower().
                 Equals(v.EditingValue.ToString().ToLower())) { return; }
             data[mainView.FocusedRowHandle][2] = EditAction.Modified;
-            data[mainView.FocusedRowHandle][0] = ((ColumnView)sender).EditingValue.ToString(); 
+            if (e.Column.AbsoluteIndex >= 3)
+            {
+                var val = ((ColumnView)sender).EditingValue.ToString();
+                if (String.IsNullOrWhiteSpace(val)) val = null;
+                data[mainView.FocusedRowHandle][e.Column.AbsoluteIndex+2] = val; 
+            }
+            else
+            {
+                data[mainView.FocusedRowHandle][e.Column.AbsoluteIndex] = ((ColumnView)sender).EditingValue.ToString(); 
+            }
+            
             modified = true;
             mainView.RefreshData();
         }
@@ -155,10 +155,11 @@ namespace Design
                 foreach (var d in data.Where(d1 => ((EditAction)d1[2]) != EditAction.None)) 
                 {
                     if (((EditAction)d[2]) == EditAction.Delete) {
-                        DataHelper.DeleteObject(d[4].ToString(), con, type);
+                        DataHelper.DeleteObject(d[4].ToString(), con, false);
                     }
                     else {
-                        DataHelper.UpdateObject(d[0].ToString(), d[4].ToString(), con, type);
+                        DataHelper.UpdateObject(d[0].ToString(), d[4].ToString(), con, false);
+                        DataHelper.UpdateEntityGrouping((int)d[7], d[6], d[5], con);
                     }
                 }
             }
@@ -170,14 +171,14 @@ namespace Design
             if (String.IsNullOrEmpty(beAddEntity.Text)) { return; }
             if (data.Any(d => (string)d[0] == beAddEntity.Text))
             {
-                MessageBox.Show("Такой " + (type ? "параметр" : "object") + " уже существует.", "Проверка",
+                MessageBox.Show("Такой object уже существует.", "Проверка",
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
              using(var con = DataHelper.OpenOrCreateDb()) {
-                 DataHelper.AddObject(beAddEntity.Text, con, type, 0);
+                 DataHelper.AddObject(beAddEntity.Text, con, false, 0);
              }
-             data = type ? DataHelper.GetParamStatistic() : DataHelper.GetObjectStatistic();
+             data = DataHelper.GetObjectStatistic();
              grid.DataSource = data;
              grid.Refresh();
              beAddEntity.Text = string.Empty;
@@ -185,9 +186,9 @@ namespace Design
 
         private void CustomUnboundColumnData(object sender, CustomColumnDataEventArgs e)
         {
-            if (e.Column.AbsoluteIndex == 3)
+            if (e.Column.AbsoluteIndex >= 3)
             {
-                e.Value = (int)data[e.ListSourceRowIndex][e.Column.AbsoluteIndex] == 1 ? "Настройки" : "Доступны";
+                e.Value = data[e.ListSourceRowIndex][e.Column.AbsoluteIndex+2];
             }
             else
             {

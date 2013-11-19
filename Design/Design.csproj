@@ -137,6 +137,12 @@
       <DependentUpon>DataControl.cs</DependentUpon>
     </Compile>
     <Compile Include="DataHelper.cs" />
+    <Compile Include="EditObjectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EditObjectControl.Designer.cs">
+      <DependentUpon>EditObjectControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="EditParamObjectControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -197,6 +203,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataControl.resx">
       <DependentUpon>DataControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditObjectControl.resx">
+      <DependentUpon>EditObjectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditParamObjectControl.resx">
       <DependentUpon>EditParamObjectControl.cs</DependentUpon>

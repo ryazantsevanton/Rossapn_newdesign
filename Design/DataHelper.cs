@@ -205,6 +205,18 @@ namespace Design
             }        
         }
 
+        public static void UpdateEntityGrouping(int entityid, object subgroup, object group, SqlConnection con)
+        {
+            using (var command = con.CreateCommand())
+            {
+                command.CommandText = String.Format("delete EntityGroups where entityid = {0};", entityid) +
+                    String.Format("insert into EntityGroups(groupName, subgroupName, entityid) values ({0},{1},{2});", group == null ? "NULL" : "'" + group.ToString() + "'",
+                                                                                                                     subgroup == null ? "NULL" : "'" + subgroup.ToString() + "'", 
+                                                                                                                     entityid);
+                command.ExecuteNonQuery();
+            }
+        }
+
         public static void AddObject(string newkey, SqlConnection con, bool type, int inited)
         {
             using (var command = con.CreateCommand())
@@ -245,7 +257,7 @@ namespace Design
 
                 command.CommandText = type
                     ? "delete Predicates where predicateid = " + o
-                    : "delete Entities where entityid = " + o;
+                    : "delete EntityGroups where entityid = " + o + "; delete Entities where entityid = " + o;
                 command.ExecuteNonQuery();
             }
         }
@@ -342,15 +354,19 @@ namespace Design
             {
                 using (var command = con.CreateCommand())
                 {
-                    command.CommandText = "select e.entityvalue, COUNT(*) - 1, 0 counter from Entities e left join " +
-                                          " metrix m on e.entityid = m.entityid group by e.entityvalue";
+                    command.CommandText = "select e.entityvalue, COUNT(*) - 1, 0 counter, g.groupName, g.subgroupName, e.entityid from Entities e" +   
+                            " left join EntityGroups g on g.entityid = e.entityid" +
+                            " left join metrix m on e.entityid = m.entityid group by e.entityvalue, g.groupName, g.subgroupName, e.entityid order by e.entityvalue";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader != null)
                         {
                             while (reader.Read())
                             {
-                                data.Add(new object[] { reader.GetString(0), reader.GetInt32(1), EditAction.None, reader.GetInt32(2), reader.GetString(0) });
+                                data.Add(new object[] { reader.GetString(0), reader.GetInt32(1), EditAction.None, reader.GetInt32(2), reader.GetString(0), 
+                                                        /* grouping */    reader.IsDBNull(3) ? null : reader.GetString(3), 
+                                                                          reader.IsDBNull(4) ? null : reader.GetString(4),
+                                                        /* entityid */    reader.GetInt32(5) });
                             }
                         }
                     }
