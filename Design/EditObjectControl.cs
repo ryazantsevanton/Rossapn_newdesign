@@ -63,7 +63,6 @@ namespace Design
             mainView.CustomUnboundColumnData += CustomUnboundColumnData;
             mainView.RowCellStyle += OnRowStyle;
             mainView.CellValueChanged += OnValueChanged;
-            mainView.ValidatingEditor += OnValidatingEditor;
             cancelButton.Click += OnCancelButtonClick;
             deleteButton.Click += OnDeleteButtonClick;
             saveButton.Click += OnSaveButtonClick;
@@ -102,38 +101,31 @@ namespace Design
             Dispose();
         }
 
-        private void OnValidatingEditor(object sender, DevExpress.XtraEditors.Controls.BaseContainerValidateEditorEventArgs e)
-        {
-
-            if (e.Value == null) return;
-
-            for(int i =0; i< data.Length; i++)
-            {
-                if (data[i][0].ToString().ToLower() == e.Value.ToString().ToLower() && i != mainView.FocusedRowHandle)
-                {
-                    e.ErrorText = "Такой object уже существует.";
-                    e.Valid = false;
-                    return;
-                }
-            }
-            e.ErrorText = string.Empty;
-            e.Valid = true;
-        }
-
         private void OnValueChanged(object sender, CellValueChangedEventArgs e)
         {
             var v = (ColumnView)sender;
             if (data[mainView.FocusedRowHandle][0].ToString().ToLower().
                 Equals(v.EditingValue.ToString().ToLower())) { return; }
-            data[mainView.FocusedRowHandle][2] = EditAction.Modified;
+
             if (e.Column.AbsoluteIndex >= 3)
             {
                 var val = ((ColumnView)sender).EditingValue.ToString();
                 if (String.IsNullOrWhiteSpace(val)) val = null;
-                data[mainView.FocusedRowHandle][e.Column.AbsoluteIndex+2] = val; 
+                data[mainView.FocusedRowHandle][e.Column.AbsoluteIndex+2] = val;
+                data[mainView.FocusedRowHandle][2] = EditAction.Modified;
             }
             else
             {
+                for (int i = 0; i < data.Length; i++)
+                {
+                    if (data[i][0].ToString().ToLower().Equals(v.EditingValue.ToString().ToLower()) && i != mainView.FocusedRowHandle)
+                    {
+                        MessageBox.Show("Такой object уже существует.", "Проверка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+                data[mainView.FocusedRowHandle][2] = EditAction.Modified;
                 data[mainView.FocusedRowHandle][e.Column.AbsoluteIndex] = ((ColumnView)sender).EditingValue.ToString(); 
             }
             

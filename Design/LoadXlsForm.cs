@@ -48,20 +48,27 @@ namespace Design
             menu.MenuItems.Add(0, new MenuItem("Учитывать параметром", AddColumnParameter));
             menu.MenuItems.Add(1, new MenuItem("Учитывать как время", AddColumnTime));
 
-            List<MenuItem> menuItems = new List<MenuItem>();
+            List<MenuItem> groupedObjects = new List<MenuItem>();
             foreach(var m in DataHelper.GetObjectsWithGroups().GroupBy(g => g[3])) {
-                menuItems.Add(new MenuItem((string)m.Key,
+                groupedObjects.Add(new MenuItem((string)m.Key,
                    m.GroupBy(d => d[4]).Select(m2 => new MenuItem((string)m2.Key,
                         m2.Select(m3 => new MenuItem((string)m3[1], (_, __) => AddColumnObject((string)m3[1]))).ToArray()
                         )).ToArray()));
 
             }
 
-            menu.MenuItems.Add(2, new MenuItem("Учитывать как объект", menuItems.ToArray()));
+            List<MenuItem> branchObjects = new List<MenuItem>();
+            foreach (var m in DataHelper.GetBranchObjects())
+            {
+                branchObjects.Add(new MenuItem((string)m[1], (_, __) => AddColumnObject((string)m[1])));
+            }
 
-            menu.MenuItems.Add(3, new MenuItem("Сбросить объекты", ClearColumnObject));
-            menu.MenuItems.Add(4, new MenuItem("Сбросить параметры", ClearColumnParameter));
-            menu.MenuItems.Add(5, new MenuItem("Сбросить время", ClearColumnTime));
+            menu.MenuItems.Add(2, new MenuItem("Учитывать как объект", groupedObjects.ToArray()));
+            menu.MenuItems.Add(3, new MenuItem("Учитывать как кустовой объект", branchObjects.ToArray()));
+
+            menu.MenuItems.Add(4, new MenuItem("Сбросить объекты", ClearColumnObject));
+            menu.MenuItems.Add(5, new MenuItem("Сбросить параметры", ClearColumnParameter));
+            menu.MenuItems.Add(6, new MenuItem("Сбросить время", ClearColumnTime));
 
             paramShName.Click += OnParamShNameClick;
             timeShName.Click += OnTimeShNameClick;

@@ -1060,6 +1060,48 @@ namespace Design
         }
 
         public static List<CalcFormula> CustomFormulas { get; set; }
+
+        internal static List<object[]> GetBranchObjects()
+        {
+            List<object[]> branches = new List<object[]>();
+
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = "select Entities.entityid, entityvalue FROM Entities, EntityGroups WHERE Entities.entityvalue = EntityGroups.subgroupName GROUP BY Entities.entityid, entityValue, EntityGroups.subgroupName";
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                            while (reader.Read())
+                            {
+                                branches.Add(new object[] { reader.GetInt32(0), reader.GetString(1)});
+                            }
+                    }
+                }
+            }
+
+            return branches;
+        }
+
+        internal static int FindBranchEntity(int entity)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = "select Entities.entityid, entityvalue FROM Entities, EntityGroups WHERE Entities.entityvalue = EntityGroups.subgroupName AND EntityGroups.entityid = "+entity;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader != null && reader.Read())
+                            return reader.GetInt32(0);
+                        else return -1;
+                    }
+                }
+            }
+
+        }
+
     }
 
     public class Triplet
