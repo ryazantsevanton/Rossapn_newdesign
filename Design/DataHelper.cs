@@ -180,6 +180,7 @@ namespace Design
                     {
                         var sb = new StringBuilder();
                         sb.AppendLine("BEGIN TRANSACTION;").
+                            AppendLine("delete EntityGroups;").
                             AppendLine("delete Entities;").
                             AppendLine("delete Predicates;").
                             AppendLine("delete metrix;").
