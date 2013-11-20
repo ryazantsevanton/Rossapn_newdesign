@@ -30,12 +30,6 @@
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.trackStart = new System.Windows.Forms.TrackBar();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -58,26 +52,12 @@
             this.gridColumn4 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.label1 = new System.Windows.Forms.Label();
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.dataPage = new System.Windows.Forms.TabPage();
+            this.closeButton = new System.Windows.Forms.Button();
+            this.runButton = new System.Windows.Forms.Button();
             this.importButton = new System.Windows.Forms.Button();
             this.chartControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.runButton = new System.Windows.Forms.Button();
-            this.closeButton = new System.Windows.Forms.Button();
             this.grid = new DevExpress.XtraGrid.GridControl();
             this.mainView = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.schedulePage = new System.Windows.Forms.TabPage();
-            this.gridSchedule = new DevExpress.XtraGrid.GridControl();
-            this.viewSchedule = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.chartSchedule = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.case1Page = new System.Windows.Forms.TabPage();
-            this.chartCase1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.gridCase1 = new DevExpress.XtraGrid.GridControl();
-            this.viewCase1 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.case2Page = new System.Windows.Forms.TabPage();
-            this.chartCase2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.gridCase2 = new DevExpress.XtraGrid.GridControl();
-            this.viewCase2 = new DevExpress.XtraGrid.Views.Grid.GridView();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -88,23 +68,9 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectsList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.objectsView)).BeginInit();
-            this.tabControl.SuspendLayout();
-            this.dataPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainView)).BeginInit();
-            this.schedulePage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridSchedule)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.viewSchedule)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartSchedule)).BeginInit();
-            this.case1Page.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartCase1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridCase1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.viewCase1)).BeginInit();
-            this.case2Page.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartCase2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridCase2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.viewCase2)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -127,7 +93,11 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.tabControl);
+            this.splitContainer1.Panel2.Controls.Add(this.closeButton);
+            this.splitContainer1.Panel2.Controls.Add(this.runButton);
+            this.splitContainer1.Panel2.Controls.Add(this.importButton);
+            this.splitContainer1.Panel2.Controls.Add(this.chartControl);
+            this.splitContainer1.Panel2.Controls.Add(this.grid);
             this.splitContainer1.Size = new System.Drawing.Size(940, 515);
             this.splitContainer1.SplitterDistance = 264;
             this.splitContainer1.SplitterWidth = 1;
@@ -355,37 +325,27 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "Объекты";
             // 
-            // tabControl
+            // closeButton
             // 
-            this.tabControl.Controls.Add(this.dataPage);
-            this.tabControl.Controls.Add(this.schedulePage);
-            this.tabControl.Controls.Add(this.case1Page);
-            this.tabControl.Controls.Add(this.case2Page);
-            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.Location = new System.Drawing.Point(0, 0);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(675, 515);
-            this.tabControl.TabIndex = 0;
+            this.closeButton.Location = new System.Drawing.Point(585, 478);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(75, 23);
+            this.closeButton.TabIndex = 3;
+            this.closeButton.Text = "Закрыть ";
+            this.closeButton.UseVisualStyleBackColor = true;
             // 
-            // dataPage
+            // runButton
             // 
-            this.dataPage.Controls.Add(this.importButton);
-            this.dataPage.Controls.Add(this.chartControl);
-            this.dataPage.Controls.Add(this.runButton);
-            this.dataPage.Controls.Add(this.closeButton);
-            this.dataPage.Controls.Add(this.grid);
-            this.dataPage.Location = new System.Drawing.Point(4, 22);
-            this.dataPage.Name = "dataPage";
-            this.dataPage.Padding = new System.Windows.Forms.Padding(3);
-            this.dataPage.Size = new System.Drawing.Size(667, 489);
-            this.dataPage.TabIndex = 0;
-            this.dataPage.Text = "Данные";
-            this.dataPage.UseVisualStyleBackColor = true;
+            this.runButton.Location = new System.Drawing.Point(479, 478);
+            this.runButton.Name = "runButton";
+            this.runButton.Size = new System.Drawing.Size(85, 23);
+            this.runButton.TabIndex = 4;
+            this.runButton.Text = "Обработать";
+            this.runButton.UseVisualStyleBackColor = true;
             // 
             // importButton
             // 
-            this.importButton.Location = new System.Drawing.Point(380, 456);
+            this.importButton.Location = new System.Drawing.Point(352, 478);
             this.importButton.Name = "importButton";
             this.importButton.Size = new System.Drawing.Size(109, 23);
             this.importButton.TabIndex = 6;
@@ -401,36 +361,18 @@
             this.chartControl.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chartControl.Legends.Add(legend1);
-            this.chartControl.Location = new System.Drawing.Point(5, 192);
+            this.chartControl.Location = new System.Drawing.Point(4, 203);
             this.chartControl.Margin = new System.Windows.Forms.Padding(2);
             this.chartControl.Name = "chartControl";
-            this.chartControl.Size = new System.Drawing.Size(656, 259);
+            this.chartControl.Size = new System.Drawing.Size(656, 270);
             this.chartControl.TabIndex = 5;
-            // 
-            // runButton
-            // 
-            this.runButton.Location = new System.Drawing.Point(495, 456);
-            this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(85, 23);
-            this.runButton.TabIndex = 4;
-            this.runButton.Text = "Обработать";
-            this.runButton.UseVisualStyleBackColor = true;
-            // 
-            // closeButton
-            // 
-            this.closeButton.Location = new System.Drawing.Point(586, 456);
-            this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(75, 23);
-            this.closeButton.TabIndex = 3;
-            this.closeButton.Text = "Закрыть ";
-            this.closeButton.UseVisualStyleBackColor = true;
             // 
             // grid
             // 
-            this.grid.Location = new System.Drawing.Point(6, 7);
+            this.grid.Location = new System.Drawing.Point(5, 3);
             this.grid.MainView = this.mainView;
             this.grid.Name = "grid";
-            this.grid.Size = new System.Drawing.Size(655, 178);
+            this.grid.Size = new System.Drawing.Size(655, 195);
             this.grid.TabIndex = 2;
             this.grid.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.mainView});
@@ -444,145 +386,6 @@
             this.mainView.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
             this.mainView.OptionsView.ShowGroupPanel = false;
             this.mainView.OptionsView.ShowIndicator = false;
-            // 
-            // schedulePage
-            // 
-            this.schedulePage.Controls.Add(this.gridSchedule);
-            this.schedulePage.Controls.Add(this.chartSchedule);
-            this.schedulePage.Location = new System.Drawing.Point(4, 22);
-            this.schedulePage.Name = "schedulePage";
-            this.schedulePage.Padding = new System.Windows.Forms.Padding(3);
-            this.schedulePage.Size = new System.Drawing.Size(667, 489);
-            this.schedulePage.TabIndex = 1;
-            this.schedulePage.Text = "По расписанию";
-            this.schedulePage.UseVisualStyleBackColor = true;
-            // 
-            // gridSchedule
-            // 
-            this.gridSchedule.Location = new System.Drawing.Point(6, 7);
-            this.gridSchedule.MainView = this.viewSchedule;
-            this.gridSchedule.Name = "gridSchedule";
-            this.gridSchedule.Size = new System.Drawing.Size(655, 196);
-            this.gridSchedule.TabIndex = 8;
-            this.gridSchedule.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.viewSchedule});
-            // 
-            // viewSchedule
-            // 
-            this.viewSchedule.GridControl = this.gridSchedule;
-            this.viewSchedule.Name = "viewSchedule";
-            this.viewSchedule.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
-            this.viewSchedule.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
-            this.viewSchedule.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
-            this.viewSchedule.OptionsView.ShowGroupPanel = false;
-            this.viewSchedule.OptionsView.ShowIndicator = false;
-            // 
-            // chartSchedule
-            // 
-            this.chartSchedule.BorderlineColor = System.Drawing.Color.Gray;
-            this.chartSchedule.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            this.chartSchedule.BorderlineWidth = 2;
-            chartArea2.Name = "ChartArea1";
-            this.chartSchedule.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chartSchedule.Legends.Add(legend2);
-            this.chartSchedule.Location = new System.Drawing.Point(5, 208);
-            this.chartSchedule.Margin = new System.Windows.Forms.Padding(2);
-            this.chartSchedule.Name = "chartSchedule";
-            this.chartSchedule.Size = new System.Drawing.Size(656, 271);
-            this.chartSchedule.TabIndex = 7;
-            // 
-            // case1Page
-            // 
-            this.case1Page.Controls.Add(this.chartCase1);
-            this.case1Page.Controls.Add(this.gridCase1);
-            this.case1Page.Location = new System.Drawing.Point(4, 22);
-            this.case1Page.Name = "case1Page";
-            this.case1Page.Size = new System.Drawing.Size(667, 489);
-            this.case1Page.TabIndex = 2;
-            this.case1Page.Text = "Событие 1";
-            this.case1Page.UseVisualStyleBackColor = true;
-            // 
-            // chartCase1
-            // 
-            this.chartCase1.BorderlineColor = System.Drawing.Color.Gray;
-            this.chartCase1.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            this.chartCase1.BorderlineWidth = 2;
-            chartArea3.Name = "ChartArea1";
-            this.chartCase1.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chartCase1.Legends.Add(legend3);
-            this.chartCase1.Location = new System.Drawing.Point(5, 207);
-            this.chartCase1.Margin = new System.Windows.Forms.Padding(2);
-            this.chartCase1.Name = "chartCase1";
-            this.chartCase1.Size = new System.Drawing.Size(656, 259);
-            this.chartCase1.TabIndex = 7;
-            // 
-            // gridCase1
-            // 
-            this.gridCase1.Location = new System.Drawing.Point(6, 22);
-            this.gridCase1.MainView = this.viewCase1;
-            this.gridCase1.Name = "gridCase1";
-            this.gridCase1.Size = new System.Drawing.Size(655, 178);
-            this.gridCase1.TabIndex = 6;
-            this.gridCase1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.viewCase1});
-            // 
-            // viewCase1
-            // 
-            this.viewCase1.GridControl = this.gridCase1;
-            this.viewCase1.Name = "viewCase1";
-            this.viewCase1.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
-            this.viewCase1.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
-            this.viewCase1.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
-            this.viewCase1.OptionsView.ShowGroupPanel = false;
-            this.viewCase1.OptionsView.ShowIndicator = false;
-            // 
-            // case2Page
-            // 
-            this.case2Page.Controls.Add(this.chartCase2);
-            this.case2Page.Controls.Add(this.gridCase2);
-            this.case2Page.Location = new System.Drawing.Point(4, 22);
-            this.case2Page.Name = "case2Page";
-            this.case2Page.Size = new System.Drawing.Size(667, 489);
-            this.case2Page.TabIndex = 3;
-            this.case2Page.Text = "Событие 2";
-            this.case2Page.UseVisualStyleBackColor = true;
-            // 
-            // chartCase2
-            // 
-            this.chartCase2.BorderlineColor = System.Drawing.Color.Gray;
-            this.chartCase2.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            this.chartCase2.BorderlineWidth = 2;
-            chartArea4.Name = "ChartArea1";
-            this.chartCase2.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.chartCase2.Legends.Add(legend4);
-            this.chartCase2.Location = new System.Drawing.Point(5, 207);
-            this.chartCase2.Margin = new System.Windows.Forms.Padding(2);
-            this.chartCase2.Name = "chartCase2";
-            this.chartCase2.Size = new System.Drawing.Size(656, 259);
-            this.chartCase2.TabIndex = 9;
-            // 
-            // gridCase2
-            // 
-            this.gridCase2.Location = new System.Drawing.Point(6, 22);
-            this.gridCase2.MainView = this.viewCase2;
-            this.gridCase2.Name = "gridCase2";
-            this.gridCase2.Size = new System.Drawing.Size(655, 178);
-            this.gridCase2.TabIndex = 8;
-            this.gridCase2.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.viewCase2});
-            // 
-            // viewCase2
-            // 
-            this.viewCase2.GridControl = this.gridCase2;
-            this.viewCase2.Name = "viewCase2";
-            this.viewCase2.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
-            this.viewCase2.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
-            this.viewCase2.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
-            this.viewCase2.OptionsView.ShowGroupPanel = false;
-            this.viewCase2.OptionsView.ShowIndicator = false;
             // 
             // SwitchReportForm
             // 
@@ -605,23 +408,9 @@
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.objectsList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.objectsView)).EndInit();
-            this.tabControl.ResumeLayout(false);
-            this.dataPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainView)).EndInit();
-            this.schedulePage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridSchedule)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.viewSchedule)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartSchedule)).EndInit();
-            this.case1Page.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.chartCase1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridCase1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.viewCase1)).EndInit();
-            this.case2Page.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.chartCase2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridCase2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.viewCase2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -649,11 +438,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn4;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn5;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage dataPage;
-        private System.Windows.Forms.TabPage schedulePage;
-        private System.Windows.Forms.TabPage case1Page;
-        private System.Windows.Forms.TabPage case2Page;
         private System.Windows.Forms.Button runButton;
         private System.Windows.Forms.Button closeButton;
         private DevExpress.XtraGrid.GridControl grid;
@@ -661,14 +445,5 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chartControl;
         private System.Windows.Forms.Button importButton;
         private System.Windows.Forms.Button refTimeButton;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartSchedule;
-        private DevExpress.XtraGrid.GridControl gridSchedule;
-        private DevExpress.XtraGrid.Views.Grid.GridView viewSchedule;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartCase1;
-        private DevExpress.XtraGrid.GridControl gridCase1;
-        private DevExpress.XtraGrid.Views.Grid.GridView viewCase1;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartCase2;
-        private DevExpress.XtraGrid.GridControl gridCase2;
-        private DevExpress.XtraGrid.Views.Grid.GridView viewCase2;
     }
 }

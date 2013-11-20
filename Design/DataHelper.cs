@@ -212,7 +212,12 @@ namespace Design
                 command.CommandText = type
                     ? "select max(predicateid) from Predicates"
                     : "select max(entityid) from Entities";
-                var o = (int)command.ExecuteScalar() +1;
+                int o = 1;
+                try
+                {
+                    o = (int)command.ExecuteScalar() + 1;
+                }
+                catch { o = 1;}
 
 
                 command.CommandText = type
@@ -312,11 +317,11 @@ namespace Design
                         if (t.MetrixDate == null) 
                         {
                             command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue) values ("
-                             + t.EntityId + "," + t.PredicateId + "," + t.MetrixObject + ", " + t.MetrixValue.ToString() + ")";
+                             + t.EntityId + "," + t.PredicateId + "," + GetMetrixObject(t.MetrixObject) + ", " + t.MetrixValue.ToString() + ")";
                         }
                         else { //yyyy-mm-dd hh:mi:ss
-                            command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue, metrixData) values (" 
-                             + t.EntityId + "," + t.PredicateId + ",'" + t.MetrixObject + "', " + t.MetrixValue.ToString() + 
+                            command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue, metrixData) values ("
+                             + t.EntityId + "," + t.PredicateId + ",'" + GetMetrixObject(t.MetrixObject) + "', " + t.MetrixValue.ToString() + 
                              string.Format(", convert(datetime, '{0}-{1}-{2} {3}:{4}:{5}', 120))", t.MetrixDate.Value.Year, t.MetrixDate.Value.Month,
                              t.MetrixDate.Value.Day, t.MetrixDate.Value.Hour, t.MetrixDate.Value.Minute, t.MetrixDate.Value.Second);
                         }
@@ -325,6 +330,11 @@ namespace Design
                 }
 
             }
+        }
+
+        private static string GetMetrixObject(string p)
+        {
+            return String.IsNullOrEmpty(p) ? string.Empty : "'" + p + "'";
         }
 
         internal static object[][] GetObjectStatistic()

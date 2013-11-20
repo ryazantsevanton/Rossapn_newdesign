@@ -23,6 +23,7 @@ namespace Design
             DevExpress.UserSkins.BonusSkins.Register();
             UserLookAndFeel.Default.SetSkinStyle("DevExpress Style");
 
+      /*      MessageBox.Show("Add Formulas, Start");
             var dllDir = new DirectoryInfo(Environment.CurrentDirectory);
             DataHelper.CustomFormulas = new List<CalcFormula>();
             foreach (var file in dllDir.GetFiles("*.dll", SearchOption.AllDirectories))
@@ -32,6 +33,7 @@ namespace Design
                                         Where(t => t.GetInterface(typeof(CalcFormula).FullName, true) != null).
                                         Select(t => (CalcFormula)Activator.CreateInstance(t)));
             }
+            MessageBox.Show("Add Formulas, Update Db");
             using (var con = DataHelper.OpenOrCreateDb()) {
                 foreach (var d in DataHelper.CustomFormulas)
                 {
@@ -39,7 +41,7 @@ namespace Design
                     DataHelper.GetParameter(d.Name, con, true);
                 }
             }
-
+            MessageBox.Show("Run Application"); */
             Application.Run(new Form1());
         }
     }

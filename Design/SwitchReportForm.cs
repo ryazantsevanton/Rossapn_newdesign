@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Columns;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.IO;
+using Microsoft.Office.Interop.Excel;
 
 namespace Design
 {
@@ -20,7 +22,6 @@ namespace Design
         private bool formed;
         private object[] metrixs;
         private object[][] dataMetrixs;
-        private object[][] scheduleMetrix;
 
         public SwitchReportForm()
         {
@@ -56,9 +57,9 @@ namespace Design
                 return;
             }
             var selectedObj = objects.Where(o => (bool)((object[])o)[2]).Select(o => (int)((object[])o)[0]).ToArray();
-            if (selectedObj.Count() < 2)
+            if (selectedObj.Count() != 1)
             {
-                MessageBox.Show("Выберите Как минимум 2 объекта измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Выберите один объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             metrixs = DataHelper.GetMetrixByTimeConditions(cbParameters.Text, selectedObj, rbTime.Checked);
@@ -96,8 +97,76 @@ namespace Design
 
         private void OnImportButtonClick(object sender, EventArgs e)
         {
-            formed = false;
+            if (!formed)
+            {
+                return;
+            }
+
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            Microsoft.Office.Interop.Excel.Application objExcel = null;
+            Workbook objWorkBook = null;
+            Worksheet objWorkSheet = null;
+            try
+            {
+                string fileName = String.Empty;
+                saveFileDialog1.Filter = "xls files (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+                saveFileDialog1.FilterIndex = 1;
+                saveFileDialog1.RestoreDirectory = true;
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    fileName = saveFileDialog1.FileName;
+                }
+                else
+                    return;
+
+                var f = new FileInfo(fileName);
+                if (f.Exists)
+                {
+                    f.Delete();
+                }
+
+                objExcel = new Microsoft.Office.Interop.Excel.Application();
+
+                var selectedObj = objects.Where(o => (bool)((object[])o)[2]).Select(o => (string)((object[])o)[1]).FirstOrDefault();
+                string title = String.IsNullOrEmpty(selectedObj) ? "Unknown" : selectedObj;
+
+                objWorkBook = objExcel.Workbooks.Add(System.Reflection.Missing.Value);
+                objWorkSheet = objExcel.ActiveSheet as Worksheet;
+                objWorkSheet.Cells[1, 4] = "Отчет по скважине " + title;
+                objWorkSheet.Cells[2, 4] = "за период с " + tbStart.Text + " по " + tbEnd.Text;
+                objWorkSheet.Cells[3, 4] = "параметр -  " + cbParameters.Text;
+
+                objWorkSheet.Cells[5, 1] = "Время";
+                objWorkSheet.Cells[5, 2] = "Значение";
+
+                for (int i = 0; i < dataMetrixs.Length; i++)
+                {
+                    long value = 0;
+                    if (!Int64.TryParse(dataMetrixs[i][0].ToString(), out value))
+                    {
+                        value = -1;
+                    }
+
+                    string strValue = value == -1 ? (string)dataMetrixs[i][0] : value.ToString();
+
+                    objWorkSheet.Cells[6 + i, 1] = strValue;
+                    objWorkSheet.Cells[6 + i, 2] = dataMetrixs[i][1];                    
+                }
+
+                objWorkBook.SaveAs(fileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                                   XlSaveAsAccessMode.xlShared, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                MessageBox.Show("Файл - " + fileName + " успешно сохранен");
+                formed = false;
+            }
+            finally { 
+                saveFileDialog1.Dispose();
+
+                if (objWorkSheet != null) { objWorkSheet = null; }
+                if (objWorkBook != null) { objWorkBook.Close(); objWorkBook = null; }
+                if (objExcel != null) { objExcel = null;}
+            }
         }
+
 
         private void OnCloseButtonClick(object sender, EventArgs e)
         {
@@ -123,42 +192,16 @@ namespace Design
                 return;
             }
             var selectedObj = objects.Where(o => (bool)((object[])o)[2]).Select(o => (int)((object[])o)[0]).ToArray();
-            if (selectedObj.Count() < 2)
+            if (selectedObj.Count() != 1)
             {
-                MessageBox.Show("Выберите Как минимум 2 объекта измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Выберите один объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             dataMetrixs = DataHelper.GetMetrixByAllConditions(cbParameters.Text, selectedObj, rbTime.Checked, metrixs[trackStart.Value], metrixs[trackEnd.Value]);
-
-            decimal numberCount = DataHelper.GetSettingValue("ScaleData");
-            if (numberCount == null || numberCount == 0)
-            {
-                numberCount = 10;
-            }
-
-            int scheduleRange = Convert.ToInt32(DataHelper.GetSettingValue("RangeSchedule"));
-            if (scheduleRange == null || scheduleRange == 0)
-            {
-                scheduleRange = 30;
-            }
-
-            List<decimal[]> kritValues = new List<decimal[]>();
-
-            for (int k = 1; k < dataMetrixs[0].Length; k++)
-            {
-
-                decimal minValue = dataMetrixs.Min(l => (decimal)l[k]);
-                decimal maxValue = dataMetrixs.Max(l => (decimal)l[k]);
-                kritValues.Add(new decimal[] {minValue, maxValue, (maxValue - minValue) / numberCount });
-            }
-            
-
-
-
+           
             chartControl.Series.Clear();
-            chartSchedule.Series.Clear();
 
-            Series s = null;
+            System.Windows.Forms.DataVisualization.Charting.Series s = null;
 
             for (int j = 0; j < dataMetrixs[0].Length; j++)
             {
@@ -181,30 +224,15 @@ namespace Design
                         title = t[1].ToString();
                     }
                     unbColumn.Caption = title;
-                    s = new Series();
+                    s = new System.Windows.Forms.DataVisualization.Charting.Series();
                     s.Name = unbColumn.Caption;
                     s.ChartType = SeriesChartType.FastLine;
 
                     chartControl.Series.Add(s);
-
-                    s = new Series();
-                    s.Name = unbColumn.Caption;
-                    s.ChartType = SeriesChartType.FastLine;
-
-                    chartSchedule.Series.Add(s);
                 }
-
-                GridColumn schColumn = viewSchedule.Columns.AddField("col" + j);
-                schColumn.VisibleIndex = viewSchedule.Columns.Count;
-                schColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
-                schColumn.OptionsColumn.AllowEdit = false;
-                schColumn.AppearanceCell.BackColor = Color.LemonChiffon;
-                schColumn.Caption = unbColumn.Caption;
             }
 
-            List<object[]> scheduleMetrixList = new List<object[]>();
 
-            int currentSerie = 0;
             for (int i = 0; i < dataMetrixs.Length; i++)
             {
                 long value = 0;
@@ -220,60 +248,12 @@ namespace Design
                     ss.Points.AddXY(strValue, dataMetrixs[i][j]);
                     j++;
                 }
-
-                j = 1;
-                object[] values = new object[chartSchedule.Series.Count + 1];
-                values[0] = strValue;
-
-                foreach (var ss in chartSchedule.Series)
-                {
-                    if (i % scheduleRange == 0)
-                    {
-                        currentSerie = (i / scheduleRange) % chartSchedule.Series.Count;
-                    }
-                    if (currentSerie + 1 != j)
-                    {
-                        values[j] = dataMetrixs[i][j];
-                    }
-                    else {
-                        var o = kritValues.ElementAt(j - 1);
-                        var step = Convert.ToInt32((decimal)dataMetrixs[i][j] - o[0]) / Convert.ToInt32(o[2]);
-                        values[j] = Convert.ToDouble(
-                            ((decimal)dataMetrixs[i][j] - o[0] - step * Convert.ToInt32(o[2])) / Convert.ToInt32(o[2])) > 0.5 
-                                    ? o[2] * (step + 1) + o[0]
-                                    : o[2] * step + o[0];
-                    }
-
-                    ss.Points.AddXY(strValue, values[j]);
-                    j++;
-                }
-                scheduleMetrixList.Add(values);
             }
 
-            scheduleMetrix = scheduleMetrixList.ToArray();
             mainView.CustomUnboundColumnData += CustomUnboundColumnData;
-            viewSchedule.CustomUnboundColumnData += CustomUnboundColumnScheduleData;
 
             grid.DataSource = dataMetrixs;            
-            gridSchedule.DataSource = scheduleMetrix;
 
-        }
-
-        private void CustomUnboundColumnScheduleData(object sender, CustomColumnDataEventArgs e)
-        {
-            if (e.Column.AbsoluteIndex == 0)
-            {
-                long value = 0;
-                string v = scheduleMetrix[e.ListSourceRowIndex][e.Column.AbsoluteIndex].ToString();
-                if (!Int64.TryParse(v, out value))
-                {
-                    value = -1;
-                }
-                e.Value = value == -1 ? v : value.ToString();                
-                return;
-            }
-
-            e.Value = scheduleMetrix[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
         }
 
         private void CustomUnboundColumnData(object sender, CustomColumnDataEventArgs e)
