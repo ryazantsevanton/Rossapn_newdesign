@@ -30,6 +30,8 @@
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.trackStart = new System.Windows.Forms.TrackBar();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -54,13 +56,18 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.dataPage = new System.Windows.Forms.TabPage();
-            this.importButton = new System.Windows.Forms.Button();
             this.chartControl = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.runButton = new System.Windows.Forms.Button();
             this.closeButton = new System.Windows.Forms.Button();
             this.grid = new DevExpress.XtraGrid.GridControl();
             this.mainView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridView4 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.sourcePage = new System.Windows.Forms.TabPage();
+            this.chartSource = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.gridSource = new DevExpress.XtraGrid.GridControl();
+            this.viewSource = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.saveButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -77,6 +84,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView4)).BeginInit();
+            this.sourcePage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.viewSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView2)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -330,6 +342,7 @@
             // tabControl
             // 
             this.tabControl.Controls.Add(this.dataPage);
+            this.tabControl.Controls.Add(this.sourcePage);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
@@ -339,7 +352,7 @@
             // 
             // dataPage
             // 
-            this.dataPage.Controls.Add(this.importButton);
+            this.dataPage.Controls.Add(this.saveButton);
             this.dataPage.Controls.Add(this.chartControl);
             this.dataPage.Controls.Add(this.runButton);
             this.dataPage.Controls.Add(this.closeButton);
@@ -351,15 +364,6 @@
             this.dataPage.TabIndex = 0;
             this.dataPage.Text = "Данные";
             this.dataPage.UseVisualStyleBackColor = true;
-            // 
-            // importButton
-            // 
-            this.importButton.Location = new System.Drawing.Point(380, 456);
-            this.importButton.Name = "importButton";
-            this.importButton.Size = new System.Drawing.Size(109, 23);
-            this.importButton.TabIndex = 6;
-            this.importButton.Text = "Импорт в Excel";
-            this.importButton.UseVisualStyleBackColor = true;
             // 
             // chartControl
             // 
@@ -420,6 +424,67 @@
             this.gridView4.GridControl = this.grid;
             this.gridView4.Name = "gridView4";
             // 
+            // sourcePage
+            // 
+            this.sourcePage.Controls.Add(this.chartSource);
+            this.sourcePage.Controls.Add(this.gridSource);
+            this.sourcePage.Location = new System.Drawing.Point(4, 22);
+            this.sourcePage.Name = "sourcePage";
+            this.sourcePage.Size = new System.Drawing.Size(667, 489);
+            this.sourcePage.TabIndex = 1;
+            this.sourcePage.Text = "Исходные данные";
+            this.sourcePage.UseVisualStyleBackColor = true;
+            // 
+            // chartSource
+            // 
+            this.chartSource.BorderlineColor = System.Drawing.Color.Gray;
+            this.chartSource.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            this.chartSource.BorderlineWidth = 2;
+            chartArea2.Name = "ChartArea1";
+            this.chartSource.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chartSource.Legends.Add(legend2);
+            this.chartSource.Location = new System.Drawing.Point(5, 207);
+            this.chartSource.Margin = new System.Windows.Forms.Padding(2);
+            this.chartSource.Name = "chartSource";
+            this.chartSource.Size = new System.Drawing.Size(656, 266);
+            this.chartSource.TabIndex = 7;
+            // 
+            // gridSource
+            // 
+            this.gridSource.Location = new System.Drawing.Point(6, 7);
+            this.gridSource.MainView = this.viewSource;
+            this.gridSource.Name = "gridSource";
+            this.gridSource.Size = new System.Drawing.Size(655, 200);
+            this.gridSource.TabIndex = 6;
+            this.gridSource.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.viewSource,
+            this.gridView2});
+            // 
+            // viewSource
+            // 
+            this.viewSource.GridControl = this.gridSource;
+            this.viewSource.Name = "viewSource";
+            this.viewSource.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
+            this.viewSource.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
+            this.viewSource.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
+            this.viewSource.OptionsView.ShowGroupPanel = false;
+            this.viewSource.OptionsView.ShowIndicator = false;
+            // 
+            // gridView2
+            // 
+            this.gridView2.GridControl = this.gridSource;
+            this.gridView2.Name = "gridView2";
+            // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(404, 456);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(85, 23);
+            this.saveButton.TabIndex = 6;
+            this.saveButton.Text = "Сохранить";
+            this.saveButton.UseVisualStyleBackColor = true;
+            // 
             // CalcForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -447,6 +512,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mainView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView4)).EndInit();
+            this.sourcePage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.viewSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -477,12 +547,17 @@
         private System.Windows.Forms.Button refTimeButton;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage dataPage;
-        private System.Windows.Forms.Button importButton;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartControl;
         private System.Windows.Forms.Button runButton;
         private System.Windows.Forms.Button closeButton;
         private DevExpress.XtraGrid.GridControl grid;
         private DevExpress.XtraGrid.Views.Grid.GridView mainView;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView4;
+        private System.Windows.Forms.TabPage sourcePage;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartSource;
+        private DevExpress.XtraGrid.GridControl gridSource;
+        private DevExpress.XtraGrid.Views.Grid.GridView viewSource;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
+        private System.Windows.Forms.Button saveButton;
     }
 }

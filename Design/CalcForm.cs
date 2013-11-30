@@ -17,9 +17,13 @@ namespace Design
     {
         private object[][] objects;
         private object[][] parameters;
-        private bool formed;
         private object[] metrixs;
-        private object[][] dataMetrixs;
+        private List<string> sourceTitles;
+        CalcFormula formula;
+        List<object[]> itogData;
+        List<object[]> sourceData;
+        bool formed;
+
 
         public CalcForm()
         {
@@ -37,9 +41,36 @@ namespace Design
 
             runButton.Click += OnRunButtonClick;
             closeButton.Click += OnCloseButtonClick;
-            importButton.Click += OnImportButtonClick;
-            formed = false;
             refTimeButton.Click += OnRefTimeButtonClick;
+            saveButton.Click += OnSaveButtonClick;
+            sourceTitles = new List<string>();
+            itogData = new List<object[]>();
+            sourceData = new List<object[]>();
+            formed = false;
+        }
+
+        private void OnSaveButtonClick(object sender, EventArgs e)
+        {
+            object[][] selObj = objects.Where(o => (bool)((object[])o)[2]).ToArray();
+            using (var con = DataHelper.OpenOrCreateDb())
+            {
+                int formPredicateId = DataHelper.GetParameter(cbParameters.Text, con, true);
+
+                foreach (var d in itogData)
+                {
+                    for (int i = 1; i < d.Length; i++)
+                    {
+                        Triplet t = new Triplet((int)selObj[i - 1][0], formPredicateId, d[0].ToString(), (decimal)d[i]);
+                        DateTime dat;
+                        if (DateTime.TryParse(d[0].ToString(), out dat))
+                        {
+                            t.MetrixDate = dat;
+                        }
+                        DataHelper.SetMetrix(t, con);
+                    }
+                }
+            }
+            MessageBox.Show("Сохранено " + itogData.Count + " объектов");
         }
 
         private void OnRefTimeButtonClick(object sender, EventArgs e)
@@ -51,7 +82,7 @@ namespace Design
             }
 
             var selectedObj = objects.Where(o => (bool)((object[])o)[2]).Select(o => (int)((object[])o)[0]).ToArray();
-            if (selectedObj.Count() != 1)
+            if (selectedObj.Count() == 0)
             {
                 MessageBox.Show("Выберите объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -89,14 +120,9 @@ namespace Design
             }
         }
 
-        private void OnImportButtonClick(object sender, EventArgs e)
-        {
-            formed = false;
-        }
-
         private void OnCloseButtonClick(object sender, EventArgs e)
         {
-            if (formed && DialogResult.Yes != MessageBox.Show("Вы действительно хотите закрыть форму?",
+            if (formed && DialogResult.Yes != MessageBox.Show("Есть несохраненные данные.\r\nВы действительно хотите закрыть форму?",
                 "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
                 return;
@@ -106,7 +132,12 @@ namespace Design
 
         private void OnRunButtonClick(object sender, EventArgs e)
         {
-            formed = true;
+            if (formed && DialogResult.Yes != MessageBox.Show("Есть несохраненные данные.\r\nВы действительно хотите рассчитать форму?",
+                "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                return;
+            }
+
             if (!rbTime.Checked && !rbRelation.Checked)
             {
                 MessageBox.Show("Выберите тип диапазона времени.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -118,112 +149,170 @@ namespace Design
                 return;
             }
             var selectedObj = objects.Where(o => (bool)((object[])o)[2]).Select(o => (int)((object[])o)[0]).ToArray();
-            if (selectedObj.Count() != 1)
+            if (selectedObj.Count() == 0)
             {
                 MessageBox.Show("Выберите объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            dataMetrixs = DataHelper.GetMetrixByAllConditions(cbParameters.Text, selectedObj, rbTime.Checked, metrixs[trackStart.Value], metrixs[trackEnd.Value]);
-
- /*           decimal numberCount = DataHelper.GetSettingValue("ScaleData");
-            if (numberCount == null || numberCount == 0)
+            if (trackStart.Value == 0 && trackEnd.Value == 1)
             {
-                numberCount = 10;
+                MessageBox.Show("Нет данных для выбранных измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            int scheduleRange = Convert.ToInt32(DataHelper.GetSettingValue("RangeSchedule"));
-            if (scheduleRange == null || scheduleRange == 0)
+            formula = DataHelper.CustomFormulas.FirstOrDefault(f => f.Name == cbParameters.Text);
+            if (formula == null)
             {
-                scheduleRange = 30;
+                MessageBox.Show("Для параметра - '" + cbParameters.Text + "' не определено рассчетных формул",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+            sourceTitles.Clear();
+            itogData.Clear();
+            sourceData.Clear();
 
-            List<decimal[]> kritValues = new List<decimal[]>();
+            string[] predicates = formula.InitPredicates();
+            object[][] selObj = objects.Where(o => (bool)((object[])o)[2]).ToArray();
+            object[][] param  = null;
 
-            for (int k = 1; k < dataMetrixs[0].Length; k++)
+            using (var con = DataHelper.OpenOrCreateDb())
             {
+                try
+                {
+                    List<object> data = new List<object>();
+                    List<object> rdata = new List<object>();
 
-                decimal minValue = dataMetrixs.Min(l => (decimal)l[k]);
-                decimal maxValue = dataMetrixs.Max(l => (decimal)l[k]);
-                kritValues.Add(new decimal[] { minValue, maxValue, (maxValue - minValue) / numberCount });
+                    for (var i = trackStart.Value; i <= trackEnd.Value; i++)
+                    {
+                        data.Clear();
+                        data.Add(metrixs[i]);
+
+                        rdata.Clear();
+                        rdata.Add(metrixs[i]);
+
+                        for (var s = 0; s < selObj.Length; s++)
+                        {
+                            try
+                            {
+                                param = predicates.Select(p => new object[] {p, 
+                                                    DataHelper.GetMetrix((int)selObj[s][0], p, metrixs[i], rbTime.Checked, con)}).ToArray();
+
+                                data.AddRange(param.Select(p => p[1]));
+
+                                decimal value = formula.Calc(param);
+
+                                rdata.Add(value);
+                               
+                                if (sourceTitles.Count == s * predicates.Length)
+                                {
+                                    sourceTitles.AddRange(predicates.Select(p => (string)selObj[s][1] + "/" + p));
+                                }
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Ошибка обработки данных для '" + (string)selObj[s][1] + "'. Обратитесь к разработчику");
+                                continue;
+                            }
+                        }
+                        sourceData.Add(data.ToArray());
+                        itogData.Add(rdata.ToArray());
+                    }
+                }
+                finally { con.Close(); }
+                PrepareViews();
+                formed = true;
             }
+        }
 
-
-
-
+        private void PrepareViews()
+        {
+            mainView.Columns.Clear();
+            viewSource.Columns.Clear();
             chartControl.Series.Clear();
+            chartSource.Series.Clear();
 
             Series s = null;
+            
+            object[][] selObj = objects.Where(o => (bool)((object[])o)[2]).ToArray();
 
-            for (int j = 0; j < dataMetrixs[0].Length; j++)
+            for (int j = 0; j <= selObj.Length; j++)
             {
                 GridColumn unbColumn = mainView.Columns.AddField("col" + j);
                 unbColumn.VisibleIndex = mainView.Columns.Count;
                 unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
                 unbColumn.OptionsColumn.AllowEdit = false;
                 unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
+                unbColumn.Caption = j == 0 ? "Время" : (string)selObj[j - 1][1];
+                mainView.CustomUnboundColumnData += CustomUnboundColumnDataMainView;
 
-                if (j == 0)
+                if (j > 0)
                 {
-                    unbColumn.Caption = "Время";
-                }
-                else
-                {
-                    var title = selectedObj[j - 1].ToString();
-                    object[] t = objects.FirstOrDefault(o => (int)o[0] == selectedObj[j - 1]);
-                    if (t != null)
-                    {
-                        title = t[1].ToString();
-                    }
-                    unbColumn.Caption = title;
                     s = new Series();
                     s.Name = unbColumn.Caption;
                     s.ChartType = SeriesChartType.FastLine;
-
                     chartControl.Series.Add(s);
-
                 }
             }
 
-
-            for (int i = 0; i < dataMetrixs.Length; i++)
+            for (int j = 0; j <= sourceTitles.Count; j++)
             {
-                long value = 0;
-                if (!Int64.TryParse(dataMetrixs[i][0].ToString(), out value))
-                {
-                    value = -1;
-                }
+                GridColumn unbColumn = viewSource.Columns.AddField("col" + j);
+                unbColumn.VisibleIndex = viewSource.Columns.Count;
+                unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+                unbColumn.OptionsColumn.AllowEdit = false;
+                unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
+                unbColumn.Caption = j == 0 ? "Время" : sourceTitles.ElementAt(j -1);
+                viewSource.CustomUnboundColumnData += CustomUnboundColumnDataViewSource;
 
-                string strValue = value == -1 ? (string)dataMetrixs[i][0] : value.ToString();
+                if (j > 0)
+                {
+                    s = new Series();
+                    s.Name = unbColumn.Caption;
+                    s.ChartType = SeriesChartType.FastLine;
+                    chartSource.Series.Add(s);
+                }
+            }
+
+            for (int i = 0; i < itogData.Count; i++)
+            {
+                string strValue = itogData[i][0].ToString();
                 int j = 1;
                 foreach (var ss in chartControl.Series)
                 {
-                    ss.Points.AddXY(strValue, dataMetrixs[i][j]);
+                    ss.Points.AddXY(strValue, itogData[i][j]);
+                    j++;
+                }
+                j = 1;
+                foreach (var ss in chartSource.Series)
+                {
+                    ss.Points.AddXY(strValue, sourceData[i][j]);
                     j++;
                 }
             }
 
-            mainView.CustomUnboundColumnData += CustomUnboundColumnData;
+            grid.DataSource = itogData;
+            gridSource.DataSource = sourceData;
 
-            grid.DataSource = dataMetrixs;
-            */
         }
 
-        private void CustomUnboundColumnData(object sender, CustomColumnDataEventArgs e)
+        private void CustomUnboundColumnDataMainView(object sender, CustomColumnDataEventArgs e)
         {
-            if (e.Column.AbsoluteIndex == 0)
+            try
             {
-                long value = 0;
-                string v = dataMetrixs[e.ListSourceRowIndex][e.Column.AbsoluteIndex].ToString();
-                if (!Int64.TryParse(v, out value))
-                {
-                    value = -1;
-                }
-                e.Value = value == -1 ? v : value.ToString();
-                return;
+                e.Value = itogData[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
             }
-
-            e.Value = dataMetrixs[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
+            catch { e.Value = string.Empty; }
         }
+
+        private void CustomUnboundColumnDataViewSource(object sender, CustomColumnDataEventArgs e)
+        {
+            try
+            {
+                e.Value = sourceData.ElementAt(e.ListSourceRowIndex)[e.Column.AbsoluteIndex];
+            }
+            catch { e.Value = string.Empty; }
+        }
+
 
         private void OnObjectSelected(object sender, CellValueChangedEventArgs e)
         {
