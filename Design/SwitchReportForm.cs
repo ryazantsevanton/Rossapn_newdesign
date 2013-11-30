@@ -12,6 +12,7 @@ using DevExpress.XtraGrid.Columns;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 
 namespace Design
 {
@@ -106,6 +107,10 @@ namespace Design
             Microsoft.Office.Interop.Excel.Application objExcel = null;
             Workbook objWorkBook = null;
             Worksheet objWorkSheet = null;
+            Range selectedRange = null;
+            Shapes shapes = null;
+            Microsoft.Office.Interop.Excel.Chart chart = null;
+            ChartTitle chartTitle = null;
             try
             {
                 string fileName = String.Empty;
@@ -153,6 +158,26 @@ namespace Design
                     objWorkSheet.Cells[6 + i, 2] = dataMetrixs[i][1];                    
                 }
 
+                try
+                {
+
+                    selectedRange = (Range)objWorkSheet.get_Range("B6", "B" + (5 + dataMetrixs.Length));
+                    shapes = objWorkSheet.Shapes;
+                    shapes.AddChart(XlChartType: XlChartType.xlLine,
+                        Left: 150, Top: 70, Width: 750,
+                        Height: 400).Select();
+                        
+                    chart = objExcel.ActiveChart;
+                    chart.SetSourceData(selectedRange);
+                }
+                finally
+                {
+                    if (chartTitle != null) Marshal.ReleaseComObject(chartTitle);
+                    if (chart != null) Marshal.ReleaseComObject(chart);
+                    if (shapes != null) Marshal.ReleaseComObject(shapes);
+                    if (selectedRange != null) Marshal.ReleaseComObject(selectedRange);
+                }
+
                 objWorkBook.SaveAs(fileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
                                    XlSaveAsAccessMode.xlShared, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
                 MessageBox.Show("Файл - " + fileName + " успешно сохранен");
@@ -161,9 +186,9 @@ namespace Design
             finally { 
                 saveFileDialog1.Dispose();
 
-                if (objWorkSheet != null) { objWorkSheet = null; }
-                if (objWorkBook != null) { objWorkBook.Close(); objWorkBook = null; }
-                if (objExcel != null) { objExcel = null;}
+                if (objWorkSheet != null) { Marshal.ReleaseComObject(objWorkSheet); }
+                if (objWorkBook != null) { objWorkBook.Close(); Marshal.ReleaseComObject(objWorkBook); }
+                if (objExcel != null) { Marshal.ReleaseComObject(objExcel); }
             }
         }
 
@@ -197,11 +222,33 @@ namespace Design
                 MessageBox.Show("Выберите один объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            dataMetrixs = DataHelper.GetMetrixByAllConditions(cbParameters.Text, selectedObj, rbTime.Checked, metrixs[trackStart.Value], metrixs[trackEnd.Value]);
-           
-            chartControl.Series.Clear();
 
+            chartControl.Series.Clear();
+            mainView.Columns.Clear();
             System.Windows.Forms.DataVisualization.Charting.Series s = null;
+
+            try
+            {
+                dataMetrixs = DataHelper.GetMetrixByAllConditions(cbParameters.Text, selectedObj, rbTime.Checked, metrixs[trackStart.Value], metrixs[trackEnd.Value]);
+            }
+            catch {
+                dataMetrixs = new object[][] { };
+                MessageBox.Show("Нет рассчитанных данных.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                if (dataMetrixs[0].Length == 0)
+                {
+                    MessageBox.Show("Нет рассчитанных данных.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+            catch {
+                MessageBox.Show("Нет рассчитанных данных.", "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
             for (int j = 0; j < dataMetrixs[0].Length; j++)
             {
