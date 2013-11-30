@@ -56,6 +56,9 @@
             this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
             this.adminButton = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiCalc = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiSettings = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiScheduleRep = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonImageCollectionLarge = new DevExpress.Utils.ImageCollection(this.components);
             this.homeRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.fileRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -64,6 +67,8 @@
             this.exitRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPage2 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup4 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.helpRibbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.helpRibbonPageGroup = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
@@ -71,10 +76,6 @@
             this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.topPanel = new System.Windows.Forms.Panel();
-            this.bbiCalc = new DevExpress.XtraBars.BarButtonItem();
-            this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
-            this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-            this.bbiSettings = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.appMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonImageCollection)).BeginInit();
@@ -85,11 +86,7 @@
             // 
             this.ribbonControl.ApplicationButtonDropDownControl = this.appMenu;
             this.ribbonControl.ApplicationButtonText = null;
-            // 
-            // 
-            // 
             this.ribbonControl.ExpandCollapseItem.Id = 0;
-            this.ribbonControl.ExpandCollapseItem.Name = "";
             this.ribbonControl.Images = this.ribbonImageCollection;
             this.ribbonControl.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.ribbonControl.ExpandCollapseItem,
@@ -117,10 +114,11 @@
             this.barButtonItem5,
             this.adminButton,
             this.bbiCalc,
-            this.bbiSettings});
+            this.bbiSettings,
+            this.bbiScheduleRep});
             this.ribbonControl.LargeImages = this.ribbonImageCollectionLarge;
             this.ribbonControl.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl.MaxItemId = 80;
+            this.ribbonControl.MaxItemId = 81;
             this.ribbonControl.Name = "ribbonControl";
             this.ribbonControl.PageHeaderItemLinks.Add(this.iAbout);
             this.ribbonControl.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
@@ -307,7 +305,7 @@
             // 
             // bbiReport
             // 
-            this.bbiReport.Caption = "Отчет";
+            this.bbiReport.Caption = "Отчет по скважине";
             this.bbiReport.Id = 74;
             this.bbiReport.Name = "bbiReport";
             // 
@@ -329,6 +327,24 @@
             this.adminButton.Id = 77;
             this.adminButton.Name = "adminButton";
             this.adminButton.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.adminButtonClick);
+            // 
+            // bbiCalc
+            // 
+            this.bbiCalc.Caption = "Рассчитать";
+            this.bbiCalc.Id = 78;
+            this.bbiCalc.Name = "bbiCalc";
+            // 
+            // bbiSettings
+            // 
+            this.bbiSettings.Caption = "Настройки";
+            this.bbiSettings.Id = 79;
+            this.bbiSettings.Name = "bbiSettings";
+            // 
+            // bbiScheduleRep
+            // 
+            this.bbiScheduleRep.Caption = "Журна переключений";
+            this.bbiScheduleRep.Id = 80;
+            this.bbiScheduleRep.Name = "bbiScheduleRep";
             // 
             // ribbonImageCollectionLarge
             // 
@@ -393,8 +409,22 @@
             // ribbonPageGroup4
             // 
             this.ribbonPageGroup4.ItemLinks.Add(this.bbiReport);
+            this.ribbonPageGroup4.ItemLinks.Add(this.bbiScheduleRep);
             this.ribbonPageGroup4.Name = "ribbonPageGroup4";
             this.ribbonPageGroup4.Text = "Переключения";
+            // 
+            // ribbonPage1
+            // 
+            this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+            this.ribbonPageGroup2});
+            this.ribbonPage1.Name = "ribbonPage1";
+            this.ribbonPage1.Text = "Настройки";
+            // 
+            // ribbonPageGroup2
+            // 
+            this.ribbonPageGroup2.ItemLinks.Add(this.bbiSettings);
+            this.ribbonPageGroup2.Name = "ribbonPageGroup2";
+            this.ribbonPageGroup2.Text = "Настройки";
             // 
             // helpRibbonPage
             // 
@@ -453,31 +483,6 @@
             this.topPanel.Size = new System.Drawing.Size(950, 520);
             this.topPanel.TabIndex = 2;
             // 
-            // bbiCalc
-            // 
-            this.bbiCalc.Caption = "Рассчитать";
-            this.bbiCalc.Id = 78;
-            this.bbiCalc.Name = "bbiCalc";
-            // 
-            // ribbonPage1
-            // 
-            this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
-            this.ribbonPageGroup2});
-            this.ribbonPage1.Name = "ribbonPage1";
-            this.ribbonPage1.Text = "Настройки";
-            // 
-            // ribbonPageGroup2
-            // 
-            this.ribbonPageGroup2.ItemLinks.Add(this.bbiSettings);
-            this.ribbonPageGroup2.Name = "ribbonPageGroup2";
-            this.ribbonPageGroup2.Text = "Настройки";
-            // 
-            // bbiSettings
-            // 
-            this.bbiSettings.Caption = "Настройки";
-            this.bbiSettings.Id = 79;
-            this.bbiSettings.Name = "bbiSettings";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -491,7 +496,7 @@
             this.Name = "Form1";
             this.Ribbon = this.ribbonControl;
             this.StatusBar = this.ribbonStatusBar;
-            this.Text = "Form1";
+            this.Text = "ЗАО НПП ГА \"Луч\"";
             this.Load += new System.EventHandler(this.OnFormLoad);
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.appMenu)).EndInit();
@@ -548,6 +553,7 @@
         private DevExpress.XtraBars.BarButtonItem bbiSettings;
         private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage1;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup2;
+        private DevExpress.XtraBars.BarButtonItem bbiScheduleRep;
 
     }
 }
