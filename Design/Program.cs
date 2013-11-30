@@ -23,25 +23,6 @@ namespace Design
             DevExpress.UserSkins.BonusSkins.Register();
             UserLookAndFeel.Default.SetSkinStyle("DevExpress Style");
 
-      /*      MessageBox.Show("Add Formulas, Start");
-            var dllDir = new DirectoryInfo(Environment.CurrentDirectory);
-            DataHelper.CustomFormulas = new List<CalcFormula>();
-            foreach (var file in dllDir.GetFiles("*.dll", SearchOption.AllDirectories))
-            {
-                var assembly = Assembly.LoadFile(file.FullName);
-                DataHelper.CustomFormulas.AddRange(assembly.GetTypes().
-                                        Where(t => t.GetInterface(typeof(CalcFormula).FullName, true) != null).
-                                        Select(t => (CalcFormula)Activator.CreateInstance(t)));
-            }
-            MessageBox.Show("Add Formulas, Update Db");
-            using (var con = DataHelper.OpenOrCreateDb()) {
-                foreach (var d in DataHelper.CustomFormulas)
-                {
-                    foreach(var p in  d.InitPredicates())  DataHelper.GetParameter(p, con, true);
-                    DataHelper.GetParameter(d.Name, con, true);
-                }
-            }
-            MessageBox.Show("Run Application"); */
             Application.Run(new Form1());
         }
     }
