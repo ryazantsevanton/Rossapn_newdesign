@@ -32,5 +32,17 @@ namespace Design.Properties {
                 return ((string)(this["ConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("QGasCalculation.dll")]
+        public string CustomFileFormula {
+            get {
+                return ((string)(this["CustomFileFormula"]));
+            }
+            set {
+                this["CustomFileFormula"] = value;
+            }
+        }
     }
 }

@@ -5,5 +5,8 @@
     <Setting Name="ConnectionString" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Data Source=JURIKPC\MS2008R2;Initial Catalog=bortnik_data;Integrated Security=True;</Value>
     </Setting>
+    <Setting Name="CustomFileFormula" Type="System.String" Scope="User">
+      <Value Profile="(Default)">QGasCalculation.dll</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
