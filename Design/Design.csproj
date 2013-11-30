@@ -158,6 +158,12 @@
       <DependentUpon>DataControl.cs</DependentUpon>
     </Compile>
     <Compile Include="DataHelper.cs" />
+    <Compile Include="EditObjectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EditObjectControl.Designer.cs">
+      <DependentUpon>EditObjectControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="EditParamObjectControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -173,7 +179,14 @@
     <Compile Include="Infrastructure\CalcFormula.cs" />
     <Compile Include="Infrastructure\EditAction.cs" />
     <Compile Include="Infrastructure\Formula.cs" />
+    <Compile Include="Infrastructure\QGasCalculation.cs" />
     <Compile Include="Infrastructure\RatesFormulaProcessor.cs" />
+    <Compile Include="ListSwitchesForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ListSwitchesForm.Designer.cs">
+      <DependentUpon>ListSwitchesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoadXlsForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -219,12 +232,18 @@
     <EmbeddedResource Include="DataControl.resx">
       <DependentUpon>DataControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="EditObjectControl.resx">
+      <DependentUpon>EditObjectControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditParamObjectControl.resx">
       <DependentUpon>EditParamObjectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListSwitchesForm.resx">
+      <DependentUpon>ListSwitchesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoadXlsForm.resx">
       <DependentUpon>LoadXlsForm.cs</DependentUpon>

@@ -28,7 +28,57 @@ namespace Design
             return l.ToArray();
         }
 
-        public decimal Calc(object[][] values) { return 0; }
+        public decimal Calc(object[][] values) 
+        { 
+            if (values == null || values.Length != 4) {
+                return 0;
+            }
+            decimal pn = 0;
+            decimal pk = 0;
+            decimal D = 0;
+            decimal T = 0;
+            foreach (var v in values)
+            {
+                switch ((string)v[0]) {
+                    case "P шлейфа" : {
+                        pk = (decimal)v[1];
+                        continue;
+                    }
+                    case "P буферное" : {
+                        pn = (decimal)v[1];
+                        continue;
+                    }
+                    case "T буферное" : {
+                        T = (decimal)v[1];
+                        continue;
+                    }
+                    case "D штуцера" : {
+                        D = (decimal)v[1];
+                        continue;
+                    }
+                }
+            }
+            if (T < 0 || pn == 0 || pk < 0)
+            {
+                return 0;
+            }
+
+            try
+            {
+                var v1 = (double)pk / (double)pn;
+                if (pk * 2 >= pn)
+                {
+                    v1 = 0.5D;
+                }
+                double r = Math.Pow((Math.Pow(v1, 2D / 1.3) - Math.Pow(v1, 1 + 1D / 1.3)) / (9 * (double)T + 2463.35), 0.5);
+
+                return new Decimal(Math.Round( Math.Pow((double)D, 2) * (double)pn * r, 4));
+            }
+            catch
+            {
+                return 0;
+            }
+        }
 
         public bool CanCalc(object[][] values) 
         {

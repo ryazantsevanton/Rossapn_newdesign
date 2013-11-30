@@ -100,6 +100,8 @@ namespace Design
             DevExpress.XtraGrid.Views.Grid.GridView view = (DevExpress.XtraGrid.Views.Grid.GridView)sender;
             objects[view.FocusedRowHandle][2] = (bool)e.Value;
 
+            if (supportTimes.Count < 2) return;
+
             if ((bool)e.Value == true)
                 displayObjects.addObject((int)objects[view.FocusedRowHandle][0], (string)objects[view.FocusedRowHandle][1], supportTimes[timeInterval.Min], supportTimes[timeInterval.Max]);
             else
@@ -111,6 +113,8 @@ namespace Design
         {
             DevExpress.XtraGrid.Views.Grid.GridView view = (DevExpress.XtraGrid.Views.Grid.GridView)sender;
             parameters[view.FocusedRowHandle][2] = (bool)e.Value;
+
+            if (supportTimes.Count < 2) return;
 
             if ((bool)e.Value == true)
                 displayObjects.addParameter(new ParameterId((int)parameters[view.FocusedRowHandle][0], (string)parameters[view.FocusedRowHandle][1]), supportTimes[timeInterval.Min], supportTimes[timeInterval.Max]);

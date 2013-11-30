@@ -29,6 +29,8 @@ namespace Design
             bbiReport.ItemClick += OnBbiReportClick;
             bbiCalc.ItemClick += OnbbiCalItemCLick;
             bbiSettings.ItemClick += OnbbiSettingItemClick;
+            bbiScheduleRep.ItemClick += OnScheduleReportClick;
+
         }
 
         private void OnbbiSettingItemClick(object sender, ItemClickEventArgs e)
@@ -58,6 +60,12 @@ namespace Design
             showControl("SwitchReportForm", new SwitchReportForm());                  
         }
 
+        private void OnScheduleReportClick(object sender, ItemClickEventArgs e)
+        {
+            showControl("ListSwitchesForm", new ListSwitchesForm());                              
+        }
+
+
         private void OnEditDataButtonClick(object sender, ItemClickEventArgs e)
         {
             showControl("DataControl", new DataControl());
@@ -70,7 +78,7 @@ namespace Design
 
         private void OnEditObjectButtonClick(object sender, ItemClickEventArgs e)
         {
-            showControl("EditObjectControl", new EditParamObjectControl(false));
+            showControl("EditObjectControl", new EditObjectControl());
         }
 
         private void OnLoadClick(object sender, EventArgs e)
@@ -158,6 +166,17 @@ namespace Design
 
             success = (Account.Current != null);
 
+            DataHelper.CustomFormulas = new List<CalcFormula>();
+            DataHelper.CustomFormulas.Add(new QGasCalculation());
+
+            using (var con = DataHelper.OpenOrCreateDb())
+            {
+                foreach (var d in DataHelper.CustomFormulas)
+                {
+                    foreach (var p in d.InitPredicates()) DataHelper.GetParameter(p, con, true);
+                    DataHelper.GetParameter(d.Name, con, true);
+                }
+            }
         }
 
     }

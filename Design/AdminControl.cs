@@ -55,7 +55,13 @@ namespace Design
 
 
             if (selected.Role != role)
-                Account.changeRole(selected, role);
+                try {
+                    Account.changeRole(selected, role);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка");
+                }
         }
 
         void AccountsPopupMenuShowing(object sender, DevExpress.XtraGrid.Views.Grid.PopupMenuShowingEventArgs e)
@@ -121,7 +127,13 @@ namespace Design
             int row = accountsView.FocusedRowHandle;
             Account selected = users[row];
             if (MessageBox.Show("Удалить пользователя " + selected.Login + "?", "Подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                Account.removeOne(selected);
+                try {
+                    Account.removeOne(selected);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка");
+                }
 
             refreshUserList();
 

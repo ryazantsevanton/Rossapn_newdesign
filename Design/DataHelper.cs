@@ -131,7 +131,7 @@ namespace Design
                 if (o == null || o is DBNull)
                 {
                     maxNumber++;
-                    command.CommandText = String.Format("insert into Predicates(predicateid, predicatevalue) values ({0}, '{1}', {2})", maxNumber, value, inited);
+                    command.CommandText = String.Format("insert into Predicates(predicateid, predicatevalue, inited) values ({0}, '{1}', {2})", maxNumber, value, inited ? 1 : 0);
                     command.ExecuteNonQuery();
                     return maxNumber;
                 }
@@ -180,6 +180,7 @@ namespace Design
                     {
                         var sb = new StringBuilder();
                         sb.AppendLine("BEGIN TRANSACTION;").
+                            AppendLine("delete EntityGroups;").
                             AppendLine("delete Entities;").
                             AppendLine("delete Predicates;").
                             AppendLine("delete metrix;").
@@ -205,6 +206,18 @@ namespace Design
             }        
         }
 
+        public static void UpdateEntityGrouping(int entityid, object subgroup, object group, SqlConnection con)
+        {
+            using (var command = con.CreateCommand())
+            {
+                command.CommandText = String.Format("delete EntityGroups where entityid = {0};", entityid) +
+                    String.Format("insert into EntityGroups(groupName, subgroupName, entityid) values ({0},{1},{2});", group == null ? "NULL" : "'" + group.ToString() + "'",
+                                                                                                                     subgroup == null ? "NULL" : "'" + subgroup.ToString() + "'", 
+                                                                                                                     entityid);
+                command.ExecuteNonQuery();
+            }
+        }
+
         public static void AddObject(string newkey, SqlConnection con, bool type, int inited)
         {
             using (var command = con.CreateCommand())
@@ -212,12 +225,15 @@ namespace Design
                 command.CommandText = type
                     ? "select max(predicateid) from Predicates"
                     : "select max(entityid) from Entities";
-                int o = 1;
+                int o = 0;
                 try
                 {
                     o = (int)command.ExecuteScalar() + 1;
                 }
-                catch { o = 1;}
+                catch (Exception e)
+                {
+                    o = 0;
+                }
 
 
                 command.CommandText = type
@@ -242,7 +258,7 @@ namespace Design
 
                 command.CommandText = type
                     ? "delete Predicates where predicateid = " + o
-                    : "delete Entities where entityid = " + o;
+                    : "delete EntityGroups where entityid = " + o + "; delete Entities where entityid = " + o;
                 command.ExecuteNonQuery();
             }
         }
@@ -305,38 +321,70 @@ namespace Design
         internal static void LoadTriplets(List<Triplet> triplets, SqlConnection con)
         {
             if (triplets == null) { return; }
-            using (SqlCommand command = con.CreateCommand())
+            foreach (var t in triplets)
             {
-                foreach (var t in triplets)
+                SetMetrix(t, con);
+            }
+        }
+
+        internal static void LoadTriplet(Triplet t, SqlConnection con)
+        {
+            if (t == null) { return; }
+            try {
+                using (SqlCommand command = con.CreateCommand())
                 {
                     command.CommandText = string.Format("select max(metrixid) from metrix where entityId = {0} and predicateId={1} and metrixobject = '{2}'",
-                                           t.EntityId, t.PredicateId, t.MetrixObject);
+                                            t.EntityId, t.PredicateId, t.MetrixObject);
                     var o = command.ExecuteScalar();
                     if (o == null || o is DBNull)
                     {
-                        if (t.MetrixDate == null) 
+                        if (t.MetrixDate == null)
                         {
                             command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue) values ("
-                             + t.EntityId + "," + t.PredicateId + "," + GetMetrixObject(t.MetrixObject) + ", " + t.MetrixValue.ToString() + ")";
+                                + t.EntityId + "," + t.PredicateId + ",'" + t.MetrixObject + "', " + t.MetrixValue.ToString().Replace(",",".") + ")";
                         }
-                        else { //yyyy-mm-dd hh:mi:ss
+                        else
+                        { //yyyy-mm-dd hh:mi:ss
                             command.CommandText = "insert into metrix(entityId, predicateId, metrixobject,  metrixValue, metrixData) values ("
-                             + t.EntityId + "," + t.PredicateId + ",'" + GetMetrixObject(t.MetrixObject) + "', " + t.MetrixValue.ToString() + 
-                             string.Format(", convert(datetime, '{0}-{1}-{2} {3}:{4}:{5}', 120))", t.MetrixDate.Value.Year, t.MetrixDate.Value.Month,
-                             t.MetrixDate.Value.Day, t.MetrixDate.Value.Hour, t.MetrixDate.Value.Minute, t.MetrixDate.Value.Second);
+                                + t.EntityId + "," + t.PredicateId + ",'" + String.Format("{0:yyyy/MM/dd H:mm:ss}", t.MetrixDate) + "', " + t.MetrixValue.ToString().Replace(",", ".") +
+                                string.Format(", convert(datetime, '{0}-{1}-{2} {3}:{4}:{5}', 120))", t.MetrixDate.Value.Year, t.MetrixDate.Value.Month,
+                                t.MetrixDate.Value.Day, t.MetrixDate.Value.Hour, t.MetrixDate.Value.Minute, t.MetrixDate.Value.Second);
                         }
                         command.ExecuteNonQuery();
                     }
                 }
-
             }
+            catch{}           
         }
 
-        private static string GetMetrixObject(string p)
+        internal static void SetMetrix(Triplet triplet, SqlConnection con)
         {
-            return String.IsNullOrEmpty(p) ? string.Empty : "'" + p + "'";
-        }
+            if (triplet == null) { return; }
+            using (SqlCommand command = con.CreateCommand())
+            {
+                command.CommandText = String.Format("select metrixid from metrix where predicateid={0} and entityid = {1}",
+                                                    triplet.PredicateId, triplet.EntityId);
+                var s = String.IsNullOrEmpty(triplet.MetrixObject) ? string.Empty : triplet.MetrixObject;
+                command.CommandText += triplet.MetrixDate == null 
+                    ? " and metrixObject ='" + s + "'"
+                    : String.Format(" and metrixData=convert(datetime,'{0}-{1}-{2} {3}:{4}:{5}', 120)",  
+                        triplet.MetrixDate.Value.Year, triplet.MetrixDate.Value.Month, triplet.MetrixDate.Value.Day, 
+                        triplet.MetrixDate.Value.Hour, triplet.MetrixDate.Value.Minute, triplet.MetrixDate.Value.Second);
 
+                var o = command.ExecuteScalar();
+                if (o == null)
+                {
+                    LoadTriplet(triplet, con);
+                }
+                else
+                {
+                    command.CommandText = string.Format("update metrix set metrixvalue={0} where metrixid = {1}",
+                                          triplet.MetrixValue, (int)o);
+                }
+            
+                command.ExecuteNonQuery();
+            }            
+        }
         internal static object[][] GetObjectStatistic()
         {
             List<object[]> data = new List<object[]>();
@@ -344,15 +392,19 @@ namespace Design
             {
                 using (var command = con.CreateCommand())
                 {
-                    command.CommandText = "select e.entityvalue, COUNT(*) - 1, 0 counter from Entities e left join " +
-                                          " metrix m on e.entityid = m.entityid group by e.entityvalue";
+                    command.CommandText = "select e.entityvalue, COUNT(*) - 1, 0 counter, g.groupName, g.subgroupName, e.entityid from Entities e" +   
+                            " left join EntityGroups g on g.entityid = e.entityid" +
+                            " left join metrix m on e.entityid = m.entityid group by e.entityvalue, g.groupName, g.subgroupName, e.entityid order by e.entityvalue";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader != null)
                         {
                             while (reader.Read())
                             {
-                                data.Add(new object[] { reader.GetString(0), reader.GetInt32(1), EditAction.None, reader.GetInt32(2), reader.GetString(0) });
+                                data.Add(new object[] { reader.GetString(0), reader.GetInt32(1), EditAction.None, reader.GetInt32(2), reader.GetString(0), 
+                                                        /* grouping */    reader.IsDBNull(3) ? null : reader.GetString(3), 
+                                                                          reader.IsDBNull(4) ? null : reader.GetString(4),
+                                                        /* entityid */    reader.GetInt32(5) });
                             }
                         }
                     }
@@ -718,7 +770,7 @@ namespace Design
                     if (isDateType)
                     {
                         bool first = true;
-                        command.CommandText = "select metrixData from metrix m inner join " +
+                        command.CommandText = "select distinct metrixData from metrix m inner join " +
                                               "Predicates p on p.predicateid = m.predicateid " +
                                               "where entityid in (";
                         foreach (var i in selectedObjs)
@@ -729,9 +781,9 @@ namespace Design
                         command.CommandText += ") ";
                         if (!String.IsNullOrEmpty(paramName))
                         {
-                            command.CommandText += String.Format("{0} and p.predicatevalue='{1}'", command.CommandText, paramName);
+                            command.CommandText += String.Format(" and p.predicatevalue='{0}'", paramName);
                         }
-                        command.CommandText += " and rtrim(ltrim(isnull(metrixObject,''))) <> '' group by metrixObject order by metrixObject";
+                        command.CommandText += " and metrixData is not null group by metrixData order by metrixData";
 
                         using (var reader = command.ExecuteReader())
                         {
@@ -739,7 +791,9 @@ namespace Design
                             {
                                 while (reader.Read())
                                 {
-                                    result.Add(reader.GetDateTime(0));
+                                    if (!reader.IsDBNull(0)) {
+                                        result.Add(reader.GetDateTime(0));
+                                    }
                                 }
                             }
                         }
@@ -747,7 +801,7 @@ namespace Design
                     else
                     {
                         bool first = true;
-                        command.CommandText = "select metrixObject from metrix m inner join " +
+                        command.CommandText = "select distinct metrixObject from metrix m inner join " +
                                               "Predicates p on p.predicateid = m.predicateid " +
                                               "where entityid in (";
                         foreach (var i in selectedObjs)
@@ -758,7 +812,7 @@ namespace Design
                         command.CommandText += ") ";
                         if (!String.IsNullOrEmpty(paramName))
                         {
-                            command.CommandText += String.Format("{0} and p.predicatevalue='{1}'", command.CommandText, paramName);
+                            command.CommandText += String.Format(" and p.predicatevalue='{0}'", paramName);
                         }
                         command.CommandText += " and rtrim(ltrim(isnull(metrixObject,''))) <> '' group by metrixObject order by metrixObject";
                         using (var reader = command.ExecuteReader())
@@ -1045,11 +1099,83 @@ namespace Design
         }
 
         public static List<CalcFormula> CustomFormulas { get; set; }
+
+        internal static object GetMetrix(int entityId, string parametr, object metrix, bool typeMetrix, SqlConnection con)
+        {
+            using(var command = con.CreateCommand()) {
+                if (!typeMetrix) {
+                    command.CommandText =
+                     String.Format("SELECT metrixValue FROM metrix m inner join Predicates p on m.predicateid = p.predicateid" +
+                        " where p.predicatevalue = '{0}' and m.entityid = {1} and metrixObject = '{2}'",
+                        parametr, entityId, metrix);
+                }
+                else {
+                    var d = (DateTime)metrix;
+                    command.CommandText =
+                     String.Format("SELECT metrixValue FROM metrix m inner join Predicates p on m.predicateid = p.predicateid" +
+                        " where p.predicatevalue = '{0}' and m.entityid = {1} and metrixData =  CONVERT(datetime, '{2}-{3}-{4} {5}:{6}:{7}', 120)",
+                        parametr, entityId, d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second);
+                }
+                try
+                {
+                    var o = command.ExecuteScalar();
+                    return o == null ? 0 : (decimal)o;
+                }
+                catch { return 0; }
+            }
+        }
+
+        internal static string[] GetEntityGroups()
+        {
+            List<string> groups = new List<string>();
+            using (var con = OpenOrCreateDb())
+            {
+                using(var command = con.CreateCommand()) {
+                    command.CommandText = "SELECT distinct groupName + ', ' + subgroupName  FROM EntityGroups" +
+                                          " order by groupName + ', ' + subgroupName";
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader == null) { return groups.ToArray(); }
+                        while (reader.Read()) {
+                            if (!reader.IsDBNull(0))
+                            {
+                                groups.Add(reader.GetString(0));
+                            }
+                        }
+                    }
+                }
+            }
+            return groups.ToArray();
+        }
+
+        internal static object[][] GetEntityByGroup(string p)
+        {
+            List<object[]> entites = new List<object[]>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = "select entityid, entityvalue from Entities where entityid in " +
+                                           "(SELECT entityid FROM EntityGroups where groupName + ', ' + " +
+                                           " subgroupName = '" + p + "')";
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader == null) { entites.ToArray(); }
+                        while (reader.Read())
+                        {
+                            entites.Add(new object[] {reader.IsDBNull(0) ? 0 : reader.GetInt32(0), 
+                                                      reader.IsDBNull(1) ? "" : reader.GetString(1)});
+                        }
+                    }
+                }
+            }
+            return entites.ToArray();
+        }
     }
 
     public class Triplet
     {
-        public DateTime? MetrixDate { get; private set;  }
+        public DateTime? MetrixDate { get; set;  }
         public string MetrixObject { get; private set; }
         public int PredicateId { get; private set; }
         public int EntityId { get; private set; }
@@ -1072,11 +1198,14 @@ namespace Design
             //           metrix.MetrixDate.Value.Year, metrix.MetrixDate.Value.Month,
             //         metrix.MetrixDate.Value.Day, metrix.MetrixDate.Value.Hour,
             //       metrix.MetrixDate.Value.Minute, metrix.MetrixDate.Value.Second);
+
+            if (String.IsNullOrEmpty(date)) { return null; }
             int year = 0;
             int month;
             int day;
             int hours;
             int minutes;
+            int seconds;
 
             var delimeter = string.Empty;
             int pos = date.IndexOf("/");
@@ -1136,16 +1265,22 @@ namespace Design
 
             date = date.Substring(pos + 1);
 
-            if (!Int32.TryParse(date, out minutes))
-            {
-                return null;
-            }
+            if (Int32.TryParse(date, out minutes))
+                try
+                {
+                    return new DateTime(year, month, day, hours, minutes, 0);
+                }
+                catch { return null; }
 
             try
             {
-                return new DateTime(year, month, day, hours, minutes, 0);
-            }
+                if (date.IndexOf(":") != -1 && Int32.TryParse(date.Substring(0,2), out minutes) && Int32.TryParse(date.Substring(2,2), out seconds))
+                
+                        return new DateTime(year, month, day, hours, minutes, seconds);
+                    }
             catch { return null; }
+
+            return null;
         }
     }
 }
