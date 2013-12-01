@@ -23,15 +23,9 @@ namespace Design
             DevExpress.UserSkins.BonusSkins.Register();
             UserLookAndFeel.Default.SetSkinStyle("DevExpress Style");
 
-            var dllDir = new DirectoryInfo(Environment.CurrentDirectory);
+            //Load Calc Formulas
             DataHelper.CustomFormulas = new List<CalcFormula>();
-            foreach (var file in dllDir.GetFiles("*.dll", SearchOption.AllDirectories))
-            {
-                var assembly = Assembly.LoadFile(file.FullName);
-                DataHelper.CustomFormulas.AddRange(assembly.GetTypes().
-                                        Where(t => t.GetInterface(typeof(CalcFormula).FullName, true) != null).
-                                        Select(t => (CalcFormula)Activator.CreateInstance(t)));
-            }
+            loadAssemblies<CalcFormula>(DataHelper.CustomFormulas);
             using (var con = DataHelper.OpenOrCreateDb()) {
                 foreach (var d in DataHelper.CustomFormulas)
                 {
@@ -40,7 +34,24 @@ namespace Design
                 }
             }
 
+            //Load Event Checkers
+            DataHelper.EventCheckers = new List<EventChecker>();
+            loadAssemblies<EventChecker>(DataHelper.EventCheckers);
+
             Application.Run(new Form1());
+        }
+
+        private static void loadAssemblies<T>(List<T> container)
+        {
+            var dllDir = new DirectoryInfo(Environment.CurrentDirectory);
+            
+            foreach (var file in dllDir.GetFiles("*.dll", SearchOption.AllDirectories))
+            {
+                var assembly = Assembly.LoadFile(file.FullName);
+                container.AddRange(assembly.GetTypes().
+                                        Where(t => t.GetInterface(typeof(T).FullName, true) != null).
+                                        Select(t => (T)Activator.CreateInstance(t)));
+            }
         }
     }
 }

@@ -14,6 +14,8 @@ namespace Design
     public partial class SettingsForm : UserControl
     {
         private bool modified;
+        private object[][] objects;
+        private object[][] parameters;
 
         public SettingsForm()
         {
@@ -38,6 +40,31 @@ namespace Design
             saveButton.Click += OnSaveButtonClick;
             modified = false;
 
+            objects = DataHelper.GetObjects();
+            parameters = DataHelper.GetParameters();
+
+            cbObjects.Items.AddRange(objects.Select(o => (string)o[1]).ToArray());
+            cbParameters.Items.AddRange(parameters.Select(o => (string)o[1]).ToArray());
+            cbEventCheckers.Items.AddRange(DataHelper.EventCheckers.Select(ec => ec.Name).ToArray());
+
+            cbObjects.SelectedValueChanged += cbSelectedValueChanged;
+            cbParameters.SelectedValueChanged += cbSelectedValueChanged;
+            cbEventCheckers.SelectedValueChanged += cbSelectedValueChanged;
+        }
+
+        void cbSelectedValueChanged(object sender, EventArgs e)
+        {
+            tbArguments.Text = "";
+
+            if (cbObjects.SelectedIndex == -1 || cbParameters.SelectedIndex == -1 || cbEventCheckers.SelectedIndex == -1)
+                return;
+
+            int entityId = (int) objects[cbObjects.SelectedIndex][0];
+            int predicateId = (int)parameters[cbParameters.SelectedIndex][0];
+            string checkerName = DataHelper.EventCheckers[cbEventCheckers.SelectedIndex].Name;
+
+            tbArguments.Text = DataHelper.readEventCheckerArguments(entityId, predicateId, checkerName);
+
         }
 
         private void OnCancelButtonClick(object sender, EventArgs e)
@@ -61,6 +88,32 @@ namespace Design
         {
             modified = true;
             cancelButton.Text = "Отмена";
+        }
+
+        private void OnHelpButtonClick(object sender, EventArgs e)
+        {
+            if (cbEventCheckers.SelectedIndex > -1)
+                MessageBox.Show(DataHelper.EventCheckers[cbEventCheckers.SelectedIndex].Help, 
+                                DataHelper.EventCheckers[cbEventCheckers.SelectedIndex].Name, 
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void OnApplyButtonClick(object sender, EventArgs e)
+        {
+            if (cbObjects.SelectedIndex == -1 || cbParameters.SelectedIndex == -1 || cbEventCheckers.SelectedIndex == -1)
+            {
+                MessageBox.Show("Укажите объект, параметр и событие из выпадающих списков",
+                                "Ошибка",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int entityId = (int)objects[cbObjects.SelectedIndex][0];
+            int predicateId = (int)parameters[cbParameters.SelectedIndex][0];
+            string checkerName = DataHelper.EventCheckers[cbEventCheckers.SelectedIndex].Name;
+
+            DataHelper.writeEventCheckerArguments(entityId, predicateId, checkerName, tbArguments.Text.Trim());
+
         }
 
 

@@ -225,21 +225,18 @@ namespace Design
                 command.CommandText = type
                     ? "select max(predicateid) from Predicates"
                     : "select max(entityid) from Entities";
+
                 int o = 0;
-                try
-                {
+                var max = command.ExecuteScalar();
+                if (max is System.DBNull)
+                    o = 1;
+                else
                     o = (int)command.ExecuteScalar() + 1;
-                }
-                catch (Exception e)
-                {
-                    o = 0;
-                }
-
-
+  
                 command.CommandText = type
                     ? "insert into Predicates (predicateid, predicatevalue, inited) values (" + o + ",'" + newkey + "', " + inited + ")"
                     : "insert into Entities (entityid, entityvalue) values (" + o + ",'" + newkey + "')";
-                command.ExecuteNonQuery();
+                int count = command.ExecuteNonQuery();
             }
         }
 
@@ -271,9 +268,9 @@ namespace Design
             using (SqlCommand command = connection.CreateCommand())
             {
                 command.CommandText = "select COUNT(*) from [sys].all_objects where type_desc='USER_TABLE'" +
-                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix', 'EntityGroups', 'Accounts', 'ActionLog', 'Settings', 'CalcFormula', 'CalcFormulaParams')";
+                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix', 'EntityGroups', 'Accounts', 'ActionLog', 'Settings', 'CalcFormula', 'CalcFormulaParams', 'EventChecker')";
                 var id = command.ExecuteScalar();
-                if (!(id is DBNull) && ((int)id) == 10)
+                if (!(id is DBNull) && ((int)id) == 11)
                 {
                     return connection;
                 }
@@ -288,6 +285,7 @@ namespace Design
                                       "IF OBJECT_ID('Accounts', 'U') IS NOT NULL drop Table Accounts",
                                       "drop Table calcFormula",
                                       "drop Table calcFormulaParams",
+                                      "IF OBJECT_ID('EventChecker', 'U') IS NOT NULL drop Table EventChecker",
                                       "IF OBJECT_ID('Settings', 'U') IS NOT NULL drop Table Settings",
                                       "CREATE TABLE Entities (entityid INT NOT NULL, entityvalue NVARCHAR(200) NOT NULL, PRIMARY KEY(entityid));",
                                       "CREATE TABLE Predicates (predicateid INT NOT NULL, predicatevalue NVARCHAR(200) NOT NULL, PRIMARY KEY(predicateid), inited int);",
@@ -300,6 +298,7 @@ namespace Design
                                       "CREATE TABLE Settings (settingName NVARCHAR(200), settingStringValue NVARCHAR(200), settingNumValue numeric(20, 8));",
                                       "CREATE TABLE CalcFormula (formulaId int IDENTITY(1,1) NOT NULL, formulaName NVARCHAR(200), formulaExpression nvarchar(3000));",
                                       "CREATE TABLE calcFormulaParams (paramId int IDENTITY(1,1) NOT NULL, formulaId int not null, typeid int, paramValue numeric(20, 4), name nvarchar(100) not null, code nvarchar(10) not null);",
+                                      "CREATE TABLE EventChecker(entityid INT NOT NULL, predicateid INT NOT NULL, checkerName NVARCHAR(200) NOT NULL, checkerArguments NVARCHAR(200))"
                                   };
                 foreach (var text in comText)
                 {
@@ -1060,6 +1059,7 @@ namespace Design
         }
 
         public static List<CalcFormula> CustomFormulas { get; set; }
+        public static List<EventChecker> EventCheckers { get; set; }
 
         internal static List<object[]> GetBranchObjects()
         {
@@ -1099,7 +1099,39 @@ namespace Design
                     }
                 }
             }
+        }
 
+        internal static string readEventCheckerArguments(int entityid, int predicateid, string checkerName)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("select checkerArguments FROM EventChecker WHERE entityid = {0} AND predicateid = {1} AND checkerName = '{2}'", entityid, predicateid, checkerName);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader != null && reader.Read())
+                            return reader.GetString(0);
+                        else
+                            return null; //arguments not set
+                    }
+                }
+            }
+        }
+
+        internal static void writeEventCheckerArguments(int entityid, int predicateid, string checkerName, string arguments)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("delete from EventChecker where entityid = {0} AND predicateid = {1} AND checkerName = '{2}';", entityid, predicateid, checkerName);
+                    if (!String.IsNullOrEmpty(arguments))
+                        command.CommandText += String.Format(" insert into EventChecker(entityid, predicateid, checkerName, checkerArguments) values ({0},{1},'{2}','{3}');", entityid, predicateid, checkerName, arguments);
+
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
     }
