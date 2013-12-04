@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<MapSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Lines>
+    <MappingLine object="5" parameter="T буферное" branch="2-17" group="Восточно-Уренгойское">Куст №2-17 :  2-17-05 : Температура газа в устье скважины (TIR0105)</MappingLine> 
+    <MappingLine object="6" parameter="T буферное" branch="2-17" group="Восточно-Уренгойское">Куст №2-17 :  2-17-06 : Температура газа в устье скважины (TIR0106)</MappingLine> 
+	</Lines>
+</MapSettings>

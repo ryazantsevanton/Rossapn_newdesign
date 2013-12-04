@@ -66,6 +66,10 @@
             this.mainView.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
             this.mainView.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
             this.mainView.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
+            this.mainView.OptionsCustomization.AllowColumnMoving = false;
+            this.mainView.OptionsCustomization.AllowFilter = false;
+            this.mainView.OptionsCustomization.AllowGroup = false;
+            this.mainView.OptionsCustomization.AllowQuickHideColumns = false;
             this.mainView.OptionsView.ShowGroupPanel = false;
             this.mainView.OptionsView.ShowIndicator = false;
             // 

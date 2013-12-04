@@ -67,7 +67,7 @@
             0,
             0});
             this.scaleDatas.Name = "scaleDatas";
-            this.scaleDatas.Size = new System.Drawing.Size(120, 20);
+            this.scaleDatas.Size = new System.Drawing.Size(153, 20);
             this.scaleDatas.TabIndex = 1;
             this.scaleDatas.Value = new decimal(new int[] {
             10,
@@ -113,7 +113,7 @@
             0,
             0});
             this.npDost.Name = "npDost";
-            this.npDost.Size = new System.Drawing.Size(120, 20);
+            this.npDost.Size = new System.Drawing.Size(153, 20);
             this.npDost.TabIndex = 4;
             this.npDost.Value = new decimal(new int[] {
             90,
@@ -130,7 +130,7 @@
             0,
             0});
             this.npCase1.Name = "npCase1";
-            this.npCase1.Size = new System.Drawing.Size(120, 20);
+            this.npCase1.Size = new System.Drawing.Size(153, 20);
             this.npCase1.TabIndex = 5;
             this.npCase1.Value = new decimal(new int[] {
             3,
@@ -159,7 +159,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(43, 136);
+            this.label4.Location = new System.Drawing.Point(43, 137);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(186, 13);
             this.label4.TabIndex = 8;
@@ -179,7 +179,7 @@
             0,
             0});
             this.npdShedule.Name = "npdShedule";
-            this.npdShedule.Size = new System.Drawing.Size(120, 20);
+            this.npdShedule.Size = new System.Drawing.Size(153, 20);
             this.npdShedule.TabIndex = 9;
             this.npdShedule.Value = new decimal(new int[] {
             30,

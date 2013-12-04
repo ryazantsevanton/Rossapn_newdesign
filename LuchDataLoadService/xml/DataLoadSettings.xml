@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DBSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<TargetDBConnectionString name="target1">Data Source=JURIKPC\MS2008R2;Initial Catalog=bortnik_data;Persist Security Info=True;User ID=webuser;Password=12345</TargetDBConnectionString>
+	<SourceDBConnections>
+		<DBConnectionString name="nulu">Data Source=JURIKPC\MS2008R2;Initial Catalog=Nulu;Persist Security Info=True;User ID=webuser;Password=12345</DBConnectionString> 
+		<DBConnectionString name="vulu">Data Source=JURIKPC\MS2008R2;Initial Catalog=Vulu;Persist Security Info=True;User ID=webuser;Password=12345</DBConnectionString> 
+	</SourceDBConnections>
+</DBSettings>

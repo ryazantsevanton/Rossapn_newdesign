@@ -46,7 +46,7 @@ namespace Design
             unbColumn.OptionsColumn.AllowEdit = true;
             unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
 
-            unbColumn = mainView.Columns.AddField("Рассчетные");
+            unbColumn = mainView.Columns.AddField("Расчетные");
             unbColumn.VisibleIndex = type ? 2 : -1;
             unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
             unbColumn.OptionsColumn.AllowEdit = false;
@@ -97,6 +97,13 @@ namespace Design
                 return;
             }
             e.Appearance.BackColor = Color.LemonChiffon;
+            if (data[e.RowHandle].Length >=3 && (int)data[e.RowHandle][3] == 1)
+            {
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Bold);
+            }
+            else {
+                e.Appearance.Font = new Font(e.Appearance.Font, FontStyle.Regular);
+            }
         }
         
         private void OnCancelButtonClick(object sender, EventArgs e)
@@ -119,13 +126,14 @@ namespace Design
                     e.Valid = false;
                     return;
                 }
-                if ((int)data[i][3] == 1)
-                {
-                    e.ErrorText = "Расчетные параметры изменять нельзя";
-                    e.Valid = false;
-                    return;
-                }
             }
+            if ((int)data[mainView.FocusedRowHandle][3] == 1)
+            {
+                e.ErrorText = "Расчетные параметры изменять нельзя";
+                e.Valid = false;
+                return;
+            }
+
             e.ErrorText = string.Empty;
             e.Valid = true;
         }
@@ -143,6 +151,11 @@ namespace Design
 
         private void OnDeleteButtonClick(object sender, EventArgs e)
         {
+            if ((int)data[mainView.FocusedRowHandle][3] == 1)
+            {
+                MessageBox.Show("Расчетные параметры изменять нельзя", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             data[mainView.FocusedRowHandle][2] = EditAction.Delete;
             modified = true;
             mainView.RefreshData();
@@ -191,7 +204,14 @@ namespace Design
             }
             else
             {
-                e.Value = data[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
+                if (e.Column.AbsoluteIndex < 3)
+                {
+                    e.Value = data[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
+                }
+                else
+                {
+                    e.Value = string.Empty;
+                }
             }
         
         }

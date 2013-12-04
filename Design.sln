@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Design", "Design\Design.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QGasCalculation", "QGasCalculation\QGasCalculation.csproj", "{2625B8F6-1040-4145-8C91-EC0D8AD78328}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuchDataLoadService", "LuchDataLoadService\LuchDataLoadService.csproj", "{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,16 @@ Global
 		{2625B8F6-1040-4145-8C91-EC0D8AD78328}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2625B8F6-1040-4145-8C91-EC0D8AD78328}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2625B8F6-1040-4145-8C91-EC0D8AD78328}.Release|x86.ActiveCfg = Release|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{662EA661-BE29-45D2-9DF5-EFB6E5A3AE38}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

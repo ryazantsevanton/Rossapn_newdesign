@@ -832,6 +832,7 @@ namespace Design
         }
 
 
+
         internal static void SaveSettings(decimal scale, decimal dost, decimal critValue, decimal intSchedule)
         {
             using (var con = OpenOrCreateDb())
@@ -1102,14 +1103,17 @@ namespace Design
 
         internal static object GetMetrix(int entityId, string parametr, object metrix, bool typeMetrix, SqlConnection con)
         {
-            using(var command = con.CreateCommand()) {
-                if (!typeMetrix) {
+            using (var command = con.CreateCommand())
+            {
+                if (!typeMetrix)
+                {
                     command.CommandText =
                      String.Format("SELECT metrixValue FROM metrix m inner join Predicates p on m.predicateid = p.predicateid" +
                         " where p.predicatevalue = '{0}' and m.entityid = {1} and metrixObject = '{2}'",
                         parametr, entityId, metrix);
                 }
-                else {
+                else
+                {
                     var d = (DateTime)metrix;
                     command.CommandText =
                      String.Format("SELECT metrixValue FROM metrix m inner join Predicates p on m.predicateid = p.predicateid" +
@@ -1130,13 +1134,15 @@ namespace Design
             List<string> groups = new List<string>();
             using (var con = OpenOrCreateDb())
             {
-                using(var command = con.CreateCommand()) {
+                using (var command = con.CreateCommand())
+                {
                     command.CommandText = "SELECT distinct groupName + ', ' + subgroupName  FROM EntityGroups" +
                                           " order by groupName + ', ' + subgroupName";
                     using (var reader = command.ExecuteReader())
                     {
                         if (reader == null) { return groups.ToArray(); }
-                        while (reader.Read()) {
+                        while (reader.Read())
+                        {
                             if (!reader.IsDBNull(0))
                             {
                                 groups.Add(reader.GetString(0));
@@ -1171,6 +1177,48 @@ namespace Design
             }
             return entites.ToArray();
         }
+
+        internal static List<object[]> GetBranchObjects()
+        {
+            List<object[]> branches = new List<object[]>();
+
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = "select Entities.entityid, entityvalue FROM Entities, EntityGroups WHERE Entities.entityvalue = EntityGroups.subgroupName GROUP BY Entities.entityid, entityValue, EntityGroups.subgroupName";
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                            while (reader.Read())
+                            {
+                                branches.Add(new object[] { reader.GetInt32(0), reader.GetString(1) });
+                            }
+                    }
+                }
+            }
+
+            return branches;
+        }
+
+        internal static int FindBranchEntity(int entity)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = "select Entities.entityid, entityvalue FROM Entities, EntityGroups WHERE Entities.entityvalue = EntityGroups.subgroupName AND EntityGroups.entityid = " + entity;
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader != null && reader.Read())
+                            return reader.GetInt32(0);
+                        else return -1;
+                    }
+                }
+            }
+
+        }
+
     }
 
     public class Triplet

@@ -14,6 +14,7 @@ namespace Design
     public partial class SettingsForm : UserControl
     {
         private bool modified;
+        private bool modifiedDate;
 
         public SettingsForm()
         {
@@ -22,7 +23,7 @@ namespace Design
             decimal numberCount = DataHelper.GetSettingValue("ScaleData");
             int scheduleRange = Convert.ToInt32(DataHelper.GetSettingValue("RangeSchedule"));
             decimal numCase1 = DataHelper.GetSettingValue("CriticalValue");
-            decimal dost = DataHelper.GetSettingValue("RowDost"); 
+            decimal dost = DataHelper.GetSettingValue("RowDost");
 
             scaleDatas.Value = numberCount == null || numberCount == 0 ? 10 : numberCount;
             npdShedule.Value = scheduleRange == null || scheduleRange == 0 ? 20 : scheduleRange;
@@ -37,6 +38,7 @@ namespace Design
             cancelButton.Click += OnCancelButtonClick;
             saveButton.Click += OnSaveButtonClick;
             modified = false;
+            modifiedDate = false;
 
         }
 
@@ -53,8 +55,11 @@ namespace Design
 
         private void OnSaveButtonClick(object sender, EventArgs e)
         {
-            DataHelper.SaveSettings(scaleDatas.Value, npDost.Value, npCase1.Value, npdShedule.Value);
-            Dispose();
+            if (modified)
+            {
+                DataHelper.SaveSettings(scaleDatas.Value, npDost.Value, npCase1.Value, npdShedule.Value);
+            }
+            modified = false;
         }
 
         private void OnValueChanged(object sender, EventArgs e)
