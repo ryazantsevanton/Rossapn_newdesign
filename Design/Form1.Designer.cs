@@ -118,6 +118,7 @@
             this.bbiScheduleRep});
             this.ribbonControl.LargeImages = this.ribbonImageCollectionLarge;
             this.ribbonControl.Location = new System.Drawing.Point(0, 0);
+            this.ribbonControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ribbonControl.MaxItemId = 81;
             this.ribbonControl.Name = "ribbonControl";
             this.ribbonControl.PageHeaderItemLinks.Add(this.iAbout);
@@ -127,7 +128,7 @@
             this.ribbonPage1,
             this.helpRibbonPage});
             this.ribbonControl.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office2010;
-            this.ribbonControl.Size = new System.Drawing.Size(950, 144);
+            this.ribbonControl.Size = new System.Drawing.Size(1108, 155);
             this.ribbonControl.StatusBar = this.ribbonStatusBar;
             this.ribbonControl.Toolbar.ItemLinks.Add(this.iHelp);
             // 
@@ -442,10 +443,11 @@
             // 
             // ribbonStatusBar
             // 
-            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 664);
+            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 824);
+            this.ribbonStatusBar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbonControl;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(950, 31);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(1108, 31);
             // 
             // barButtonItem1
             // 
@@ -478,20 +480,21 @@
             // 
             this.topPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.topPanel.Location = new System.Drawing.Point(0, 144);
+            this.topPanel.Location = new System.Drawing.Point(0, 155);
+            this.topPanel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.topPanel.Name = "topPanel";
-            this.topPanel.Size = new System.Drawing.Size(950, 520);
+            this.topPanel.Size = new System.Drawing.Size(1108, 669);
             this.topPanel.TabIndex = 2;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(950, 695);
+            this.ClientSize = new System.Drawing.Size(1108, 855);
             this.Controls.Add(this.topPanel);
             this.Controls.Add(this.ribbonControl);
             this.Controls.Add(this.ribbonStatusBar);
-            this.MaximizeBox = false;
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MinimizeBox = false;
             this.Name = "Form1";
             this.Ribbon = this.ribbonControl;
