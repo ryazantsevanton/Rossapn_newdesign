@@ -268,9 +268,9 @@ namespace Design
             using (SqlCommand command = connection.CreateCommand())
             {
                 command.CommandText = "select COUNT(*) from [sys].all_objects where type_desc='USER_TABLE'" +
-                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix', 'EntityGroups', 'Accounts', 'ActionLog', 'Settings', 'CalcFormula', 'CalcFormulaParams', 'EventChecker')";
+                                      " and name in ('Entities', 'Predicates', 'metrix', 'aproximatemetrix', 'EntityGroups', 'Accounts', 'ActionLog', 'Settings', 'CalcFormula', 'CalcFormulaParams', 'EventChecker', 'EventLog')";
                 var id = command.ExecuteScalar();
-                if (!(id is DBNull) && ((int)id) == 11)
+                if (!(id is DBNull) && ((int)id) == 12)
                 {
                     return connection;
                 }
@@ -287,6 +287,8 @@ namespace Design
                                       "drop Table calcFormulaParams",
                                       "IF OBJECT_ID('EventChecker', 'U') IS NOT NULL drop Table EventChecker",
                                       "IF OBJECT_ID('Settings', 'U') IS NOT NULL drop Table Settings",
+                                      "IF OBJECT_ID('EventChecker', 'U') IS NOT NULL drop Table EventChecker",
+                                      "IF OBJECT_ID('EventLog', 'U') IS NOT NULL drop Table EventLog",
                                       "CREATE TABLE Entities (entityid INT NOT NULL, entityvalue NVARCHAR(200) NOT NULL, PRIMARY KEY(entityid));",
                                       "CREATE TABLE Predicates (predicateid INT NOT NULL, predicatevalue NVARCHAR(200) NOT NULL, PRIMARY KEY(predicateid), inited int);",
                                       "CREATE TABLE metrix (metrixid int IDENTITY(1,1) NOT NULL, predicateid INT NOT NULL, entityid INT NOT NULL, metrixData datetime, metrixValue decimal(18,4) NULL, metrixObject nvarchar(200) null);",
@@ -298,7 +300,8 @@ namespace Design
                                       "CREATE TABLE Settings (settingName NVARCHAR(200), settingStringValue NVARCHAR(200), settingNumValue numeric(20, 8));",
                                       "CREATE TABLE CalcFormula (formulaId int IDENTITY(1,1) NOT NULL, formulaName NVARCHAR(200), formulaExpression nvarchar(3000));",
                                       "CREATE TABLE calcFormulaParams (paramId int IDENTITY(1,1) NOT NULL, formulaId int not null, typeid int, paramValue numeric(20, 4), name nvarchar(100) not null, code nvarchar(10) not null);",
-                                      "CREATE TABLE EventChecker(entityid INT NOT NULL, predicateid INT NOT NULL, checkerName NVARCHAR(200) NOT NULL, checkerArguments NVARCHAR(200))"
+                                      "CREATE TABLE EventChecker(entityid INT NOT NULL, predicateid INT NOT NULL, checkerName NVARCHAR(200) NOT NULL, checkerArguments NVARCHAR(200));",
+                                      "CREATE TABLE EventLog(entityid INT NOT NULL, predicateid INT NOT NULL, checkerName NVARCHAR(200) NOT NULL, eventDateTime datetime, metrixValue decimal(18,4))"
                                   };
                 foreach (var text in comText)
                 {
