@@ -77,13 +77,23 @@
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.topPanel = new System.Windows.Forms.Panel();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.labelEvents = new System.Windows.Forms.Label();
+            this.gvLastEvents = new DevExpress.XtraGrid.GridControl();
+            this.lastEventsView = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gcTime = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gcEvent = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gcEntity = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.gcPredicate = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.appMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonImageCollection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonImageCollectionLarge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gvLastEvents)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lastEventsView)).BeginInit();
             this.SuspendLayout();
             // 
             // ribbonControl
@@ -493,6 +503,7 @@
             // splitContainer
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer.IsSplitterFixed = true;
             this.splitContainer.Location = new System.Drawing.Point(0, 155);
             this.splitContainer.Name = "splitContainer";
             this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -500,9 +511,88 @@
             // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add(this.topPanel);
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Controls.Add(this.gvLastEvents);
+            this.splitContainer.Panel2.Controls.Add(this.labelEvents);
+            this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.splitContainer.Size = new System.Drawing.Size(1108, 875);
             this.splitContainer.SplitterDistance = 698;
             this.splitContainer.TabIndex = 5;
+            // 
+            // labelEvents
+            // 
+            this.labelEvents.AutoSize = true;
+            this.labelEvents.Location = new System.Drawing.Point(3, 8);
+            this.labelEvents.Name = "labelEvents";
+            this.labelEvents.Size = new System.Drawing.Size(138, 17);
+            this.labelEvents.TabIndex = 0;
+            this.labelEvents.Text = "Последние события";
+            // 
+            // gvLastEvents
+            // 
+            this.gvLastEvents.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.gvLastEvents.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
+            this.gvLastEvents.Location = new System.Drawing.Point(0, 29);
+            this.gvLastEvents.MainView = this.lastEventsView;
+            this.gvLastEvents.Margin = new System.Windows.Forms.Padding(4);
+            this.gvLastEvents.Name = "gvLastEvents";
+            this.gvLastEvents.Size = new System.Drawing.Size(1100, 144);
+            this.gvLastEvents.TabIndex = 8;
+            this.gvLastEvents.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.lastEventsView});
+            // 
+            // lastEventsView
+            // 
+            this.lastEventsView.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gcTime,
+            this.gcEvent,
+            this.gcEntity,
+            this.gcPredicate});
+            this.lastEventsView.GridControl = this.gvLastEvents;
+            this.lastEventsView.Name = "lastEventsView";
+            this.lastEventsView.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
+            this.lastEventsView.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
+            this.lastEventsView.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
+            this.lastEventsView.OptionsView.ShowGroupPanel = false;
+            this.lastEventsView.OptionsView.ShowIndicator = false;
+            // 
+            // gcTime
+            // 
+            this.gcTime.Caption = "Время";
+            this.gcTime.FieldName = "gcTime";
+            this.gcTime.Name = "gcTime";
+            this.gcTime.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+            this.gcTime.Visible = true;
+            this.gcTime.VisibleIndex = 0;
+            // 
+            // gcEvent
+            // 
+            this.gcEvent.Caption = "Событие";
+            this.gcEvent.FieldName = "gcEvent";
+            this.gcEvent.Name = "gcEvent";
+            this.gcEvent.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+            this.gcEvent.Visible = true;
+            this.gcEvent.VisibleIndex = 1;
+            // 
+            // gcEntity
+            // 
+            this.gcEntity.Caption = "Объект";
+            this.gcEntity.FieldName = "gcEntity";
+            this.gcEntity.Name = "gcEntity";
+            this.gcEntity.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+            this.gcEntity.Visible = true;
+            this.gcEntity.VisibleIndex = 2;
+            // 
+            // gcPredicate
+            // 
+            this.gcPredicate.Caption = "Параметр";
+            this.gcPredicate.FieldName = "gcPredicate";
+            this.gcPredicate.Name = "gcPredicate";
+            this.gcPredicate.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+            this.gcPredicate.Visible = true;
+            this.gcPredicate.VisibleIndex = 3;
             // 
             // Form1
             // 
@@ -525,8 +615,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.ribbonImageCollection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonImageCollectionLarge)).EndInit();
             this.splitContainer.Panel1.ResumeLayout(false);
+            this.splitContainer.Panel2.ResumeLayout(false);
+            this.splitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gvLastEvents)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lastEventsView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -580,6 +674,13 @@
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup2;
         private DevExpress.XtraBars.BarButtonItem bbiScheduleRep;
         private System.Windows.Forms.SplitContainer splitContainer;
+        private System.Windows.Forms.Label labelEvents;
+        private DevExpress.XtraGrid.GridControl gvLastEvents;
+        private DevExpress.XtraGrid.Views.Grid.GridView lastEventsView;
+        private DevExpress.XtraGrid.Columns.GridColumn gcTime;
+        private DevExpress.XtraGrid.Columns.GridColumn gcEvent;
+        private DevExpress.XtraGrid.Columns.GridColumn gcEntity;
+        private DevExpress.XtraGrid.Columns.GridColumn gcPredicate;
 
     }
 }

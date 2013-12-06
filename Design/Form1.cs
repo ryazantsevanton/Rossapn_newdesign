@@ -17,6 +17,8 @@ namespace Design
 {
     public partial class Form1 : RibbonForm
     {
+        List<object[]> events;
+
         public Form1()
         {
             InitializeComponent();
@@ -30,6 +32,8 @@ namespace Design
             bbiCalc.ItemClick += OnbbiCalItemCLick;
             bbiSettings.ItemClick += OnbbiSettingItemClick;
             bbiScheduleRep.ItemClick += OnScheduleReportClick;
+
+            lastEventsView.CustomUnboundColumnData += ((s, e) => e.Value = events[e.ListSourceRowIndex][e.Column.AbsoluteIndex]);
 
         }
 
@@ -157,6 +161,19 @@ namespace Design
         {
             try
             {
+                events = DataHelper.LastEventsForAccount(login);
+                if (events.Count < 5)
+                {                     
+                    events = DataHelper.LastEvents(5);
+                    labelEvents.Text = String.Format("Последние события({0}):", events.Count); 
+                }
+                else
+                {
+                    labelEvents.Text = String.Format("События со времени вашего последнего входа ({0}):", events.Count);   
+                }
+                
+                gvLastEvents.DataSource = events;
+                
                 Account.tryLogin(login, password);
             }
             catch (Exception e)
@@ -177,7 +194,7 @@ namespace Design
                     DataHelper.GetParameter(d.Name, con, true);
                 }
             }
-        }
 
+        }
     }
 }
