@@ -77,13 +77,13 @@
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.topPanel = new System.Windows.Forms.Panel();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.labelEvents = new System.Windows.Forms.Label();
             this.gvLastEvents = new DevExpress.XtraGrid.GridControl();
             this.lastEventsView = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gcTime = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gcEvent = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gcEntity = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gcPredicate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.labelEvents = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.appMenu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonImageCollection)).BeginInit();
@@ -132,7 +132,6 @@
             this.bbiScheduleRep});
             this.ribbonControl.LargeImages = this.ribbonImageCollectionLarge;
             this.ribbonControl.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ribbonControl.MaxItemId = 81;
             this.ribbonControl.Name = "ribbonControl";
             this.ribbonControl.PageHeaderItemLinks.Add(this.iAbout);
@@ -142,7 +141,7 @@
             this.ribbonPage1,
             this.helpRibbonPage});
             this.ribbonControl.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office2010;
-            this.ribbonControl.Size = new System.Drawing.Size(1108, 155);
+            this.ribbonControl.Size = new System.Drawing.Size(950, 144);
             this.ribbonControl.StatusBar = this.ribbonStatusBar;
             this.ribbonControl.Toolbar.ItemLinks.Add(this.iHelp);
             // 
@@ -457,11 +456,10 @@
             // 
             // ribbonStatusBar
             // 
-            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 1030);
-            this.ribbonStatusBar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ribbonStatusBar.Location = new System.Drawing.Point(0, 813);
             this.ribbonStatusBar.Name = "ribbonStatusBar";
             this.ribbonStatusBar.Ribbon = this.ribbonControl;
-            this.ribbonStatusBar.Size = new System.Drawing.Size(1108, 31);
+            this.ribbonStatusBar.Size = new System.Drawing.Size(950, 31);
             // 
             // barButtonItem1
             // 
@@ -495,16 +493,16 @@
             this.topPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.topPanel.Location = new System.Drawing.Point(0, 0);
-            this.topPanel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.topPanel.Name = "topPanel";
-            this.topPanel.Size = new System.Drawing.Size(1108, 698);
+            this.topPanel.Size = new System.Drawing.Size(950, 533);
             this.topPanel.TabIndex = 2;
             // 
             // splitContainer
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer.IsSplitterFixed = true;
-            this.splitContainer.Location = new System.Drawing.Point(0, 155);
+            this.splitContainer.Location = new System.Drawing.Point(0, 144);
+            this.splitContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.splitContainer.Name = "splitContainer";
             this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -516,29 +514,19 @@
             // 
             this.splitContainer.Panel2.Controls.Add(this.gvLastEvents);
             this.splitContainer.Panel2.Controls.Add(this.labelEvents);
-            this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.splitContainer.Size = new System.Drawing.Size(1108, 875);
-            this.splitContainer.SplitterDistance = 698;
+            this.splitContainer.Panel2.Padding = new System.Windows.Forms.Padding(0, 0, 7, 0);
+            this.splitContainer.Size = new System.Drawing.Size(950, 669);
+            this.splitContainer.SplitterDistance = 533;
+            this.splitContainer.SplitterWidth = 3;
             this.splitContainer.TabIndex = 5;
-            // 
-            // labelEvents
-            // 
-            this.labelEvents.AutoSize = true;
-            this.labelEvents.Location = new System.Drawing.Point(3, 8);
-            this.labelEvents.Name = "labelEvents";
-            this.labelEvents.Size = new System.Drawing.Size(138, 17);
-            this.labelEvents.TabIndex = 0;
-            this.labelEvents.Text = "Последние события";
             // 
             // gvLastEvents
             // 
             this.gvLastEvents.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.gvLastEvents.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
-            this.gvLastEvents.Location = new System.Drawing.Point(0, 29);
+            this.gvLastEvents.Location = new System.Drawing.Point(0, 16);
             this.gvLastEvents.MainView = this.lastEventsView;
-            this.gvLastEvents.Margin = new System.Windows.Forms.Padding(4);
             this.gvLastEvents.Name = "gvLastEvents";
-            this.gvLastEvents.Size = new System.Drawing.Size(1100, 144);
+            this.gvLastEvents.Size = new System.Drawing.Size(943, 117);
             this.gvLastEvents.TabIndex = 8;
             this.gvLastEvents.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.lastEventsView});
@@ -555,6 +543,7 @@
             this.lastEventsView.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
             this.lastEventsView.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
             this.lastEventsView.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
+            this.lastEventsView.OptionsBehavior.Editable = false;
             this.lastEventsView.OptionsView.ShowGroupPanel = false;
             this.lastEventsView.OptionsView.ShowIndicator = false;
             // 
@@ -594,15 +583,23 @@
             this.gcPredicate.Visible = true;
             this.gcPredicate.VisibleIndex = 3;
             // 
+            // labelEvents
+            // 
+            this.labelEvents.AutoSize = true;
+            this.labelEvents.Location = new System.Drawing.Point(3, 6);
+            this.labelEvents.Name = "labelEvents";
+            this.labelEvents.Size = new System.Drawing.Size(108, 13);
+            this.labelEvents.TabIndex = 0;
+            this.labelEvents.Text = "Последние события";
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1108, 1061);
+            this.ClientSize = new System.Drawing.Size(950, 844);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.ribbonControl);
             this.Controls.Add(this.ribbonStatusBar);
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form1";

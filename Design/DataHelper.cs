@@ -1389,6 +1389,83 @@ namespace Design
             return result;
         }
 
+        internal static bool LastUserActionTime(string login, Account.Actions action, out DateTime dt)
+        {
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("select max(logDateTime) from ActionLog where login = '{0}' and action = {1}", login, (int)action);
+
+                    var result = command.ExecuteScalar();
+                    if (result is DBNull)
+                    {
+                        dt = DateTime.MaxValue;
+                        return false;
+                    }
+                    else
+                    {
+                        dt = (DateTime)result;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        internal static List<object[]> LastEvents(int count)
+        {
+            List<object[]> events = new List<object[]>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = String.Format("select top {0} eventDate, checkerName, entityValue, predicateValue, realValue from " +
+                                          " journalEvents je left join Entities e on je.entityid = e.entityid " +
+                                          " left join Predicates on je.predicateid = Predicates.predicateid " +
+                                          " order by eventDate desc", count);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                            while (reader.Read())
+                            {
+                                events.Add(new object[] { reader.GetDateTime(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetDecimal(4) });
+                            }
+                    }
+                }
+            }
+
+            return events;
+
+        }
+
+        internal static List<object[]> LastEventsForAccount(string login)
+        {
+            List<object[]> events = new List<object[]>();
+            using (var con = OpenOrCreateDb())
+            {
+                using (var command = con.CreateCommand())
+                {
+                    command.CommandText = string.Format(" select eventDate, checkerName, entityValue, predicateValue, realValue from " +
+                                                " journalEvents je left join Entities on je.entityid = Entities.entityid " +
+                                                " left join Predicates on je.predicateid = Predicates.predicateid " +
+                                                " where eventDate >= (select max(logDateTime) from ActionLog where login = '{0}' " +
+                                                " and action = 0) order by eventDate desc", login);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader != null)
+                            while (reader.Read())
+                            {
+                                events.Add(new object[] { reader.GetDateTime(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetDecimal(4) });
+                            }
+                    }
+                }
+            }
+
+            return events;
+
+        }
+
         internal static object[][] GetAllEventsByObjects(List<int> selObjects, string dateDown, string dateUp)
         {
             List<object[]> result = new List<object[]>();
