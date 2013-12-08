@@ -17,13 +17,13 @@ namespace Design
     {
         private object[][] objects;
         private object[][] parameters;
-        private object[] metrixs;
         private List<string> sourceTitles;
         CalcFormula formula;
         List<object[]> itogData;
         List<object[]> sourceData;
+        List<object[]> eventData;
         bool formed;
-
+        DateTime minDate;
 
         public CalcForm()
         {
@@ -33,21 +33,89 @@ namespace Design
             parameters = DataHelper.GetParameters();
 
             objectsList.DataSource = objects;
-            objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));
+            objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));           
             objectsView.CellValueChanging += OnObjectSelected;
+
+            viewEvents.CustomUnboundColumnData += UnboundEventData;
 
             cbParameters.Items.Clear();
             cbParameters.Items.AddRange(DataHelper.CustomFormulas.Select(p => p.Name).ToArray());
 
             runButton.Click += OnRunButtonClick;
             closeButton.Click += OnCloseButtonClick;
-            refTimeButton.Click += OnRefTimeButtonClick;
             saveButton.Click += OnSaveButtonClick;
             sourceTitles = new List<string>();
             itogData = new List<object[]>();
             sourceData = new List<object[]>();
+            eventData = new List<object[]>();
             formed = false;
+
+            SetMinDate();
+            cbParameters.TextChanged += (_,__) => SetMinDate();
+            trackBar.ValueChanged += OnTrackValueChanged;
         }
+
+        private void UnboundEventData(object sender, CustomColumnDataEventArgs e)
+        {
+            try
+            {
+                object[] o = (object[])viewEvents.GetRow(e.ListSourceRowIndex);
+                e.Value = ((object[])o)[e.Column.AbsoluteIndex];
+            }
+            catch
+            {
+                e.Value = string.Empty;
+            }
+        }
+
+        private void OnTrackValueChanged(object sender, EventArgs e)
+        {
+            DateTime d = minDate.AddDays(trackBar.Value);
+            lStartDate.Text = string.Format("{0}.{1}.{2} {3}:{4}:{5}", d.Day, d.Month, d.Year, d.Hour, d.Minute, d.Second);            
+        }
+
+        private void SetMinDate()
+        {
+            minDate = GetMinDateForCalc();
+            if (minDate == DateTime.Today)
+            {
+                trackBar.Minimum = 0;
+                trackBar.Maximum = 1;
+                trackBar.Value = 0;
+            }
+            else
+            {
+                trackBar.Minimum = 0;
+                TimeSpan ts = DateTime.Today - minDate;
+                trackBar.Maximum = ts.Days;
+                trackBar.Value = 0;
+            }
+            lStartDate.Text = string.Format("{0}.{1}.{2} {3}:{4}:{5}",
+                                minDate.Day, minDate.Month, minDate.Year, minDate.Hour, minDate.Minute, minDate.Second);
+        }
+
+        private DateTime GetMinDateForCalc()
+        {
+            if (string.IsNullOrEmpty(cbParameters.Text) || objects == null)
+            {
+                return DateTime.Today;
+            }
+            int[] selObj = objects.Where(o => (bool)((object[])o)[2]).Select(o=> (int)((object[])o)[0]).ToArray();
+            if (selObj.Length == 0)
+            {
+                return DateTime.Today;
+            }
+
+            formula = DataHelper.CustomFormulas.FirstOrDefault(f => f.Name == cbParameters.Text);
+            if (formula == null)
+            {
+                return DateTime.Today;
+            }
+
+            DateTime? minDate = DataHelper.GetMinDate(selObj, formula.InitPredicates());
+            return minDate == null ? new DateTime(1990, 1, 1) : minDate.Value;
+        }
+
 
         private void OnSaveButtonClick(object sender, EventArgs e)
         {
@@ -73,53 +141,7 @@ namespace Design
             MessageBox.Show("Сохранено " + itogData.Count + " объектов");
         }
 
-        private void OnRefTimeButtonClick(object sender, EventArgs e)
-        {
-            if (!rbTime.Checked && !rbRelation.Checked)
-            {
-                MessageBox.Show("Выберите тип диапазона времени.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            var selectedObj = objects.Where(o => (bool)((object[])o)[2]).Select(o => (int)((object[])o)[0]).ToArray();
-            if (selectedObj.Count() == 0)
-            {
-                MessageBox.Show("Выберите объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            metrixs = DataHelper.GetMetrixByTimeConditions(string.Empty, selectedObj, rbTime.Checked);
-            if (metrixs.Length > 0)
-            {
-                trackStart.Minimum = 0;
-                trackStart.Maximum = metrixs.Length - 1;
-                trackStart.Value = 0;
-                trackStart.Enabled = true;
-
-                trackEnd.Minimum = 0;
-                trackEnd.Maximum = metrixs.Length - 1;
-                trackEnd.Value = metrixs.Length - 1;
-                trackEnd.Enabled = true;
-
-                tbStart.Text = metrixs[trackStart.Value].ToString();
-                tbEnd.Text = metrixs[trackEnd.Value].ToString();
-            }
-            else
-            {
-                trackStart.Minimum = 0;
-                trackStart.Maximum = 1;
-                trackStart.Value = 0;
-                trackStart.Enabled = false;
-
-                trackEnd.Minimum = 0;
-                trackEnd.Maximum = 1;
-                trackEnd.Value = 1;
-                trackEnd.Enabled = false;
-
-                tbStart.Text = "Нет данных";
-                tbEnd.Text = "Нет данных";
-            }
-        }
-
+   
         private void OnCloseButtonClick(object sender, EventArgs e)
         {
             if (formed && DialogResult.Yes != MessageBox.Show("Есть несохраненные данные.\r\nВы действительно хотите закрыть форму?",
@@ -138,11 +160,6 @@ namespace Design
                 return;
             }
 
-            if (!rbTime.Checked && !rbRelation.Checked)
-            {
-                MessageBox.Show("Выберите тип диапазона времени.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
             if (cbParameters.Text == string.Empty)
             {
                 MessageBox.Show("Выберите параметр измерения.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -152,11 +169,6 @@ namespace Design
             if (selectedObj.Count() == 0)
             {
                 MessageBox.Show("Выберите объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            if (trackStart.Value == 0 && trackEnd.Value == 1)
-            {
-                MessageBox.Show("Нет данных для выбранных измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -181,22 +193,24 @@ namespace Design
                 {
                     List<object> data = new List<object>();
                     List<object> rdata = new List<object>();
+                    List<object> edata = new List<object>();
+                    decimal eventInterval = DataHelper.GetSettingValue("RangeSchedule");
 
-                    for (var i = trackStart.Value; i <= trackEnd.Value; i++)
+                    for (var i = trackBar.Value; i <= trackBar.Maximum; i++)
                     {
+                        DateTime d = minDate.AddDays(i);
                         data.Clear();
-                        data.Add(metrixs[i]);
-
+                        data.Add(d);
                         rdata.Clear();
-                        rdata.Add(metrixs[i]);
+                        rdata.Add(d);
+                        edata.Clear();
 
                         for (var s = 0; s < selObj.Length; s++)
                         {
                             try
                             {
-                                param = predicates.Select(p => new object[] {p, 
-                                                    DataHelper.GetMetrix((int)selObj[s][0], p, metrixs[i], rbTime.Checked, con)}).ToArray();
-
+                                int entityId = (int)selObj[s][0];
+                                param =  predicates.Select(p => new object[] {p, DataHelper.GetAvgMetrix(entityId, p, d, con)}).ToArray();
                                 data.AddRange(param.Select(p => p[1]));
 
                                 decimal value = formula.Calc(param);
@@ -207,6 +221,39 @@ namespace Design
                                 {
                                     sourceTitles.AddRange(predicates.Select(p => (string)selObj[s][1] + "/" + p));
                                 }
+
+                                //обработка на событие
+
+                                DataHelper.ClearEvent(entityId, d, con);
+                                bool alreadyMarked = DataHelper.IsAlreadyMarked(entityId, d, eventInterval, con);
+                                if (!alreadyMarked)
+                                {
+                                    foreach (object[] c in DataHelper.FindEventConditions(entityId, con))
+                                    {
+                                        EventChecker checker = DataHelper.EventCheckers.FirstOrDefault(ev => ev.Name == c[1].ToString());
+                                        if (checker == null)
+                                        {
+                                            continue;
+                                        }
+                                        var o = checker.IsEventExists(c, d, con);
+                                        if (o != null)
+                                        {
+                                            object[] result = (object[])o;
+                                            if ((bool)result[0])
+                                            {
+                                                DataHelper.AddEvent(entityId, c[0], checker.Name, d, (double)result[1], (double)result[2], con);
+                                                edata.Add(new object[] {
+                                                    d,
+                                                    (string)c[5],
+                                                    (string)c[4],
+                                                    checker.Name,
+                                                    (double)result[1], 
+                                                    (double)result[2]
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             catch
                             {
@@ -216,6 +263,13 @@ namespace Design
                         }
                         sourceData.Add(data.ToArray());
                         itogData.Add(rdata.ToArray());
+                        if (edata.Count > 0)
+                        {
+                            foreach (object[] ed in edata)
+                            {
+                                eventData.Add(ed);
+                            }
+                        }
                     }
                 }
                 finally { con.Close(); }
@@ -292,6 +346,7 @@ namespace Design
 
             grid.DataSource = itogData;
             gridSource.DataSource = sourceData;
+            gridEvents.DataSource = eventData;
 
         }
 
@@ -318,34 +373,12 @@ namespace Design
         {
             DevExpress.XtraGrid.Views.Grid.GridView view = (DevExpress.XtraGrid.Views.Grid.GridView)sender;
             objects[view.FocusedRowHandle][2] = (bool)e.Value;
+            SetMinDate();
         }
 
         private void UnboundColumnData(object sender, CustomColumnDataEventArgs e, object[][] data)
         {
             e.Value = data[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
-        }
-
-        private void trackStart_ValueChanged(object sender, EventArgs e)
-        {
-            trackEnd.Minimum = trackStart.Value;
-            if (trackEnd.Value < trackEnd.Minimum)
-            {
-                trackEnd.Value = trackEnd.Minimum;
-                tbEnd.Text = metrixs[trackEnd.Value].ToString();
-            }
-            tbStart.Text = metrixs[trackStart.Value].ToString();
-        }
-
-        private void trackEnd_ValueChanged(object sender, EventArgs e)
-        {
-            trackStart.Maximum = trackEnd.Value;
-            if (trackStart.Value >= trackStart.Maximum)
-            {
-                trackStart.Value = trackStart.Maximum;
-                tbStart.Text = metrixs[trackStart.Value].ToString();
-            }
-            
-            tbEnd.Text = metrixs.Length <= trackEnd.Value ? "-" :   metrixs[trackEnd.Value].ToString();
         }
 
     }

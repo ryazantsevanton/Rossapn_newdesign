@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,13 +22,13 @@ namespace Design
         {
             get
             {
-                return "В качестве аргумента укажите значение значение интервала достоверности";
+                return "В качестве аргумента укажите значение значение доверительного интервала в процентах";
             }
         }
 
-        public List<object[]> findEvents(List<object[]> metrix, string[] arguments)
+        public object[] IsEventExists(object[] c, DateTime d, SqlConnection con)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
     }

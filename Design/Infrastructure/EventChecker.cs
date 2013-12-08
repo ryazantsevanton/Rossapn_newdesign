@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace Design
@@ -9,7 +10,6 @@ namespace Design
         string Name { get; }
         string Help { get; }
 
-        List<object[]> findEvents(List<object[]> metrix, string[] arguments);
-
+        object[] IsEventExists(object[] c, DateTime d, SqlConnection con);
     }
 }

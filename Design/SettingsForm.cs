@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Design.Infrastructure;
+using DevExpress.XtraGrid.Views.Base;
 
 namespace Design
 {
@@ -16,24 +17,16 @@ namespace Design
         private bool modified;
         private object[][] objects;
         private object[][] parameters;
+        private object[][] eventObjects;
 
         public SettingsForm()
         {
             InitializeComponent();
 
-            decimal numberCount = DataHelper.GetSettingValue("ScaleData");
             int scheduleRange = Convert.ToInt32(DataHelper.GetSettingValue("RangeSchedule"));
-            decimal numCase1 = DataHelper.GetSettingValue("CriticalValue");
-            decimal dost = DataHelper.GetSettingValue("RowDost"); 
 
-            scaleDatas.Value = numberCount == null || numberCount == 0 ? 10 : numberCount;
-            npdShedule.Value = scheduleRange == null || scheduleRange == 0 ? 20 : scheduleRange;
-            npDost.Value = dost == null || dost == 0 ? 90 : dost;
-            npCase1.Value = numCase1 == null || numCase1 == 0 ? 3 : numCase1;
+            npdShedule.Value = scheduleRange == null || scheduleRange == 0 ? 3 : scheduleRange;
 
-            npCase1.ValueChanged += OnValueChanged;
-            npDost.ValueChanged += OnValueChanged;
-            scaleDatas.ValueChanged += OnValueChanged;
             npdShedule.ValueChanged += OnValueChanged;
 
             cancelButton.Click += OnCancelButtonClick;
@@ -42,6 +35,7 @@ namespace Design
 
             objects = DataHelper.GetObjects();
             parameters = DataHelper.GetParameters();
+            eventObjects = DataHelper.GetEvents();
 
             cbObjects.Items.AddRange(objects.Select(o => (string)o[1]).ToArray());
             cbParameters.Items.AddRange(parameters.Select(o => (string)o[1]).ToArray());
@@ -50,6 +44,33 @@ namespace Design
             cbObjects.SelectedValueChanged += cbSelectedValueChanged;
             cbParameters.SelectedValueChanged += cbSelectedValueChanged;
             cbEventCheckers.SelectedValueChanged += cbSelectedValueChanged;
+            mainView.CustomUnboundColumnData += CustomUnboundColumnData;
+            mainView.FocusedRowChanged += OnFocusedRowChanged;
+
+            grid.DataSource = eventObjects;
+        }
+
+        private void OnFocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
+        {
+            object[] row = (object[])mainView.GetRow(e.FocusedRowHandle);
+            try
+            {
+                cbObjects.SelectedItem = (string)row[6];
+                cbParameters.SelectedItem = (string)row[3];
+                cbEventCheckers.SelectedItem = (string)row[4];
+                tbArguments.Text = (string)row[5];
+            }
+            catch {
+                cbObjects.SelectedIndex = -1;
+                cbParameters.SelectedIndex = -1;
+                cbEventCheckers.SelectedIndex = -1;
+                tbArguments.Text = string.Empty;
+            }
+        }
+
+        private void CustomUnboundColumnData(object sender, CustomColumnDataEventArgs e)
+        {
+            e.Value = eventObjects[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
         }
 
         void cbSelectedValueChanged(object sender, EventArgs e)
@@ -63,7 +84,7 @@ namespace Design
             int predicateId = (int)parameters[cbParameters.SelectedIndex][0];
             string checkerName = DataHelper.EventCheckers[cbEventCheckers.SelectedIndex].Name;
 
-            tbArguments.Text = DataHelper.readEventCheckerArguments(entityId, predicateId, checkerName);
+          //?  tbArguments.Text = DataHelper.readEventCheckerArguments(entityId, predicateId, checkerName);
 
         }
 
@@ -80,8 +101,7 @@ namespace Design
 
         private void OnSaveButtonClick(object sender, EventArgs e)
         {
-            DataHelper.SaveSettings(scaleDatas.Value, npDost.Value, npCase1.Value, npdShedule.Value);
-            Dispose();
+            DataHelper.SaveSettings(npdShedule.Value);
         }
 
         private void OnValueChanged(object sender, EventArgs e)
@@ -113,6 +133,11 @@ namespace Design
             string checkerName = DataHelper.EventCheckers[cbEventCheckers.SelectedIndex].Name;
 
             DataHelper.writeEventCheckerArguments(entityId, predicateId, checkerName, tbArguments.Text.Trim());
+            mainView.BeginDataUpdate();
+            eventObjects = DataHelper.GetEvents();
+            grid.DataSource = eventObjects;
+            mainView.EndDataUpdate();
+            mainView.RefreshData();
 
         }
 

@@ -96,7 +96,7 @@
             // 
             this.opdPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.opdPanel.Location = new System.Drawing.Point(0, 0);
-            this.opdPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.opdPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.opdPanel.Name = "opdPanel";
             // 
             // opdPanel.Panel1
@@ -106,16 +106,17 @@
             // opdPanel.Panel2
             // 
             this.opdPanel.Panel2.Controls.Add(this.tabControl);
-            this.opdPanel.Panel2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.opdPanel.Size = new System.Drawing.Size(1088, 642);
-            this.opdPanel.SplitterDistance = 361;
+            this.opdPanel.Panel2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.opdPanel.Size = new System.Drawing.Size(816, 522);
+            this.opdPanel.SplitterDistance = 270;
+            this.opdPanel.SplitterWidth = 3;
             this.opdPanel.TabIndex = 1;
             // 
             // opPanel
             // 
             this.opPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.opPanel.Location = new System.Drawing.Point(0, 0);
-            this.opPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.opPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.opPanel.Name = "opPanel";
             this.opPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -124,15 +125,16 @@
             this.opPanel.Panel1.Controls.Add(this.panel1);
             this.opPanel.Panel1.Controls.Add(this.objectsList);
             this.opPanel.Panel1.Controls.Add(this.label1);
-            this.opPanel.Panel1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.opPanel.Panel1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             // 
             // opPanel.Panel2
             // 
             this.opPanel.Panel2.Controls.Add(this.parametersList);
             this.opPanel.Panel2.Controls.Add(this.label2);
-            this.opPanel.Panel2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.opPanel.Size = new System.Drawing.Size(361, 642);
-            this.opPanel.SplitterDistance = 419;
+            this.opPanel.Panel2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.opPanel.Size = new System.Drawing.Size(270, 522);
+            this.opPanel.SplitterDistance = 340;
+            this.opPanel.SplitterWidth = 3;
             this.opPanel.TabIndex = 4;
             // 
             // panel1
@@ -141,11 +143,11 @@
             this.panel1.Controls.Add(this.intervalLabel);
             this.panel1.Controls.Add(this.timeInterval);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(4, 331);
-            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel1.Location = new System.Drawing.Point(3, 268);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.panel1.Size = new System.Drawing.Size(353, 84);
+            this.panel1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel1.Size = new System.Drawing.Size(264, 69);
             this.panel1.TabIndex = 6;
             // 
             // intervalLabel
@@ -153,9 +155,10 @@
             this.intervalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.intervalLabel.AutoSize = true;
-            this.intervalLabel.Location = new System.Drawing.Point(5, 1);
+            this.intervalLabel.Location = new System.Drawing.Point(4, 1);
+            this.intervalLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.intervalLabel.Name = "intervalLabel";
-            this.intervalLabel.Size = new System.Drawing.Size(132, 17);
+            this.intervalLabel.Size = new System.Drawing.Size(103, 13);
             this.intervalLabel.TabIndex = 4;
             this.intervalLabel.Text = "Интервал времени";
             // 
@@ -163,10 +166,10 @@
             // 
             this.timeInterval.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.timeInterval.Down = 9;
-            this.timeInterval.Location = new System.Drawing.Point(3, 21);
-            this.timeInterval.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.timeInterval.Location = new System.Drawing.Point(2, 17);
+            this.timeInterval.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.timeInterval.Name = "timeInterval";
-            this.timeInterval.Size = new System.Drawing.Size(345, 59);
+            this.timeInterval.Size = new System.Drawing.Size(258, 48);
             this.timeInterval.TabIndex = 5;
             this.timeInterval.TickCount = 10;
             this.timeInterval.Up = 0;
@@ -176,13 +179,11 @@
             this.objectsList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.objectsList.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.objectsList.Location = new System.Drawing.Point(4, 25);
+            this.objectsList.Location = new System.Drawing.Point(3, 20);
             this.objectsList.MainView = this.objectsView;
-            this.objectsList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.objectsList.Name = "objectsList";
-            this.objectsList.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.objectsList.Size = new System.Drawing.Size(353, 299);
+            this.objectsList.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.objectsList.Size = new System.Drawing.Size(264, 243);
             this.objectsList.TabIndex = 3;
             this.objectsList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.objectsView});
@@ -256,9 +257,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 7);
+            this.label1.Location = new System.Drawing.Point(5, 6);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 17);
+            this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Объекты";
             // 
@@ -267,12 +269,10 @@
             this.parametersList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.parametersList.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.parametersList.Location = new System.Drawing.Point(4, 21);
+            this.parametersList.Location = new System.Drawing.Point(3, 17);
             this.parametersList.MainView = this.parametersView;
-            this.parametersList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.parametersList.Name = "parametersList";
-            this.parametersList.Size = new System.Drawing.Size(353, 198);
+            this.parametersList.Size = new System.Drawing.Size(264, 162);
             this.parametersList.TabIndex = 4;
             this.parametersList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.parametersView});
@@ -326,9 +326,10 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 4);
+            this.label2.Location = new System.Drawing.Point(5, 3);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(84, 17);
+            this.label2.Size = new System.Drawing.Size(66, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "Параметры";
             // 
@@ -337,22 +338,22 @@
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.Location = new System.Drawing.Point(4, 4);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabControl.Location = new System.Drawing.Point(3, 3);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(715, 634);
+            this.tabControl.Size = new System.Drawing.Size(537, 516);
             this.tabControl.TabIndex = 6;
             // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.buttonPanel);
             this.tabPage1.Controls.Add(this.dataTable);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabPage1.Size = new System.Drawing.Size(707, 605);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage1.Size = new System.Drawing.Size(529, 490);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Таблица";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -363,20 +364,20 @@
             this.buttonPanel.Controls.Add(this.closeButton);
             this.buttonPanel.Controls.Add(this.saveButton);
             this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonPanel.Location = new System.Drawing.Point(3, 562);
-            this.buttonPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonPanel.Location = new System.Drawing.Point(2, 454);
+            this.buttonPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonPanel.Name = "buttonPanel";
-            this.buttonPanel.Size = new System.Drawing.Size(701, 41);
+            this.buttonPanel.Size = new System.Drawing.Size(525, 34);
             this.buttonPanel.TabIndex = 6;
             // 
             // closeButton
             // 
             this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.closeButton.Location = new System.Drawing.Point(419, 4);
-            this.closeButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.closeButton.Location = new System.Drawing.Point(313, 3);
+            this.closeButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(128, 34);
+            this.closeButton.Size = new System.Drawing.Size(96, 28);
             this.closeButton.TabIndex = 1;
             this.closeButton.Text = "Закрыть";
             this.closeButton.UseVisualStyleBackColor = true;
@@ -386,10 +387,10 @@
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.Enabled = false;
-            this.saveButton.Location = new System.Drawing.Point(568, 4);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.saveButton.Location = new System.Drawing.Point(425, 3);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(128, 34);
+            this.saveButton.Size = new System.Drawing.Size(96, 28);
             this.saveButton.TabIndex = 0;
             this.saveButton.Text = "Сохранить";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -400,13 +401,11 @@
             this.dataTable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataTable.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.dataTable.Location = new System.Drawing.Point(3, 2);
+            this.dataTable.Location = new System.Drawing.Point(2, 2);
             this.dataTable.MainView = this.dataView;
-            this.dataTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dataTable.Name = "dataTable";
-            this.dataTable.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.dataTable.Size = new System.Drawing.Size(700, 550);
+            this.dataTable.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.dataTable.Size = new System.Drawing.Size(526, 448);
             this.dataTable.TabIndex = 5;
             this.dataTable.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.dataView});
@@ -431,10 +430,10 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.chartControl);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(707, 606);
+            this.tabPage2.Size = new System.Drawing.Size(528, 489);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "График";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -447,20 +446,20 @@
             legend1.Name = "Legend1";
             this.chartControl.Legends.Add(legend1);
             this.chartControl.Location = new System.Drawing.Point(0, 0);
-            this.chartControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.chartControl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chartControl.Name = "chartControl";
-            this.chartControl.Size = new System.Drawing.Size(707, 606);
+            this.chartControl.Size = new System.Drawing.Size(528, 489);
             this.chartControl.TabIndex = 0;
             // 
             // DataControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.Controls.Add(this.opdPanel);
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "DataControl";
-            this.Size = new System.Drawing.Size(1088, 642);
+            this.Size = new System.Drawing.Size(816, 522);
             this.opdPanel.Panel1.ResumeLayout(false);
             this.opdPanel.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.opdPanel)).EndInit();

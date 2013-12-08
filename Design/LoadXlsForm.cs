@@ -130,7 +130,26 @@ namespace Design
                DataHelper.logAction(con, Account.Actions.LoadMetrix, "Загружено: "+triplets.Count());
             }
             MessageBox.Show(string.Format("Загружено {0} измерений.", triplets.Count), "Загрузка звершена.", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            Dispose();
+         //   Dispose();
+
+            tbParamEnter.Enabled = false;
+            tbParamEnter.Text = string.Empty;
+            paramColon.Checked = false;
+            paramColumns.Clear();
+
+            tbTimeEnter.Enabled = false;
+            tbTimeEnter.Text = string.Empty;
+            timeColon.Checked = false;
+            timeColumn = -1;
+
+            tbObjectEnter.Enabled = false;
+            tbObjectEnter.Text = string.Empty;
+            objectColumns.Clear();
+
+            var view = GetActiveView();
+            if (view == null) { return; }
+
+            view.RefreshData();          
         }
 
         private List<Triplet> PrepareTriplets(SqlConnection con)

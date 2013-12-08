@@ -18,92 +18,113 @@ namespace Design
 {
     public partial class ListSwitchesForm : UserControl
     {
-        private object[] metrixs;
-        private object[][] selectedObjs;
-        private bool formed;
-        List<object[]> itogData;
-        List<string> scheduleList;
-
+        private List<int> selObjects;
+        object[][] objects;
+        List<string> supportTimes;
+        object[][] journalEvents;
 
         public ListSwitchesForm()
         {
             InitializeComponent();
-            refTimeButton.Click += OnRefTimeButtonClick;
-            closeButton.Click += OnCloseButtonClick;
+            objects = DataHelper.GetObjectsWithGroups();
+            objectsList.DataSource = objects;
+            objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));
+            mainView.CustomUnboundColumnData += OnMainViewCustomUnboundData;
+            objectsView.CellValueChanging += OnObjectSelected;
+
             runButton.Click += OnRunButtonClick;
+            closeButton.Click += OnCloseButtonClick;
             importButton.Click += OnImportButtonClick;
 
-            cbParameters.Items.Clear();
-            cbParameters.Items.AddRange(DataHelper.CustomFormulas.Select(p => p.Name).ToArray());
+            selObjects = new List<int>();
+            journalEvents = new object[][] { };
+            grid.DataSource = journalEvents;
 
-            cbObjectGroup.Properties.Items.Clear();
-            cbObjectGroup.Properties.Items.AddRange(DataHelper.GetEntityGroups());
-            formed = false;
-            itogData = new List<object[]>();
-            scheduleList = new List<string>();
+            initTimeIntervals();
         }
 
-        private void OnRefTimeButtonClick(object sender, EventArgs e)
+        private void OnMainViewCustomUnboundData(object sender, CustomColumnDataEventArgs e)
         {
-            if (!rbTime.Checked && !rbRelation.Checked)
+            try
             {
-                MessageBox.Show("Выберите тип диапазона времени.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                e.Value = journalEvents[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
+            }
+            catch {
+                e.Value = string.Empty;
+            }
+        }
+
+        private void OnRunButtonClick(object sender, EventArgs e)
+        {
+            journalEvents = timeInterval.Down < timeInterval.Up
+                 ? DataHelper.GetAllEventsByObjects(selObjects, supportTimes[timeInterval.Down], supportTimes[timeInterval.Up])
+                 : DataHelper.GetAllEventsByObjects(selObjects, supportTimes[timeInterval.Up], supportTimes[timeInterval.Down]);
+
+            mainView.BeginDataUpdate();
+            grid.DataSource = journalEvents;
+            mainView.RefreshData();
+            mainView.EndDataUpdate();
+
+            chartControl.Series.Clear();
+
+            System.Windows.Forms.DataVisualization.Charting.Series s = null;
+
+            foreach(int j in selObjects)
+            {
+                object[] selObject = objects.First(o => (int)o[0] == j);
+                s = new System.Windows.Forms.DataVisualization.Charting.Series();
+                s.Name = selObject[1].ToString() + " полученное";
+                s.ChartType = SeriesChartType.FastPoint;
+                s.Tag = selObject[1].ToString();
+              
+                chartControl.Series.Add(s);
             }
 
-            if (String.IsNullOrEmpty(cbObjectGroup.Text))
+            foreach (var g in journalEvents.ToArray().GroupBy(o => (string)o[0]))
             {
-                MessageBox.Show("Выберите объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                string strValue = g.Key;
+                foreach (var ss in chartControl.Series)
+                {
+                    var result = g.FirstOrDefault(v => v[1].ToString() == ss.Tag.ToString());
+                    if (result != null)
+                    {
+                        ss.Points.AddXY(strValue, (decimal)result[5]);
+                    }
+                }
+            } 
+        }
 
-            if (selectedObjs == null || selectedObjs.Length == 0)
+        private void OnObjectSelected(object sender, CellValueChangedEventArgs e)
+        {
+            int id = (int)((object[])objectsView.GetRow(e.RowHandle))[0];
+            if ((bool)e.Value)
             {
-                selectedObjs = DataHelper.GetEntityByGroup(cbObjectGroup.Text);
-            }
-            if (selectedObjs == null || selectedObjs.Length == 0)
-            {
-                MessageBox.Show("У группы '" + cbObjectGroup.Text + "' нет объектов", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            metrixs = DataHelper.GetMetrixByTimeConditions(cbParameters.Text, 
-                                                selectedObjs.Select(s => (int)s[0]).ToArray(), rbTime.Checked);
-            if (metrixs.Length > 0)
-            {
-                trackStart.Minimum = 0;
-                trackStart.Maximum = metrixs.Length - 1;
-                trackStart.Value = 0;
-                trackStart.Enabled = true;
-
-                trackEnd.Minimum = 0;
-                trackEnd.Maximum = metrixs.Length - 1;
-                trackEnd.Value = metrixs.Length - 1;
-                trackEnd.Enabled = true;
-
-                tbStart.Text = metrixs[trackStart.Value].ToString();
-                tbEnd.Text = metrixs[trackEnd.Value].ToString();
+                if (!selObjects.Contains(id)) { selObjects.Add(id); }
             }
             else
             {
-                trackStart.Minimum = 0;
-                trackStart.Maximum = 1;
-                trackStart.Value = 0;
-                trackStart.Enabled = false;
-
-                trackEnd.Minimum = 0;
-                trackEnd.Maximum = 1;
-                trackEnd.Value = 1;
-                trackEnd.Enabled = false;
-
-                tbStart.Text = "Нет данных";
-                tbEnd.Text = "Нет данных";
+                if (selObjects.Contains(id)) { selObjects.Remove(id); }
             }
+            List<string> allTimes = DataHelper.GetAllEventDatesByObjects(selObjects);
+            supportTimes = allTimes.Count < 30 ? allTimes : allTimes.Where((s, i) => i % 30 == 0 || i == allTimes.Count - 1).ToList();
+
+            timeInterval.TickCount = supportTimes.Count();
+            if (timeInterval.TickCount >= 2)
+            {
+                timeInterval.Up = timeInterval.TickCount - 2;
+                timeInterval.Down = timeInterval.TickCount - 1;
+            }
+            objects[e.RowHandle][2] = e.Value;
+        }
+
+        private void UnboundColumnData(object sender, CustomColumnDataEventArgs e, object[][] data)
+        {
+            e.Value = data[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
         }
 
         private void OnImportButtonClick(object sender, EventArgs e)
         {
-            if (itogData.Count == 0)
+            if (journalEvents.Length == 0)
             {
                 return;
             }
@@ -139,36 +160,82 @@ namespace Design
 
                 objWorkBook = objExcel.Workbooks.Add(System.Reflection.Missing.Value);
                 objWorkSheet = objExcel.ActiveSheet as Worksheet;
-                objWorkSheet.Cells[1, 4] = "Журнал переключений по " + cbObjectGroup.Text;
-                objWorkSheet.Cells[2, 4] = "за период с " + tbStart.Text + " по " + tbEnd.Text;
-                objWorkSheet.Cells[3, 4] = "параметр -  " + cbParameters.Text;
 
-                objWorkSheet.Cells[5, 1] = "Время";
-
-                for (int i = 0; i < selectedObjs.Length; i++)
+                string objectList = string.Empty;
+                bool first = true;
+                foreach (int j in selObjects)
                 {
-                    objWorkSheet.Cells[5, 2 + i] = selectedObjs[i][1];
+                    object[] selObject = objects.First(o => (int)o[0] == j);
+                    if (!first) {objectList += ", "; }
+                    objectList += selObject[1];
+                    first = false;
                 }
-                objWorkSheet.Cells[5, 2 + selectedObjs.Length] = "Переключение";
 
-                for (int i = 0; i < itogData.Count; i++)
+                objWorkSheet.Cells[1, 4] = "Журнал переключений по " + objectList;
+                objWorkSheet.Cells[2, 4] = "за период с " + journalEvents.First()[0] + " по " + journalEvents.Last()[0];
+
+                objWorkSheet.Cells[5, 1] = "   Время   ";
+                objWorkSheet.Cells[5, 2] = "  Объект   ";
+                objWorkSheet.Cells[5, 3] = " Измерение ";
+                objWorkSheet.Cells[5, 4] = " Тип переключения ";
+                objWorkSheet.Cells[5, 5] = "Ожидаемое значение";
+                objWorkSheet.Cells[5, 6] = "Полученое значение";
+
+                for (int i = 0; i < journalEvents.Length; i++)
                 {
-                    for (int k = 0; k < itogData[i].Length; k++)
-                        objWorkSheet.Cells[6 + i, 1 + k] = itogData[i][k];
-                    objWorkSheet.Cells[6 + i, 1 + itogData[i].Length] = scheduleList[i];
+                    objWorkSheet.Cells[6 + i, 1] = journalEvents[i][0];
+                    objWorkSheet.Cells[6 + i, 2] = journalEvents[i][1];
+                    objWorkSheet.Cells[6 + i, 3] = journalEvents[i][2];
+                    objWorkSheet.Cells[6 + i, 4] = journalEvents[i][3];
+                    objWorkSheet.Cells[6 + i, 5] = journalEvents[i][4];
+                    objWorkSheet.Cells[6 + i, 6] = journalEvents[i][5];
                 }
+
+                int curRow = journalEvents.Length + 10;
+                int l = 0;
+                foreach (var g in journalEvents.ToArray().GroupBy(o => (string)o[0]))
+                {
+                    DateTime pd = DateTime. Now;
+                    if (DateTime.TryParse(g.Key, out pd)) {
+                        objWorkSheet.Cells[curRow + l, 1] = pd;
+                    }
+                    else {
+                        objWorkSheet.Cells[curRow + l, 1] = g.Key;
+                    }
+                    int k = 2;
+                    foreach (var s in selObjects)
+                    {
+                        string selName = (string)objects.First(o => (int)o[0] == s)[1];
+                        var result = g.FirstOrDefault(v => v[1].ToString() == selName);
+                        if (result != null)
+                        {
+                            objWorkSheet.Cells[curRow + l, k] = (decimal)result[5];
+                        }
+                        k++;
+                    }
+                    l++;
+                } 
 
                 try
                 {
 
-                    selectedRange = (Range)objWorkSheet.get_Range("B6", GetLetterBy(selectedObjs.Length + 1) + (5 + itogData.Count));
                     shapes = objWorkSheet.Shapes;
-                    shapes.AddChart(XlChartType: XlChartType.xlLine,
-                        Left: 450, Top: 70, Width: 750,
+                    shapes.AddChart(XlChartType: XlChartType.xlXYScatter,
+                        Left: 0, Top: 14*curRow, Width: 750,
                         Height: 400).Select();
 
                     chart = objExcel.ActiveChart;
-                    chart.SetSourceData(selectedRange); 
+                    int let = 2;
+                    var collection = (Microsoft.Office.Interop.Excel.SeriesCollection)chart.SeriesCollection();
+                    foreach (var s in selObjects)
+                    {
+                        string letter = GetLetterBy(let);
+                        var series = collection.NewSeries();
+                        series.Name = (string)objects.First(o => (int)o[0] == s)[1];
+                        series.Values = objWorkSheet.get_Range(letter + curRow, letter + (curRow + l - 1));
+                        series.XValues = objWorkSheet.get_Range("A" + curRow, "A" + (curRow + l - 1));
+                        let++;
+                    }
                 }
                 finally
                 {
@@ -180,8 +247,7 @@ namespace Design
 
                 objWorkBook.SaveAs(fileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
                                    XlSaveAsAccessMode.xlShared, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                MessageBox.Show("Файл - " + fileName + " успешно сохранен");
-                formed = false;
+                MessageBox.Show("Файл - " + fileName + " успешно сохранен"); 
             }
             finally
             {
@@ -190,7 +256,7 @@ namespace Design
                 if (objWorkSheet != null) { Marshal.ReleaseComObject(objWorkSheet); }
                 if (objWorkBook != null) { objWorkBook.Close(); Marshal.ReleaseComObject(objWorkBook); }
                 if (objExcel != null) { Marshal.ReleaseComObject(objExcel); }
-            }
+            } 
         }
 
         private string GetLetterBy(int p)
@@ -218,130 +284,30 @@ namespace Design
             return "B";
         }
 
-        private void OnCloseButtonClick(object sender, EventArgs e)
+        private void initTimeIntervals()
         {
-            if (formed && DialogResult.Yes != MessageBox.Show("Вы действительно хотите закрыть форму?",
-                "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            timeInterval.OnIntervalChanged += OnTimeIntervalChanged;
+
+            List<string> allTimes = DataHelper.GetAllEventDatesByObjects(selObjects);
+            supportTimes = allTimes.Where((s, i) => i % 30 == 0 || i == allTimes.Count - 1).ToList();
+
+            timeInterval.TickCount = supportTimes.Count();
+            if (timeInterval.TickCount >= 2)
             {
-                return;
+                timeInterval.Up = timeInterval.TickCount - 2;
+                timeInterval.Down = timeInterval.TickCount - 1;
             }
-            Dispose();
         }
 
-        private void OnRunButtonClick(object sender, EventArgs e)
+        void OnTimeIntervalChanged(object sender, int min, int max)
         {
-            if (formed && DialogResult.Yes != MessageBox.Show("Вы действительно хотите рассчитать форму?",
-                "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-            {
-                return;
-            }
+            if (min == -1 || max == -1) return;
+            intervalLabel.Text = "Интервал времени: [" + supportTimes[min] + "; " + supportTimes[max] + "]";
+        }
 
-            if (!rbTime.Checked && !rbRelation.Checked)
-            {
-                MessageBox.Show("Выберите тип диапазона времени.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            if (cbParameters.Text == string.Empty)
-            {
-                MessageBox.Show("Выберите параметр измерения.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (String.IsNullOrEmpty(cbObjectGroup.Text))
-            {
-                MessageBox.Show("Выберите объект измерений.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (metrixs == null || metrixs.Length == 0)
-            {
-                MessageBox.Show("Вначале необходимо выполнить расчеты.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (selectedObjs == null || selectedObjs.Length == 0)
-            {
-                selectedObjs = DataHelper.GetEntityByGroup(cbObjectGroup.Text);
-            }
-            if (selectedObjs == null || selectedObjs.Length == 0)
-            {
-                MessageBox.Show("У группы '" + cbObjectGroup.Text + "' нет объектов", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            itogData.Clear();
-            using (var con = DataHelper.OpenOrCreateDb())
-            {
-                try
-                {
-                    List<object> data = new List<object>();
-                    for (var i = trackStart.Value; i <= trackEnd.Value; i++)
-                    {
-                        data.Clear();
-                        data.Add(metrixs[i]);
-                        data.AddRange(selectedObjs.Select(s => DataHelper.GetMetrix((int)s[0], cbParameters.Text,
-                                                    metrixs[i], rbTime.Checked, con)));
-                        itogData.Add(data.ToArray());
-                    }
-                }
-                finally { con.Close(); }
-            }
-            formed = true;
-            scheduleList.Clear();
-            int pos = 0;
-            int interval = (int)DataHelper.GetSettingValue("RangeSchedule");
-            int stopInt = interval < 3? 3 : interval;
-            for (var i = 0; i < itogData.Count; i++)
-            {
-                if (stopInt > 0)
-                {
-                    scheduleList.Add((string)selectedObjs[pos][1]);
-                    stopInt--;
-                    continue;
-                }
-
-                decimal delta = 0;
-                int newpos = pos;
-                for (int j = 1; j <= selectedObjs.Length; j++)
-                {
-                    try
-                    {
-                        if (j == pos) { continue; }
-                        decimal d = 0;
-                        decimal sum = 0;
-                        for (int k = 1; k <= interval; k++)
-                        {
-                            sum = (decimal)itogData[i - k][j];
-                        }
-                        if ((decimal)itogData[i][j] == 0)
-                        {
-                            d = (decimal)itogData[i][j] != (decimal)itogData[i - 1][j] ? 1 : 0;
-                            if (sum == 0)
-                            {
-                                newpos = 0;
-                            }
-                        }
-                        else
-                        {
-                            d = ((decimal)itogData[i][j] - sum / interval) / (decimal)itogData[i][j];
-                        }
-                        if (delta < d && (double)d > 0.1)
-                        {
-                            newpos = j - 1;
-                            delta = d;
-                        }
-                    }
-                    catch { continue; }
-                }
-
-                if (newpos != pos) {
-                    pos = newpos;
-                    stopInt = interval;
-                }
-                scheduleList.Add((string)selectedObjs[pos][1]);
-            }
-
-            PrepareViews();
+        private void OnCloseButtonClick(object sender, EventArgs e)
+        {
+            Dispose();
         }
 
         private void PrepareViews()
@@ -350,84 +316,6 @@ namespace Design
             chartControl.Series.Clear();
 
             System.Windows.Forms.DataVisualization.Charting.Series s = null;
-
-            for (int j = 0; j <= selectedObjs.Length + 1; j++)
-            {
-                GridColumn unbColumn = mainView.Columns.AddField("col" + j);
-                unbColumn.VisibleIndex = mainView.Columns.Count;
-                unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
-                unbColumn.OptionsColumn.AllowEdit = false;
-                unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
-                if (j > selectedObjs.Length)
-                {
-                    unbColumn.Caption = "Переключение";
-                }
-                else
-                {
-                    unbColumn.Caption = j == 0 ? "Время" : (string)selectedObjs[j - 1][1];
-                }
-                mainView.CustomUnboundColumnData += CustomUnboundColumnDataMainView;
-
-                if (j > 0 && j <= selectedObjs.Length)
-                {
-                    s = new System.Windows.Forms.DataVisualization.Charting.Series();
-                    s.Name = unbColumn.Caption;
-                    s.ChartType = SeriesChartType.FastLine;
-                    chartControl.Series.Add(s);
-                }
-            }
-
-            for (int i = 0; i < itogData.Count; i++)
-            {
-                string strValue = itogData[i][0].ToString();
-                int j = 1;
-                foreach (var ss in chartControl.Series)
-                {
-                    ss.Points.AddXY(strValue, itogData[i][j]);
-                    j++;
-                }
-            }
-
-            grid.DataSource = itogData;
         }
-
-        private void CustomUnboundColumnDataMainView(object sender, CustomColumnDataEventArgs e)
-        {
-            try
-            {
-                e.Value = itogData.ElementAt(e.ListSourceRowIndex)[e.Column.AbsoluteIndex];
-            }
-            catch {
-                try
-                {
-                    e.Value = scheduleList.ElementAt(e.ListSourceRowIndex);
-                }
-                catch { e.Value = string.Empty; }
-            }
-        }
-
-        private void trackStart_ValueChanged(object sender, EventArgs e)
-        {
-            trackEnd.Minimum = trackStart.Value;
-            if (trackEnd.Value < trackEnd.Minimum)
-            {
-                trackEnd.Value = trackEnd.Minimum;
-                tbEnd.Text = metrixs[trackEnd.Value].ToString();
-            }
-            tbStart.Text = metrixs[trackStart.Value].ToString();
-        }
-
-        private void trackEnd_ValueChanged(object sender, EventArgs e)
-        {
-            trackStart.Maximum = trackEnd.Value;
-            if (trackStart.Value >= trackStart.Maximum)
-            {
-                trackStart.Value = trackStart.Maximum;
-                tbStart.Text = metrixs[trackStart.Value].ToString();
-            }
-
-            tbEnd.Text = metrixs.Length <= trackEnd.Value ? "-" : metrixs[trackEnd.Value].ToString();
-        }
-
     }
 }

@@ -1,7 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <MapSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<Lines>
-    <MappingLine object="5" parameter="T буферное" branch="2-17" group="Восточно-Уренгойское">Куст №2-17 :  2-17-05 : Температура газа в устье скважины (TIR0105)</MappingLine> 
+    <MappingLine object="6" parameter="P шлейфа" branch="2-17" group="Восточно-Уренгойское">Куст №2-17 :  2-17-06 : Канал 1, Давление метанола на вводе в скважину (PISA0306)</MappingLine> 
+    <MappingLine object="6" parameter="P буферное" branch="2-17" group="Восточно-Уренгойское">Куст №2-17 :  2-17-06 : Канал 1, Давление газа в устье скважины (PISA0206)</MappingLine> 
     <MappingLine object="6" parameter="T буферное" branch="2-17" group="Восточно-Уренгойское">Куст №2-17 :  2-17-06 : Температура газа в устье скважины (TIR0106)</MappingLine> 
+    <MappingLine object="5" parameter="P шлейфа" branch="2-25" group="Восточно-Уренгойское">Куст №2-25 : Скважина 2-25-05 : Канал 1, Давление метанола на вводе в скважину (PIT209)</MappingLine> 
+    <MappingLine object="5" parameter="P буферное" branch="2-25" group="Восточно-Уренгойское">Куст №2-25 : Скважина 2-25-05 : Канал 1, Давление газа в устье скважины (PIT204)</MappingLine> 
+    <MappingLine object="5" parameter="T буферное" branch="2-25" group="Восточно-Уренгойское">Куст №2-25 : Скважина 2-25-05 : Температура газа в устье скважины (TIT104)</MappingLine> 
+    <MappingLine object="5" parameter="P шлейфа" branch="2-21" group="Восточно-Уренгойское">Куст №2-21 : Скважина 2-21-05 : Канал 1, Давление метанола на вводе в скважину (PIT209)</MappingLine> 
+    <MappingLine object="5" parameter="P буферное" branch="2-21" group="Восточно-Уренгойское">Куст №2-21 : Скважина 2-21-05 : Канал 1, Давление газа в устье скважины (PIT204)</MappingLine> 
+    <MappingLine object="5" parameter="T буферное" branch="2-21" group="Восточно-Уренгойское">Куст №2-21 : Скважина 2-21-05 : Температура газа в устье скважины (TIT104)</MappingLine> 
+
+    <MappingLine object="1" parameter="P шлейфа" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-01 : Канал 1, Давление метанола на вводе в скважину (PIT207)</MappingLine> 
+    <MappingLine object="1" parameter="P буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-01 : Канал 1, Давление газа в устье скважины (PIT200)</MappingLine> 
+    <MappingLine object="1" parameter="T буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-01 : Температура газа в устье скважины (TIT100)</MappingLine> 
+    <MappingLine object="2" parameter="P шлейфа" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-02 : Канал 1, Давление метанола на вводе в скважину (PIT208)</MappingLine> 
+    <MappingLine object="2" parameter="P буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-02 : Канал 1, Давление газа в устье скважины (PIT201)</MappingLine> 
+    <MappingLine object="2" parameter="T буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-02 : Температура газа в устье скважины (TIT101)</MappingLine> 
+    <MappingLine object="3" parameter="P шлейфа" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-03 : Канал 1, Давление метанола на вводе в скважину (PIT209)</MappingLine> 
+    <MappingLine object="3" parameter="P буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-03 : Канал 1, Давление газа в устье скважины (PIT202)</MappingLine> 
+    <MappingLine object="3" parameter="T буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-03 : Температура газа в устье скважины (TIT102)</MappingLine> 
+    <MappingLine object="4" parameter="P шлейфа" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-04 : Канал 1, Давление метанола на вводе в скважину (PIT210)</MappingLine> 
+    <MappingLine object="4" parameter="P буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-04 : Канал 1, Давление газа в устье скважины (PIT203)</MappingLine> 
+    <MappingLine object="4" parameter="T буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-04 : Температура газа в устье скважины (TIT103)</MappingLine> 
+    <MappingLine object="5" parameter="P шлейфа" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-05 : Канал 1, Давление метанола на вводе в скважину (PIT211)</MappingLine> 
+    <MappingLine object="5" parameter="P буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-05 : Канал 1, Давление газа в устье скважины (PIT204)</MappingLine> 
+    <MappingLine object="5" parameter="T буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-05 : Температура газа в устье скважины (TIT104)</MappingLine> 
+    <MappingLine object="6" parameter="P шлейфа" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-06 : Канал 1, Давление метанола на вводе в скважину (PIT212)</MappingLine> 
+    <MappingLine object="6" parameter="P буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-06 : Канал 1, Давление газа в устье скважины (PIT205)</MappingLine> 
+    <MappingLine object="6" parameter="T буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-06 : Температура газа в устье скважины (TIT105)</MappingLine> 
+    <MappingLine object="7" parameter="P шлейфа" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-07 : Канал 1, Давление метанола на вводе в скважину (PIT213)</MappingLine> 
+    <MappingLine object="7" parameter="P буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-07 : Канал 1, Давление газа в устье скважины (PIT206)</MappingLine> 
+    <MappingLine object="7" parameter="T буферное" branch="1-12" group="Ново-Уренгойское">Куст №1-12 : Скважина 1-12-07 : Температура газа в устье скважины (TIT106)</MappingLine> 
+
+    <MappingLine object="1" parameter="P шлейфа" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-01 : Канал 1, Давление метанола на вводе в скважину (PISA0301)</MappingLine> 
+    <MappingLine object="1" parameter="P буферное" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-01 : Канал 1, Давление газа в устье скважины (PIA0201)</MappingLine> 
+    <MappingLine object="1" parameter="T буферное" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-01 : Температура газа в устье скважины (TIR0101)</MappingLine> 
+    <MappingLine object="2" parameter="P шлейфа" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-02 : Канал 1, Давление метанола на вводе в скважину (PISA0302)</MappingLine> 
+    <MappingLine object="2" parameter="P буферное" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-02 : Канал 1, Давление газа в устье скважины (PIA0202)</MappingLine> 
+    <MappingLine object="2" parameter="T буферное" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-02 : Температура газа в устье скважины (TIR0102)</MappingLine> 
+    <MappingLine object="3" parameter="P шлейфа" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-03 : Канал 1, Давление метанола на вводе в скважину (PISA0303)</MappingLine> 
+    <MappingLine object="3" parameter="P буферное" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-03 : Канал 1, Давление газа в устье скважины (PIA0203)</MappingLine> 
+    <MappingLine object="3" parameter="T буферное" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-03 : Температура газа в устье скважины (TIR0103)</MappingLine> 
+    <MappingLine object="4" parameter="P шлейфа" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-04 : Канал 1, Давление метанола на вводе в скважину (PISA0304)</MappingLine> 
+    <MappingLine object="4" parameter="P буферное" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-04 : Канал 1, Давление газа в устье скважины (PIA0204)</MappingLine> 
+    <MappingLine object="4" parameter="T буферное" branch="1-15" group="Ново-Уренгойское">Куст №1-15 : Скважина 1-15-04 : Температура газа в устье скважины (TIR0104)</MappingLine> 
+
+    <MappingLine object="1" parameter="P шлейфа" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-01 : Канал 1, Давление метанола на вводе в скважину (PIT205)</MappingLine> 
+    <MappingLine object="1" parameter="P буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-01 : Канал 1, Давление газа в устье скважины (PIT200)</MappingLine> 
+    <MappingLine object="1" parameter="T буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-01 : Температура газа в устье скважины (TIT100)</MappingLine> 
+    <MappingLine object="2" parameter="P шлейфа" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-02 : Канал 1, Давление метанола на вводе в скважину (PIT206)</MappingLine> 
+    <MappingLine object="2" parameter="P буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-02 : Канал 1, Давление газа в устье скважины (PIT201)</MappingLine> 
+    <MappingLine object="2" parameter="T буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-02 : Температура газа в устье скважины (TIT101)</MappingLine> 
+    <MappingLine object="3" parameter="P шлейфа" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-03 : Канал 1, Давление метанола на вводе в скважину (PIT207)</MappingLine> 
+    <MappingLine object="3" parameter="P буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-03 : Канал 1, Давление газа в устье скважины (PIT202)</MappingLine> 
+    <MappingLine object="3" parameter="T буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-03 : Температура газа в устье скважины (TIT102)</MappingLine> 
+    <MappingLine object="4" parameter="P шлейфа" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-04 : Канал 1, Давление метанола на вводе в скважину (PIT208)</MappingLine> 
+    <MappingLine object="4" parameter="P буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-04 : Канал 1, Давление газа в устье скважины (PIT203)</MappingLine> 
+    <MappingLine object="4" parameter="T буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-04 : Температура газа в устье скважины (TIT103)</MappingLine> 
+    <MappingLine object="5" parameter="P шлейфа" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-05 : Канал 1, Давление метанола на вводе в скважину (PIT209)</MappingLine> 
+    <MappingLine object="5" parameter="P буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-05 : Канал 1, Давление газа в устье скважины (PIT204)</MappingLine> 
+    <MappingLine object="5" parameter="T буферное" branch="1-17" group="Ново-Уренгойское">Куст №1-17 :  1-17-05 : Температура газа в устье скважины (TIT104)</MappingLine> 
+
 	</Lines>
 </MapSettings>
