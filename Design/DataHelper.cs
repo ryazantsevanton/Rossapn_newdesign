@@ -1419,7 +1419,7 @@ namespace Design
             {
                 using (var command = con.CreateCommand())
                 {
-                    command.CommandText = String.Format("select top {0} eventDate, checkerName, entityValue, predicateValue, realValue from " +
+                    command.CommandText = String.Format("select top {0} eventDate, checkerName, entityValue, predicateValue, realValue, criticalValue from " +
                                           " journalEvents je left join Entities e on je.entityid = e.entityid " +
                                           " left join Predicates on je.predicateid = Predicates.predicateid " +
                                           " order by eventDate desc", count);
@@ -1429,7 +1429,7 @@ namespace Design
                         if (reader != null)
                             while (reader.Read())
                             {
-                                events.Add(new object[] { reader.GetDateTime(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetDecimal(4) });
+                                events.Add(new object[] { reader.GetDateTime(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetDecimal(4), reader.GetDecimal(5) });
                             }
                     }
                 }
@@ -1446,7 +1446,7 @@ namespace Design
             {
                 using (var command = con.CreateCommand())
                 {
-                    command.CommandText = string.Format(" select eventDate, checkerName, entityValue, predicateValue, realValue from " +
+                    command.CommandText = string.Format(" select eventDate, checkerName, entityValue, predicateValue, realValue, criticalValue from " +
                                                 " journalEvents je left join Entities on je.entityid = Entities.entityid " +
                                                 " left join Predicates on je.predicateid = Predicates.predicateid " +
                                                 " where eventDate >= (select max(logDateTime) from ActionLog where login = '{0}' " +
@@ -1456,7 +1456,8 @@ namespace Design
                         if (reader != null)
                             while (reader.Read())
                             {
-                                events.Add(new object[] { reader.GetDateTime(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetDecimal(4) });
+                                events.Add(new object[] { reader.GetDateTime(0), reader.GetString(1), reader.GetString(2), 
+                                                          reader.GetString(3), reader.GetDecimal(4), reader.GetDecimal(5) });
                             }
                     }
                 }

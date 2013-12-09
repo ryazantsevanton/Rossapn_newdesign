@@ -47,10 +47,17 @@ namespace Design
             
             foreach (var file in dllDir.GetFiles("*.dll", SearchOption.AllDirectories))
             {
-                var assembly = Assembly.LoadFile(file.FullName);
-                container.AddRange(assembly.GetTypes().
-                                        Where(t => t.GetInterface(typeof(T).FullName, true) != null).
-                                        Select(t => (T)Activator.CreateInstance(t)));
+                try
+                {
+                    var assembly = Assembly.LoadFile(file.FullName);
+                    container.AddRange(assembly.GetTypes().
+                                            Where(t => t.GetInterface(typeof(T).FullName, true) != null).
+                                            Select(t => (T)Activator.CreateInstance(t)));
+                }
+                catch (Exception e)
+                {
+                    string s = e.Message;
+                }
             }
         }
     }

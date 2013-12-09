@@ -161,20 +161,19 @@ namespace Design
         {
             try
             {
-                events = DataHelper.LastEventsForAccount(login);
-                if (events.Count < 5)
-                {                     
-                    events = DataHelper.LastEvents(5);
-                    labelEvents.Text = String.Format("Последние события({0}):", events.Count); 
-                }
-                else
-                {
-                    labelEvents.Text = String.Format("События со времени вашего последнего входа ({0}):", events.Count);   
-                }
-                
-                gvLastEvents.DataSource = events;
+                refreshEvents(login);
                 
                 Account.tryLogin(login, password);
+
+                if (Account.Current != null)
+                {
+                    //15 minutes
+                    var timer = new System.Timers.Timer(900000);
+
+                    timer.Elapsed += timer_Elapsed;
+                    timer.Enabled = true;
+                }
+
             }
             catch (Exception e)
             {
@@ -194,6 +193,62 @@ namespace Design
                     DataHelper.GetParameter(d.Name, con, true);
                 }
             }
+
+        }
+
+        void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            refreshEvents(Account.Current.Login);
+        }
+
+        delegate void SetEventsTitleCallback(string text);
+        delegate void SetEventsContentCallback(List<object[]> events);
+
+        private void SetEventsTitle(string text)
+        {
+            if (labelEvents.InvokeRequired)
+            {
+                SetEventsTitleCallback d = new SetEventsTitleCallback(SetEventsTitle);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                labelEvents.Text = text;
+            }
+        }
+
+        private void SetEventsContent(List<object[]> events)
+        {
+            if (labelEvents.InvokeRequired)
+            {
+                SetEventsContentCallback d = new SetEventsContentCallback(SetEventsContent);
+                this.Invoke(d, new object[] { events });
+            }
+            else
+            {
+                gvLastEvents.DataSource = null;
+                gvLastEvents.DataSource = events;
+            }
+        }
+
+        private void refreshEvents(string login)
+        {
+            events = DataHelper.LastEventsForAccount(login);
+
+            string text;
+
+            if (events.Count < 5)
+            {
+                events = DataHelper.LastEvents(5);
+                text = String.Format("Последние события({0}):", events.Count);
+            }
+            else
+            {
+                text = String.Format("События со времени вашего последнего входа ({0}):", events.Count);
+            }
+
+            SetEventsTitle(text);
+            SetEventsContent(events);
 
         }
     }
