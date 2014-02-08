@@ -33,7 +33,9 @@ namespace Design
             parameters = DataHelper.GetParameters();
 
             objectsList.DataSource = objects;
-            objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));           
+            objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));
+            objectsView.Columns["cLicField"].GroupIndex = 0;
+            objectsView.Columns["cBranch"].GroupIndex = 1;
             objectsView.CellValueChanging += OnObjectSelected;
 
             viewEvents.CustomUnboundColumnData += UnboundEventData;
@@ -372,7 +374,9 @@ namespace Design
         private void OnObjectSelected(object sender, CellValueChangedEventArgs e)
         {
             DevExpress.XtraGrid.Views.Grid.GridView view = (DevExpress.XtraGrid.Views.Grid.GridView)sender;
-            objects[view.FocusedRowHandle][2] = (bool)e.Value;
+            object[] row = (object[])view.GetRow(e.RowHandle);
+            row[2] = (bool)e.Value;
+
             SetMinDate();
         }
 

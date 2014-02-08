@@ -33,6 +33,8 @@ namespace Design
             parametersList.DataSource = parameters;
 
             objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));
+            objectsView.Columns["cLicField"].GroupIndex = 0;
+            objectsView.Columns["cBranch"].GroupIndex = 1;
             objectsView.CellValueChanging += OnObjectSelected;
 
             parametersView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, parameters));
@@ -92,21 +94,25 @@ namespace Design
 
         private void UnboundColumnData(object sender, CustomColumnDataEventArgs e, object[][] data)
         {
-            e.Value = data[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
+            if (e.IsGetData)
+            {
+                e.Value = data[e.ListSourceRowIndex][e.Column.AbsoluteIndex];
+            }            
         }
 
         private void OnObjectSelected(object sender, CellValueChangedEventArgs e)
         {
+            
             DevExpress.XtraGrid.Views.Grid.GridView view = (DevExpress.XtraGrid.Views.Grid.GridView)sender;
-            objects[view.FocusedRowHandle][2] = (bool)e.Value;
+            object[] row = (object[])view.GetRow(e.RowHandle);
+            row[2] = (bool)e.Value;
 
             if (supportTimes.Count < 2) return;
 
             if ((bool)e.Value == true)
-                displayObjects.addObject((int)objects[view.FocusedRowHandle][0], (string)objects[view.FocusedRowHandle][1], supportTimes[timeInterval.Min], supportTimes[timeInterval.Max]);
+                displayObjects.addObject((int)row[0], (string)row[1], supportTimes[timeInterval.Min], supportTimes[timeInterval.Max]);
             else
-                displayObjects.removeObject((int)objects[view.FocusedRowHandle][0]);
-
+                displayObjects.removeObject((int)row[0]);
         }
 
         private void OnParameterSelected(object sender, CellValueChangedEventArgs e)

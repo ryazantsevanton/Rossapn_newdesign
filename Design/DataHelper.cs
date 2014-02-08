@@ -517,7 +517,8 @@ namespace Design
                             while (reader.Read())
                             {
                                 String metrixObject = reader.GetString(1);
-                                data.Add(metrixObject, new object[] { reader.GetInt32(0), metrixObject, reader.GetDecimal(2), EditAction.None });
+                                if (!reader.IsDBNull(2))
+                                    data.Add(metrixObject, new object[] { reader.GetInt32(0), metrixObject, reader.GetDecimal(2), EditAction.None });
                             }
                         }
                     }
@@ -541,7 +542,8 @@ namespace Design
                             while (reader.Read())
                             {
                                 //String metrixObject = reader.GetString(0);
-                                data.Add(reader.GetString(0));
+                                if (!reader.IsDBNull(0))
+                                    data.Add(reader.GetString(0));
                             }
                         }
                     }
@@ -1521,7 +1523,8 @@ namespace Design
                             while (reader.Read())
                             {
                                 //String metrixObject = reader.GetString(0);
-                                data.Add(reader.GetString(0));
+                                if (!reader.IsDBNull(0))
+                                    data.Add(reader.GetString(0));
                             }
                         }
                     }

@@ -27,7 +27,7 @@ namespace Design
 
             GridColumn unbColumn = mainView.Columns.AddField("titles");
             unbColumn.VisibleIndex = 0;
-            unbColumn.Caption = "Объекты";
+            unbColumn.Caption = "Скважина";
             unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
             //Allow edit only to admin
             unbColumn.OptionsColumn.AllowEdit = Account.Current.hasPermission(Account.Actions.EditSystemEntities);
@@ -46,7 +46,7 @@ namespace Design
             unbColumn.OptionsColumn.AllowEdit = true;
             unbColumn.AppearanceCell.BackColor = Color.LemonChiffon;
 
-            unbColumn = mainView.Columns.AddField("Месторождение");
+            unbColumn = mainView.Columns.AddField("Лицензионный участок");
             unbColumn.VisibleIndex = 2;
             unbColumn.UnboundType = DevExpress.Data.UnboundColumnType.Object;
             unbColumn.OptionsColumn.AllowEdit = true;

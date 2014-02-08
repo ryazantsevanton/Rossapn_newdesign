@@ -34,6 +34,8 @@ namespace Design
 
             objectsList.DataSource = objects;
             objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));
+            objectsView.Columns["cLicField"].GroupIndex = 0;
+            objectsView.Columns["cBranch"].GroupIndex = 1;
             objectsView.FocusedRowChanged += OnObjectSelected;
 
             parametersList.DataSource = parameters;

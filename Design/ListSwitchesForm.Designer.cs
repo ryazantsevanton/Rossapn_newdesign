@@ -69,7 +69,7 @@
             this.importButton.Name = "importButton";
             this.importButton.Size = new System.Drawing.Size(128, 23);
             this.importButton.TabIndex = 24;
-            this.importButton.Text = "Импорт в Excel";
+            this.importButton.Text = "Экспорт в Excel";
             this.importButton.UseVisualStyleBackColor = true;
             // 
             // chartControl
@@ -222,16 +222,12 @@
             this.gridColumn4,
             this.gridColumn5});
             this.objectsView.GridControl = this.objectsList;
-            this.objectsView.GroupCount = 2;
             this.objectsView.Name = "objectsView";
             this.objectsView.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
             this.objectsView.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
             this.objectsView.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
             this.objectsView.OptionsView.ShowGroupPanel = false;
             this.objectsView.OptionsView.ShowIndicator = false;
-            this.objectsView.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
-            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn4, DevExpress.Data.ColumnSortOrder.Ascending),
-            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn5, DevExpress.Data.ColumnSortOrder.Ascending)});
             // 
             // cId
             // 
@@ -246,7 +242,7 @@
             // 
             // cObject
             // 
-            this.cObject.Caption = "Объект";
+            this.cObject.Caption = "Скважина";
             this.cObject.FieldName = "cObject";
             this.cObject.Name = "cObject";
             this.cObject.OptionsColumn.AllowEdit = false;
@@ -267,17 +263,17 @@
             // 
             // gridColumn4
             // 
-            this.gridColumn4.Caption = "Месторождение";
-            this.gridColumn4.FieldName = "Месторождение";
+            this.gridColumn4.Caption = "Лицензионный участок";
+            this.gridColumn4.FieldName = "cLicField";
             this.gridColumn4.Name = "gridColumn4";
             this.gridColumn4.UnboundType = DevExpress.Data.UnboundColumnType.String;
             this.gridColumn4.Visible = true;
-            this.gridColumn4.VisibleIndex = 3;
+            this.gridColumn4.VisibleIndex = 4;
             // 
             // gridColumn5
             // 
             this.gridColumn5.Caption = "Куст";
-            this.gridColumn5.FieldName = "Куст";
+            this.gridColumn5.FieldName = "cBranch";
             this.gridColumn5.Name = "gridColumn5";
             this.gridColumn5.UnboundType = DevExpress.Data.UnboundColumnType.String;
             this.gridColumn5.Visible = true;
@@ -289,7 +285,7 @@
             this.label1.Location = new System.Drawing.Point(17, 16);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.Size = new System.Drawing.Size(68, 17);
             this.label1.TabIndex = 25;
             this.label1.Text = "Объекты";
             // 
@@ -313,7 +309,7 @@
             this.intervalLabel.Location = new System.Drawing.Point(4, 1);
             this.intervalLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.intervalLabel.Name = "intervalLabel";
-            this.intervalLabel.Size = new System.Drawing.Size(103, 13);
+            this.intervalLabel.Size = new System.Drawing.Size(132, 17);
             this.intervalLabel.TabIndex = 4;
             this.intervalLabel.Text = "Интервал времени";
             // 
@@ -322,7 +318,7 @@
             this.timeInterval.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.timeInterval.Down = 9;
             this.timeInterval.Location = new System.Drawing.Point(2, 17);
-            this.timeInterval.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.timeInterval.Margin = new System.Windows.Forms.Padding(2);
             this.timeInterval.Name = "timeInterval";
             this.timeInterval.Size = new System.Drawing.Size(258, 48);
             this.timeInterval.TabIndex = 5;

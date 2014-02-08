@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackBar = new System.Windows.Forms.TrackBar();
@@ -101,6 +101,7 @@
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -114,8 +115,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl);
-            this.splitContainer1.Size = new System.Drawing.Size(940, 515);
-            this.splitContainer1.SplitterDistance = 264;
+            this.splitContainer1.Size = new System.Drawing.Size(1253, 634);
+            this.splitContainer1.SplitterDistance = 351;
             this.splitContainer1.SplitterWidth = 1;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -125,52 +126,56 @@
             this.panel1.Controls.Add(this.trackBar);
             this.panel1.Controls.Add(this.lStartDate);
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Location = new System.Drawing.Point(5, 355);
+            this.panel1.Location = new System.Drawing.Point(7, 437);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(251, 69);
+            this.panel1.Size = new System.Drawing.Size(334, 84);
             this.panel1.TabIndex = 8;
             // 
             // trackBar
             // 
-            this.trackBar.Location = new System.Drawing.Point(7, 21);
+            this.trackBar.Location = new System.Drawing.Point(9, 26);
+            this.trackBar.Margin = new System.Windows.Forms.Padding(4);
             this.trackBar.Name = "trackBar";
-            this.trackBar.Size = new System.Drawing.Size(241, 45);
+            this.trackBar.Size = new System.Drawing.Size(321, 56);
             this.trackBar.TabIndex = 2;
             // 
             // lStartDate
             // 
             this.lStartDate.AutoSize = true;
             this.lStartDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lStartDate.Location = new System.Drawing.Point(123, 4);
+            this.lStartDate.Location = new System.Drawing.Point(164, 5);
+            this.lStartDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lStartDate.Name = "lStartDate";
-            this.lStartDate.Size = new System.Drawing.Size(125, 13);
+            this.lStartDate.Size = new System.Drawing.Size(159, 17);
             this.lStartDate.TabIndex = 1;
             this.lStartDate.Text = "01.01.1900 23:34:50";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 4);
+            this.label3.Location = new System.Drawing.Point(5, 5);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(87, 13);
+            this.label3.Size = new System.Drawing.Size(116, 17);
             this.label3.TabIndex = 0;
             this.label3.Text = "Начало расчета";
             // 
             // cbParameters
             // 
             this.cbParameters.FormattingEnabled = true;
-            this.cbParameters.Location = new System.Drawing.Point(5, 311);
+            this.cbParameters.Location = new System.Drawing.Point(7, 383);
+            this.cbParameters.Margin = new System.Windows.Forms.Padding(4);
             this.cbParameters.Name = "cbParameters";
-            this.cbParameters.Size = new System.Drawing.Size(251, 21);
+            this.cbParameters.Size = new System.Drawing.Size(333, 24);
             this.cbParameters.TabIndex = 7;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(2, 285);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(3, 351);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 13);
+            this.label2.Size = new System.Drawing.Size(84, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "Параметры";
             // 
@@ -179,11 +184,13 @@
             this.objectsList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.objectsList.Location = new System.Drawing.Point(5, 29);
+            this.objectsList.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
+            this.objectsList.Location = new System.Drawing.Point(7, 36);
             this.objectsList.MainView = this.objectsView;
+            this.objectsList.Margin = new System.Windows.Forms.Padding(4);
             this.objectsList.Name = "objectsList";
-            this.objectsList.Padding = new System.Windows.Forms.Padding(3);
-            this.objectsList.Size = new System.Drawing.Size(251, 241);
+            this.objectsList.Padding = new System.Windows.Forms.Padding(4);
+            this.objectsList.Size = new System.Drawing.Size(334, 297);
             this.objectsList.TabIndex = 5;
             this.objectsList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.objectsView});
@@ -197,16 +204,12 @@
             this.gridColumn4,
             this.gridColumn5});
             this.objectsView.GridControl = this.objectsList;
-            this.objectsView.GroupCount = 2;
             this.objectsView.Name = "objectsView";
             this.objectsView.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
             this.objectsView.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
             this.objectsView.OptionsBehavior.AllowFixedGroups = DevExpress.Utils.DefaultBoolean.False;
             this.objectsView.OptionsView.ShowGroupPanel = false;
             this.objectsView.OptionsView.ShowIndicator = false;
-            this.objectsView.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
-            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn4, DevExpress.Data.ColumnSortOrder.Ascending),
-            new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.gridColumn5, DevExpress.Data.ColumnSortOrder.Ascending)});
             // 
             // cId
             // 
@@ -242,17 +245,17 @@
             // 
             // gridColumn4
             // 
-            this.gridColumn4.Caption = "Месторождение";
-            this.gridColumn4.FieldName = "Месторождение";
+            this.gridColumn4.Caption = "Лицензионный участок";
+            this.gridColumn4.FieldName = "cLicField";
             this.gridColumn4.Name = "gridColumn4";
             this.gridColumn4.UnboundType = DevExpress.Data.UnboundColumnType.String;
             this.gridColumn4.Visible = true;
-            this.gridColumn4.VisibleIndex = 3;
+            this.gridColumn4.VisibleIndex = 4;
             // 
             // gridColumn5
             // 
             this.gridColumn5.Caption = "Куст";
-            this.gridColumn5.FieldName = "Куст";
+            this.gridColumn5.FieldName = "cBranch";
             this.gridColumn5.Name = "gridColumn5";
             this.gridColumn5.UnboundType = DevExpress.Data.UnboundColumnType.String;
             this.gridColumn5.Visible = true;
@@ -261,10 +264,9 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 13);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(19, 16);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.Size = new System.Drawing.Size(68, 17);
             this.label1.TabIndex = 4;
             this.label1.Text = "Объекты";
             // 
@@ -275,9 +277,10 @@
             this.tabControl.Controls.Add(this.eventPage);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(675, 515);
+            this.tabControl.Size = new System.Drawing.Size(901, 634);
             this.tabControl.TabIndex = 0;
             // 
             // dataPage
@@ -287,19 +290,21 @@
             this.dataPage.Controls.Add(this.runButton);
             this.dataPage.Controls.Add(this.closeButton);
             this.dataPage.Controls.Add(this.grid);
-            this.dataPage.Location = new System.Drawing.Point(4, 22);
+            this.dataPage.Location = new System.Drawing.Point(4, 25);
+            this.dataPage.Margin = new System.Windows.Forms.Padding(4);
             this.dataPage.Name = "dataPage";
-            this.dataPage.Padding = new System.Windows.Forms.Padding(3);
-            this.dataPage.Size = new System.Drawing.Size(667, 489);
+            this.dataPage.Padding = new System.Windows.Forms.Padding(4);
+            this.dataPage.Size = new System.Drawing.Size(893, 605);
             this.dataPage.TabIndex = 0;
             this.dataPage.Text = "Данные";
             this.dataPage.UseVisualStyleBackColor = true;
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(404, 456);
+            this.saveButton.Location = new System.Drawing.Point(539, 561);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(4);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(85, 23);
+            this.saveButton.Size = new System.Drawing.Size(113, 28);
             this.saveButton.TabIndex = 6;
             this.saveButton.Text = "Сохранить";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -309,40 +314,44 @@
             this.chartControl.BorderlineColor = System.Drawing.Color.Gray;
             this.chartControl.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
             this.chartControl.BorderlineWidth = 2;
-            chartArea3.Name = "ChartArea1";
-            this.chartControl.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chartControl.Legends.Add(legend3);
-            this.chartControl.Location = new System.Drawing.Point(5, 192);
-            this.chartControl.Margin = new System.Windows.Forms.Padding(2);
+            chartArea1.Name = "ChartArea1";
+            this.chartControl.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartControl.Legends.Add(legend1);
+            this.chartControl.Location = new System.Drawing.Point(7, 236);
+            this.chartControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chartControl.Name = "chartControl";
-            this.chartControl.Size = new System.Drawing.Size(656, 259);
+            this.chartControl.Size = new System.Drawing.Size(875, 319);
             this.chartControl.TabIndex = 5;
             // 
             // runButton
             // 
-            this.runButton.Location = new System.Drawing.Point(495, 456);
+            this.runButton.Location = new System.Drawing.Point(660, 561);
+            this.runButton.Margin = new System.Windows.Forms.Padding(4);
             this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(85, 23);
+            this.runButton.Size = new System.Drawing.Size(113, 28);
             this.runButton.TabIndex = 4;
             this.runButton.Text = "Обработать";
             this.runButton.UseVisualStyleBackColor = true;
             // 
             // closeButton
             // 
-            this.closeButton.Location = new System.Drawing.Point(586, 456);
+            this.closeButton.Location = new System.Drawing.Point(781, 561);
+            this.closeButton.Margin = new System.Windows.Forms.Padding(4);
             this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(75, 23);
+            this.closeButton.Size = new System.Drawing.Size(100, 28);
             this.closeButton.TabIndex = 3;
             this.closeButton.Text = "Закрыть ";
             this.closeButton.UseVisualStyleBackColor = true;
             // 
             // grid
             // 
-            this.grid.Location = new System.Drawing.Point(6, 7);
+            this.grid.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
+            this.grid.Location = new System.Drawing.Point(8, 9);
             this.grid.MainView = this.mainView;
+            this.grid.Margin = new System.Windows.Forms.Padding(4);
             this.grid.Name = "grid";
-            this.grid.Size = new System.Drawing.Size(655, 178);
+            this.grid.Size = new System.Drawing.Size(873, 219);
             this.grid.TabIndex = 2;
             this.grid.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.mainView,
@@ -367,9 +376,10 @@
             // 
             this.sourcePage.Controls.Add(this.chartSource);
             this.sourcePage.Controls.Add(this.gridSource);
-            this.sourcePage.Location = new System.Drawing.Point(4, 22);
+            this.sourcePage.Location = new System.Drawing.Point(4, 25);
+            this.sourcePage.Margin = new System.Windows.Forms.Padding(4);
             this.sourcePage.Name = "sourcePage";
-            this.sourcePage.Size = new System.Drawing.Size(667, 489);
+            this.sourcePage.Size = new System.Drawing.Size(893, 605);
             this.sourcePage.TabIndex = 1;
             this.sourcePage.Text = "Исходные данные";
             this.sourcePage.UseVisualStyleBackColor = true;
@@ -379,22 +389,24 @@
             this.chartSource.BorderlineColor = System.Drawing.Color.Gray;
             this.chartSource.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
             this.chartSource.BorderlineWidth = 2;
-            chartArea4.Name = "ChartArea1";
-            this.chartSource.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.chartSource.Legends.Add(legend4);
-            this.chartSource.Location = new System.Drawing.Point(5, 207);
-            this.chartSource.Margin = new System.Windows.Forms.Padding(2);
+            chartArea2.Name = "ChartArea1";
+            this.chartSource.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chartSource.Legends.Add(legend2);
+            this.chartSource.Location = new System.Drawing.Point(7, 255);
+            this.chartSource.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chartSource.Name = "chartSource";
-            this.chartSource.Size = new System.Drawing.Size(656, 266);
+            this.chartSource.Size = new System.Drawing.Size(875, 327);
             this.chartSource.TabIndex = 7;
             // 
             // gridSource
             // 
-            this.gridSource.Location = new System.Drawing.Point(6, 7);
+            this.gridSource.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
+            this.gridSource.Location = new System.Drawing.Point(8, 9);
             this.gridSource.MainView = this.viewSource;
+            this.gridSource.Margin = new System.Windows.Forms.Padding(4);
             this.gridSource.Name = "gridSource";
-            this.gridSource.Size = new System.Drawing.Size(655, 200);
+            this.gridSource.Size = new System.Drawing.Size(873, 246);
             this.gridSource.TabIndex = 6;
             this.gridSource.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.viewSource,
@@ -418,20 +430,23 @@
             // eventPage
             // 
             this.eventPage.Controls.Add(this.gridEvents);
-            this.eventPage.Location = new System.Drawing.Point(4, 22);
+            this.eventPage.Location = new System.Drawing.Point(4, 25);
+            this.eventPage.Margin = new System.Windows.Forms.Padding(4);
             this.eventPage.Name = "eventPage";
-            this.eventPage.Padding = new System.Windows.Forms.Padding(3);
-            this.eventPage.Size = new System.Drawing.Size(667, 489);
+            this.eventPage.Padding = new System.Windows.Forms.Padding(4);
+            this.eventPage.Size = new System.Drawing.Size(893, 605);
             this.eventPage.TabIndex = 2;
             this.eventPage.Text = "События";
             this.eventPage.UseVisualStyleBackColor = true;
             // 
             // gridEvents
             // 
-            this.gridEvents.Location = new System.Drawing.Point(3, 7);
+            this.gridEvents.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
+            this.gridEvents.Location = new System.Drawing.Point(4, 9);
             this.gridEvents.MainView = this.viewEvents;
+            this.gridEvents.Margin = new System.Windows.Forms.Padding(4);
             this.gridEvents.Name = "gridEvents";
-            this.gridEvents.Size = new System.Drawing.Size(655, 437);
+            this.gridEvents.Size = new System.Drawing.Size(873, 538);
             this.gridEvents.TabIndex = 7;
             this.gridEvents.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.viewEvents,
@@ -528,12 +543,13 @@
             // 
             // CalcForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightBlue;
             this.Controls.Add(this.splitContainer1);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "CalcForm";
-            this.Size = new System.Drawing.Size(940, 515);
+            this.Size = new System.Drawing.Size(1253, 634);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);

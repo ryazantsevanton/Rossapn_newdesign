@@ -29,6 +29,8 @@ namespace Design
             objects = DataHelper.GetObjectsWithGroups();
             objectsList.DataSource = objects;
             objectsView.CustomUnboundColumnData += new CustomColumnDataEventHandler((sender, e) => UnboundColumnData(sender, e, objects));
+            objectsView.Columns["cLicField"].GroupIndex = 0;
+            objectsView.Columns["cBranch"].GroupIndex = 1;
             mainView.CustomUnboundColumnData += OnMainViewCustomUnboundData;
             objectsView.CellValueChanging += OnObjectSelected;
 
