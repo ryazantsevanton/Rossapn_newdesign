@@ -592,6 +592,12 @@ namespace Design
                     changes++;
                     sql += String.Format("DELETE metrix WHERE metrixid = {0};", mtx[0]) + System.Environment.NewLine;
                 }
+                if ((EditAction)mtx[3] == EditAction.Insert)
+                {
+                    changes++;
+                    if (mtx.Length == 6)
+                        sql += String.Format("INSERT INTO metrix(entityId, predicateId, metrixobject,  metrixValue) VALUES ({0},{1},'{2}',{3});", mtx[5], mtx[4], mtx[1], mtx[2]) + System.Environment.NewLine;
+                }
             }
 
             using (var con = OpenOrCreateDb())

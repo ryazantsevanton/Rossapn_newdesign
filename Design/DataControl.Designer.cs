@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             DevExpress.XtraGrid.Columns.GridColumn cTime;
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.opdPanel = new System.Windows.Forms.SplitContainer();
             this.opPanel = new System.Windows.Forms.SplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -88,6 +88,7 @@
             cTime.FieldName = "cTime";
             cTime.Name = "cTime";
             cTime.OptionsColumn.AllowEdit = false;
+            cTime.OptionsColumn.ReadOnly = true;
             cTime.UnboundType = DevExpress.Data.UnboundColumnType.DateTime;
             cTime.Visible = true;
             cTime.VisibleIndex = 0;
@@ -419,8 +420,9 @@
             this.dataView.OptionsCustomization.AllowColumnMoving = false;
             this.dataView.OptionsCustomization.AllowFilter = false;
             this.dataView.OptionsCustomization.AllowGroup = false;
-            this.dataView.OptionsCustomization.AllowQuickHideColumns = false;
             this.dataView.OptionsCustomization.AllowSort = false;
+            this.dataView.OptionsSelection.MultiSelect = true;
+            this.dataView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
             this.dataView.OptionsView.ShowGroupPanel = false;
             this.dataView.OptionsView.ShowIndicator = false;
             // 
@@ -437,11 +439,11 @@
             // 
             // chartControl
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chartControl.ChartAreas.Add(chartArea2);
+            chartArea1.Name = "ChartArea1";
+            this.chartControl.ChartAreas.Add(chartArea1);
             this.chartControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend2.Name = "Legend1";
-            this.chartControl.Legends.Add(legend2);
+            legend1.Name = "Legend1";
+            this.chartControl.Legends.Add(legend1);
             this.chartControl.Location = new System.Drawing.Point(0, 0);
             this.chartControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chartControl.Name = "chartControl";

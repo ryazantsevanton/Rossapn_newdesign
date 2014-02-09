@@ -10,5 +10,6 @@ namespace Design.Infrastructure
         None = 0,
         Delete = 1,
         Modified = 2,
+        Insert = 3,
     }
 }

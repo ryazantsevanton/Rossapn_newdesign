@@ -57,7 +57,7 @@ namespace Design
         private void OnCloseButtonClick(object sender, EventArgs e)
         {
             if (displayObjects.getSaveBundle(true).Count > 0 &&
-                DialogResult.Yes != MessageBox.Show("Есть несохраненные данныею Продолжить закрытие формы?", 
+                DialogResult.Yes != MessageBox.Show("Есть несохраненные данные. Продолжить закрытие формы?", 
                                                     "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
                 return;
@@ -190,42 +190,51 @@ namespace Design
 
             internal void OnCellValueChanged(object sender, CellValueChangedEventArgs e)
             {
-                if (e.Column.AbsoluteIndex == 0)
-                    return;
-                else
-                {
-                    int paramCount = paramIds.Count;
 
-                    if (paramCount == 0) return;
-
-                    int objectIndex = (e.Column.VisibleIndex - 1) / paramCount;
-                    int paramIndex = (e.Column.VisibleIndex - 1) % paramCount;
-
-                    var time = times.ElementAt(e.RowHandle);
-
-                    if (objectIndex >= objects.Count) return;
-
-                    string valStr = ((ColumnView)sender).EditingValue.ToString();
-                    if (String.IsNullOrEmpty(valStr))
-                    {
-                        objects[objectIndex].delete(time, paramIndex);
-                        this.onDataChanged();
-                    }
+                foreach (GridCell c in dataView.GetSelectedCells())
+                    if (c.Column.AbsoluteIndex == 0)
+                        return;
                     else
-                        try
+                    {
+                        int paramCount = paramIds.Count;
+
+                        if (paramCount == 0) break;
+
+                        int objectIndex = (c.Column.VisibleIndex - 1) / paramCount;
+                        int paramIndex = (c.Column.VisibleIndex - 1) % paramCount;
+
+                        var time = times.ElementAt(c.RowHandle);
+
+                        if (objectIndex >= objects.Count) break;
+
+                        string valStr = ((ColumnView)sender).EditingValue.ToString();
+                        if (String.IsNullOrEmpty(valStr))
                         {
-                            decimal val = Decimal.Parse(valStr);
-                            if (val == (decimal)e.Value) return;
-                            objects[objectIndex].update(time, paramIndex, val);
+                            objects[objectIndex].delete(time, paramIndex);
                             this.onDataChanged();
                         }
-                        catch (Exception ex) { }
-                    
-                }
+                        else
+                            try
+                            {
+                                decimal val = Decimal.Parse(valStr);
+                                //if (val == (decimal)e.Value) return;
+                                objects[objectIndex].update(time, paramIndex, val);                              
+                                this.onDataChanged();
+                            }
+                            catch (Exception ex) { }
+                        dataView.RefreshRowCell(c.RowHandle, c.Column);
+                    }
+                
+                dataView.ClearSelection();
             }
 
             internal void OnRowCellStyle(object sender, DevExpress.XtraGrid.Views.Grid.RowCellStyleEventArgs e)
             {
+
+                GridCell[] cells = dataView.GetSelectedCells();
+                foreach (GridCell c in cells)
+                    if (c.RowHandle == e.RowHandle && c.Column.AbsoluteIndex == e.Column.AbsoluteIndex)
+                        return;
 
                 e.Appearance.BackColor = Color.LemonChiffon;
                 if (e.Column.VisibleIndex == 0) return;
@@ -254,6 +263,11 @@ namespace Design
                 if ((EditAction)mtx[3] == EditAction.Delete)
                 {
                     e.Appearance.BackColor = Color.FromArgb(224, 224, 224);
+                    return;
+                }
+                if ((EditAction)mtx[3] == EditAction.Insert)
+                {
+                    e.Appearance.BackColor = Color.LightGreen;
                     return;
                 }
                
@@ -537,8 +551,18 @@ namespace Design
 
             internal void update(string time, decimal value)
             {
-                columnData[time][2] = value;
-                columnData[time][3] = EditAction.Modified;
+                if (!columnData.ContainsKey(time) || (EditAction)(columnData[time][3]) == EditAction.Insert)
+                {
+                    object[] metrix = new object[] { -1, time, value, EditAction.Insert, id.id, objectId };
+                    if (columnData.ContainsKey(time))
+                        metrix.CopyTo(columnData[time], 0);
+                    else
+                        columnData.Add(time, metrix);
+                    
+                } else {
+                    columnData[time][2] = value;
+                    columnData[time][3] = EditAction.Modified;
+                }
             }
 
             internal void delete(string time)
@@ -555,6 +579,10 @@ namespace Design
                 foreach (object[] mtx in columnData.Values)
                     switch ((EditAction)mtx[3])
                     {
+                        case EditAction.Insert:
+                            metrix.Add(new object[] { mtx[0], mtx[1], mtx[2], mtx[3], mtx[4], mtx[5] });
+                            mtx[3] = EditAction.None;
+                            break;
                         case EditAction.Modified:
                             metrix.Add(new object[]{mtx[0], mtx[1], mtx[2], mtx[3]});
                             mtx[3] = EditAction.None;
